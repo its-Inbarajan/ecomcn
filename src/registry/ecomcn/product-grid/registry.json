@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "product-grid",
+      "type": "registry:block",
+      "title": "Product Grid",
+      "description": "Responsive catalogue grid with box-matched loading skeletons, a density switch and a left-aligned empty state that names the offending filter.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "registryDependencies": ["skeleton", "button", "@ecomcn/product-card"],
+      "files": [
+        {
+          "path": "product-grid.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/product-grid.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing"]
+    }
+  ]
+}

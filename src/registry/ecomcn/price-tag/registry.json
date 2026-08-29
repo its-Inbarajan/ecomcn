@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "price-tag",
+      "type": "registry:ui",
+      "title": "Price Tag",
+      "description": "Locale-aware price with compare-at strike, computed discount badge and a screen-reader announcement. No dependencies.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "files": [
+        {
+          "path": "price-tag.tsx",
+          "type": "registry:ui",
+          "target": "components/ecomcn/price-tag.tsx"
+        }
+      ],
+      "cssVars": {
+        "light": { "sale": "0 72% 42%" },
+        "dark": { "sale": "4 74% 58%" }
+      },
+      "categories": ["ecommerce", "product", "pricing"]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+name: registry
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # schema, duplicate names, include paths, missing files — one pass
+      - name: Validate registry
+        run: pnpm dlx shadcn@latest registry validate
+
+      - name: Build registry
+        run: pnpm dlx shadcn@latest build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # the check that actually catches missing registryDependencies:
+      # install every item into a clean app and compile it
+      - name: Install every block into a clean app
+        run: pnpm test:install

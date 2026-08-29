@@ -1,0 +1,13 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ecomcn",
+  "homepage": "https://ecomcn.dev",
+  "include": [
+    "src/registry/ecomcn/price-tag/registry.json",
+    "src/registry/ecomcn/product-card/registry.json",
+    "src/registry/ecomcn/product-grid/registry.json",
+    "src/registry/ecomcn/order-summary/registry.json",
+    "src/registry/ecomcn/theme-editorial/registry.json"
+  ],
+  "items": []
+}

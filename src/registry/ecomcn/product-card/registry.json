@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "product-card",
+      "type": "registry:block",
+      "title": "Product Card",
+      "description": "Catalogue tile with badges, compare-at pricing, colour swatches, rating and a keyboard-reachable quick-add that slides up from the image edge.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["button", "@ecomcn/price-tag"],
+      "files": [
+        {
+          "path": "product-card.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/product-card.tsx"
+        }
+      ],
+      "cssVars": {
+        "light": { "sale": "0 72% 42%", "success": "138 30% 34%" },
+        "dark": { "sale": "4 74% 58%", "success": "138 26% 52%" }
+      },
+      "categories": ["ecommerce", "product", "catalog"]
+    }
+  ]
+}

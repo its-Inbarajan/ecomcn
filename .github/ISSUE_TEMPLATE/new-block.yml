@@ -1,0 +1,49 @@
+name: New block proposal
+description: Propose a block for the ecomcn registry.
+labels: ["block-proposal"]
+body:
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Funnel stage
+      description: Blocks are organised by the decision a buyer is making, not by widget type.
+      options: [Discover, Browse, Product, Cart & checkout, Post-purchase, Account, Admin]
+    validations:
+      required: true
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      placeholder: back-in-stock-form
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What does a store have to build today without it?
+      description: If the answer is "nothing, they'd use a Card", it probably isn't a block.
+    validations:
+      required: true
+  - type: textarea
+    id: states
+    attributes:
+      label: Which states must it cover?
+      placeholder: |
+        - loading
+        - empty
+        - error
+        - out of stock / unavailable
+        - success
+    validations:
+      required: true
+  - type: textarea
+    id: hard-part
+    attributes:
+      label: The hard part
+      description: The accessibility, i18n or data-shape detail that makes this worth shipping rather than re-writing.
+    validations:
+      required: true
+  - type: input
+    id: reference
+    attributes:
+      label: Reference (link or screenshot)

@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+dist
+.DS_Store
+*.log
+.env*
+# built registry output — commit this if you serve statically from a CDN
+public/r

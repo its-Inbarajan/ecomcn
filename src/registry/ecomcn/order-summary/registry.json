@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "order-summary",
+      "type": "registry:block",
+      "title": "Order Summary",
+      "description": "Free-shipping progress, promo code field with applied state, itemised totals and the checkout CTA. Totals logic lives in a separate hook you can test.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["button", "input"],
+      "files": [
+        {
+          "path": "order-summary.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/order-summary.tsx"
+        },
+        {
+          "path": "use-order-totals.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-order-totals.ts"
+        }
+      ],
+      "cssVars": {
+        "light": { "sale": "0 72% 42%", "success": "138 30% 34%" },
+        "dark": { "sale": "4 74% 58%", "success": "138 26% 52%" }
+      },
+      "categories": ["ecommerce", "cart", "checkout"]
+    }
+  ]
+}
