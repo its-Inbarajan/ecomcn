@@ -86,7 +86,7 @@ export function ProductCard({
               "absolute inset-x-0 bottom-0 z-10 h-11 translate-y-full rounded-none text-[12px] tracking-[0.14em] transition-transform duration-200 motion-reduce:transition-none",
               "group-hover:translate-y-0 focus-visible:translate-y-0",
               state === "added" &&
-                "translate-y-0 bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]"
+                "translate-y-0 bg-[var(--success)] hover:bg-[var(--success)]"
             )}
           >
             {state === "added" ? (

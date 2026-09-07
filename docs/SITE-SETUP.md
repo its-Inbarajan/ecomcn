@@ -78,7 +78,7 @@ pnpm dlx shadcn@latest add button badge input label checkbox slider switch \
 > live in `@theme inline` as oklch, not as HSL triplets in `:root`. `shadcn init`
 > writes the v4-shaped `globals.css` for you. Your custom tokens (`--sale`,
 > `--success`) need a line each inside `@theme inline`:
-> `--color-sale: var(--sale);` — otherwise `bg-[hsl(var(--sale))]` works but
+> `--color-sale: var(--sale);` — otherwise `bg-[var(--sale)]` works but
 > `bg-sale` does not.
 
 ---

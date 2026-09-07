@@ -46,7 +46,7 @@ export const PriceTag = React.forwardRef<HTMLDivElement, PriceTagProps>(
           className={cn(
             "tabular-nums",
             size === "lg" ? "text-3xl" : "text-lg",
-            onSale && "text-[hsl(var(--sale))]"
+            onSale && "text-[var(--sale)]"
           )}
         >
           {format.format(price)}
@@ -62,7 +62,7 @@ export const PriceTag = React.forwardRef<HTMLDivElement, PriceTagProps>(
             </span>
             <span
               aria-hidden
-              className="bg-[hsl(var(--sale))] px-1.5 py-0.5 text-[11px] uppercase tracking-[0.14em] text-background tabular-nums"
+              className="bg-[var(--sale)] px-1.5 py-0.5 text-[11px] uppercase tracking-[0.14em] text-background tabular-nums"
             >
               Save {percentOff}%
             </span>

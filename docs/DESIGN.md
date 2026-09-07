@@ -80,4 +80,4 @@ Non-negotiable for every block:
 Never invent Tailwind config colours (`bg-brand-500`). Adopters have their own
 config and the class renders as nothing. Use shadcn tokens (`bg-primary`,
 `text-muted-foreground`) or CSS variables shipped in the item's `cssVars`
-(`bg-[hsl(var(--sale))]`).
+(`bg-[var(--sale)]`).

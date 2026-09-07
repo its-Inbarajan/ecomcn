@@ -35,7 +35,7 @@ review comment pointing at this section.
 ## Styling
 
 - Use shadcn tokens (`bg-primary`, `text-muted-foreground`) or CSS variables you
-  ship yourself in `cssVars` (`bg-[hsl(var(--sale))]`).
+  ship yourself in `cssVars` (`bg-[var(--sale)]`).
 - **Never** invent Tailwind config colours like `bg-brand-500`. Adopters have
   their own config; your class renders as nothing.
 - Radius stays at `0.125rem`. Sections are separated by rules, not stacked

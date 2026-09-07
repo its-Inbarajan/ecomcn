@@ -1,26 +1,234 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   ecomcn "Editorial" palette.
+   Warm paper, near-black ink, one vermilion signal colour, 2px radius.
+   Keep this in sync with src/registry/ecomcn/theme-editorial/registry.json —
+   that item is what adopters install.
+--------------------------------------------------------------------------- */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: hsl(40 30% 97%);
+  --foreground: hsl(30 9% 9%);
+
+  --card: hsl(40 30% 99%);
+  --card-foreground: hsl(30 9% 9%);
+  --popover: hsl(40 30% 99%);
+  --popover-foreground: hsl(30 9% 9%);
+
+  --primary: hsl(30 9% 9%);
+  --primary-foreground: hsl(40 30% 97%);
+  --secondary: hsl(38 20% 92%);
+  --secondary-foreground: hsl(30 9% 9%);
+  --muted: hsl(38 18% 93%);
+  --muted-foreground: hsl(32 6% 42%);
+  --accent: hsl(38 20% 92%);
+  --accent-foreground: hsl(30 9% 9%);
+
+  --destructive: hsl(0 72% 42%);
+  --destructive-foreground: hsl(40 30% 98%);
+
+  --border: hsl(34 14% 85%);
+  --input: hsl(34 14% 82%);
+  --ring: hsl(12 76% 50%);
+
+  /* ecomcn additions */
+  --brand: hsl(12 76% 50%);
+  --brand-foreground: hsl(40 30% 98%);
+  --sale: hsl(0 72% 42%);
+  --success: hsl(138 30% 34%);
+
+  --chart-1: hsl(12 76% 50%);
+  --chart-2: hsl(138 30% 34%);
+  --chart-3: hsl(32 45% 52%);
+  --chart-4: hsl(200 22% 45%);
+  --chart-5: hsl(30 9% 25%);
+
+  --sidebar: hsl(40 30% 99%);
+  --sidebar-foreground: hsl(30 9% 9%);
+  --sidebar-primary: hsl(30 9% 9%);
+  --sidebar-primary-foreground: hsl(40 30% 97%);
+  --sidebar-accent: hsl(38 20% 92%);
+  --sidebar-accent-foreground: hsl(30 9% 9%);
+  --sidebar-border: hsl(34 14% 85%);
+  --sidebar-ring: hsl(12 76% 50%);
+
+  --radius: 0.125rem;
+}
+
+.dark {
+  --background: hsl(30 8% 7%);
+  --foreground: hsl(40 22% 94%);
+
+  --card: hsl(30 8% 10%);
+  --card-foreground: hsl(40 22% 94%);
+  --popover: hsl(30 8% 10%);
+  --popover-foreground: hsl(40 22% 94%);
+
+  --primary: hsl(40 22% 94%);
+  --primary-foreground: hsl(30 8% 7%);
+  --secondary: hsl(30 6% 16%);
+  --secondary-foreground: hsl(40 22% 94%);
+  --muted: hsl(30 6% 15%);
+  --muted-foreground: hsl(36 8% 62%);
+  --accent: hsl(30 6% 16%);
+  --accent-foreground: hsl(40 22% 94%);
+
+  --destructive: hsl(4 74% 58%);
+  --destructive-foreground: hsl(30 8% 7%);
+
+  --border: hsl(30 6% 20%);
+  --input: hsl(30 6% 24%);
+  --ring: hsl(14 82% 58%);
+
+  --brand: hsl(14 82% 57%);
+  --brand-foreground: hsl(30 8% 7%);
+  --sale: hsl(4 74% 58%);
+  --success: hsl(138 26% 52%);
+
+  --chart-1: hsl(14 82% 57%);
+  --chart-2: hsl(138 26% 52%);
+  --chart-3: hsl(32 40% 62%);
+  --chart-4: hsl(200 20% 60%);
+  --chart-5: hsl(40 12% 74%);
+
+  --sidebar: hsl(30 8% 10%);
+  --sidebar-foreground: hsl(40 22% 94%);
+  --sidebar-primary: hsl(40 22% 94%);
+  --sidebar-primary-foreground: hsl(30 8% 7%);
+  --sidebar-accent: hsl(30 6% 16%);
+  --sidebar-accent-foreground: hsl(40 22% 94%);
+  --sidebar-border: hsl(30 6% 20%);
+  --sidebar-ring: hsl(14 82% 58%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-sale: var(--sale);
+  --color-success: var(--success);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-instrument-serif);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   House utilities. Rule 03 (one display serif, one grotesque) and rule 06
+   (tabular numerals) live here so no block has to restate them.
+--------------------------------------------------------------------------- */
+
+@layer components {
+  .ec-display {
+    font-family: var(--font-display), "Iowan Old Style", Palatino, Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+  .ec-eyebrow {
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .ec-num {
+    font-variant-numeric: tabular-nums;
+  }
+  .ec-rule {
+    border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+  }
+  .ec-rule-strong {
+    border-color: color-mix(in srgb, var(--foreground) 90%, transparent);
+  }
+  .ec-scroll-x {
+    scrollbar-width: none;
+  }
+  .ec-scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+  /* Paper grain — keeps flat colour blocks from reading as a gradient. */
+  .ec-grain {
+    position: relative;
+  }
+  .ec-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.26;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+  .dark .ec-grain::after {
+    mix-blend-mode: screen;
+    opacity: 0.12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

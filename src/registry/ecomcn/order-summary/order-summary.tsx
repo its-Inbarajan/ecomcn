@@ -85,7 +85,7 @@ export function OrderSummary({
                 from free shipping
               </>
             ) : (
-              <span className="flex items-center gap-1.5 text-[hsl(var(--success))]">
+              <span className="flex items-center gap-1.5 text-[var(--success)]">
                 <Truck className="size-3.5" aria-hidden /> Free shipping unlocked
               </span>
             )}
@@ -108,7 +108,7 @@ export function OrderSummary({
 
       {appliedCode ? (
         <div className="flex items-center justify-between border border-dashed px-3 py-2.5">
-          <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--success))]">
+          <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-[var(--success)]">
             <Tag className="size-3" aria-hidden /> {appliedCode}
           </span>
           <button type="button" onClick={onRemoveCode} aria-label={`Remove code ${appliedCode}`}>
@@ -131,7 +131,7 @@ export function OrderSummary({
             </Button>
           </div>
           {error ? (
-            <p role="alert" className="text-[12px] text-[hsl(var(--sale))]">
+            <p role="alert" className="text-[12px] text-[var(--sale)]">
               {error}
             </p>
           ) : null}
@@ -192,8 +192,8 @@ function Row({
       <dd
         className={cn(
           muted && "text-muted-foreground",
-          tone === "sale" && "text-[hsl(var(--sale))]",
-          tone === "success" && "text-[hsl(var(--success))]"
+          tone === "sale" && "text-[var(--sale)]",
+          tone === "success" && "text-[var(--success)]"
         )}
       >
         {value}
