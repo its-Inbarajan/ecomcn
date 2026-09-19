@@ -84,7 +84,41 @@ for (const item of items) {
   }
 }
 
+/**
+ * Also emit the catalogue as data. Reading registry.json from a Server
+ * Component works, but dynamic fs access makes the bundler trace the whole
+ * project into the output — a static import costs nothing.
+ */
+const data = items.map((item) => ({
+  name: item.name,
+  type: item.type,
+  title: item.title ?? item.name,
+  description: item.description ?? "",
+  author: item.author ?? null,
+  dependencies: item.dependencies ?? [],
+  registryDependencies: item.registryDependencies ?? [],
+  categories: item.categories ?? [],
+  files: (item.files ?? []).map((file) => {
+    const from = resolve(item.__dir ?? root, file.path);
+    return {
+      path: file.path,
+      type: file.type,
+      target: file.target ?? null,
+      displayPath: file.target ?? file.path,
+      content: existsSync(from) ? readFileSync(from, "utf8") : "",
+    };
+  }),
+}));
+
+const dataPath = join(root, "src", "lib", "registry-data.json");
+const nextData = JSON.stringify(data, null, 2) + "\n";
+if (!existsSync(dataPath) || readFileSync(dataPath, "utf8") !== nextData) {
+  mkdirSync(dirname(dataPath), { recursive: true });
+  writeFileSync(dataPath, nextData);
+}
+
 console.log(
   `sync-registry: ${items.length} items, ${written} file(s) written` +
-    (skipped ? `, ${skipped} skipped (no target)` : "")
+    (skipped ? `, ${skipped} skipped (no target)` : "") +
+    `, registry-data.json refreshed`
 );

@@ -51,3 +51,41 @@ export function InstallCommand({
     </div>
   );
 }
+
+export function CopyButton({
+  value,
+  label = "Copy",
+  className,
+}: {
+  value: string;
+  label?: string;
+  className?: string;
+}) {
+  const [copied, setCopied] = React.useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(value);
+          setCopied(true);
+          window.setTimeout(() => setCopied(false), 1600);
+        } catch {
+          /* clipboard blocked \u2014 the text is selectable either way */
+        }
+      }}
+      className={cn(
+        "ec-eyebrow ec-rule flex shrink-0 items-center gap-1.5 border px-2.5 py-1.5 transition-colors hover:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        className,
+      )}
+    >
+      {copied ? (
+        <Check className="size-3 text-success" aria-hidden />
+      ) : (
+        <Copy className="size-3" aria-hidden />
+      )}
+      {copied ? "Copied" : label}
+    </button>
+  );
+}
