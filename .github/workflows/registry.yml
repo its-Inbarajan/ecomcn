@@ -5,31 +5,50 @@ on:
     branches: [main]
   pull_request:
 
+# A superseded PR run is wasted CI; cancel it.
+concurrency:
+  group: registry-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # verify-install scaffolds a real Next.js app; cap the job so a hung
+    # prompt fails in minutes rather than burning the runner's full budget.
+    timeout-minutes: 30
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
-          version: 9 # Specify your pnpm major version (e.g., 9 or 10)
+          # Matches pnpm-lock.yaml (lockfileVersion 9.0).
+          version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+
       - run: pnpm install --frozen-lockfile
 
-      # schema, duplicate names, include paths, missing files — one pass
+      # Schema, duplicate names, include paths, missing files — one pass,
+      # straight against the source. No build needed.
       - name: Validate registry
-        run: pnpm dlx shadcn@latest registry validate
+        run: pnpm registry:validate
 
-      - name: Build registry
-        run: pnpm dlx shadcn@latest build
+      - name: Lint
+        run: pnpm lint
 
       - name: Typecheck
         run: pnpm typecheck
 
-      # the check that actually catches missing registryDependencies:
-      # install every item into a clean app and compile it
+      # Also emits public/r/*.json, which the install test serves.
+      - name: Build
+        run: pnpm build
+
+      # The check that actually catches a missing registryDependencies entry:
+      # install every item into a clean app that has none of our primitives,
+      # then compile it.
       - name: Install every block into a clean app
         run: pnpm test:install

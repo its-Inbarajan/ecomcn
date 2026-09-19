@@ -18,6 +18,12 @@ describe changes in terms of what to edit, not just what changed.
 - Blocks: `price-tag`, `product-card`, `product-grid`, `order-summary`.
 - `theme-editorial` — the house palette as a `registry:theme` item.
 
+### Changed
+- ESLint now refuses any `next/*` import inside `src/registry/**`, so a block
+  that would not compile in a Vite project fails CI instead of an adopter's
+  build. Vendored `src/components/ui/**` is no longer linted — it is shadcn's
+  code and a future `shadcn add` overwrites it.
+
 ### Fixed
 - Blocks referenced their own tokens as `hsl(var(--sale))`. Tokens now ship as
   complete colours, so that resolved to `hsl(hsl(0 72% 42%))` and rendered
