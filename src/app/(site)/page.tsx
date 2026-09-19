@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowDown, ArrowRight, Check } from "lucide-react";
 
 import { InstallCommand } from "@/components/site/copy-button";
@@ -154,25 +155,8 @@ function Catalogue() {
 
             <ul className="ec-rule grid border-t border-l sm:grid-cols-2 lg:grid-cols-3">
               {byStage(stage.name).map((block) => (
-                <li
-                  key={block.slug}
-                  className="ec-rule flex flex-col gap-2 border-r border-b p-4"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <code className="font-mono text-[12px]">{block.slug}</code>
-                    {block.status === "shipped" ? (
-                      <span className="ec-eyebrow flex shrink-0 items-center gap-1 text-success">
-                        <Check className="size-3" aria-hidden /> Shipped
-                      </span>
-                    ) : (
-                      <span className="ec-eyebrow shrink-0 text-muted-foreground">
-                        Planned
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[13px] leading-relaxed text-muted-foreground">
-                    {block.summary}
-                  </p>
+                <li key={block.slug} className="ec-rule border-r border-b">
+                  <BlockCell block={block} />
                 </li>
               ))}
             </ul>
@@ -180,6 +164,36 @@ function Catalogue() {
         ))}
       </div>
     </section>
+  );
+}
+
+function BlockCell({ block }: { block: (typeof BLOCKS)[number] }) {
+  const live = block.status === "shipped";
+  const body = (
+    <>
+      <div className="flex items-start justify-between gap-3">
+        <code className="font-mono text-[12px]">{block.slug}</code>
+        {live ? (
+          <span className="ec-eyebrow flex shrink-0 items-center gap-1 text-success">
+            <Check className="size-3" aria-hidden /> Shipped
+          </span>
+        ) : (
+          <span className="ec-eyebrow shrink-0 text-muted-foreground">Planned</span>
+        )}
+      </div>
+      <p className="text-[13px] leading-relaxed text-muted-foreground">{block.summary}</p>
+    </>
+  );
+
+  return live ? (
+    <Link
+      href={`/blocks/${block.slug}`}
+      className="flex h-full flex-col gap-2 p-4 transition-colors hover:bg-secondary/60"
+    >
+      {body}
+    </Link>
+  ) : (
+    <div className="flex h-full flex-col gap-2 p-4">{body}</div>
   );
 }
 

@@ -31,6 +31,10 @@ review comment pointing at this section.
    `focus-visible` path and a touch path.
 6. **Ship the empty and loading states in the same file.** They're the states
    adopters forget, and the reason to install rather than build.
+7. **Never import from the framework.** No `next/image`, no `next/link`, no
+   `next/navigation` inside `src/registry/**` — a block has to compile in a
+   Vite or React Router project too. Take an image or link element as a prop.
+   This one is enforced by ESLint, not just asked for.
 
 ## Styling
 
@@ -48,7 +52,7 @@ review comment pointing at this section.
 - [ ] Path added to the root `registry.json` `include` array
 - [ ] `registryDependencies` lists every primitive the block imports
 - [ ] `target` puts files under `components/ecomcn/…`
-- [ ] `pnpm registry:validate` passes
+- [ ] `pnpm registry:validate` and `pnpm lint` pass
 - [ ] Installed into a blank Next.js app and compiled (`pnpm test:install`)
 - [ ] Keyboard path verified; no colour-only state
 - [ ] Loading and empty states included

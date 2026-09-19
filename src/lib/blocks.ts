@@ -18,6 +18,10 @@ export type Block = {
   kind: "ui" | "component" | "block" | "theme";
   summary: string;
   status: "shipped" | "planned";
+  /** The decision that keeps this block from looking generated. */
+  designNote?: string;
+  /** What most component kits get wrong here. */
+  hardPart?: string;
 };
 
 export const STAGES: { name: Stage; blurb: string }[] = [
@@ -52,8 +56,8 @@ export const BLOCKS: Block[] = [
   { slug: "lookbook-strip", title: "Shoppable lookbook", stage: "Discover", kind: "block", status: "planned", summary: "Full-bleed campaign image with product hotspots." },
 
   // Browse
-  { slug: "product-card", title: "Product card", stage: "Browse", kind: "block", status: "shipped", summary: "Badges, compare-at pricing, colour swatches and a keyboard-reachable quick-add." },
-  { slug: "product-grid", title: "Product grid", stage: "Browse", kind: "block", status: "shipped", summary: "Responsive grid with box-matched skeletons, a density switch and an empty state." },
+  { slug: "product-card", title: "Product card", stage: "Browse", kind: "block", status: "shipped", summary: "Badges, compare-at pricing, colour swatches and a keyboard-reachable quick-add.", designNote: "Quick-add slides up from the bottom edge of the image rather than floating over it, so it never covers the product. One link target for the whole card via an ::after overlay on the title anchor — no nested anchors.", hardPart: "Quick-add has to be reachable without a pointer, so it carries focus-visible:translate-y-0 alongside the hover rule. The image arrives as a ReactNode, which is what keeps the block free of next/image."},
+  { slug: "product-grid", title: "Product grid", stage: "Browse", kind: "block", status: "shipped", summary: "Responsive grid with box-matched skeletons, a density switch and an empty state.", designNote: "Column gap is tighter than row gap (20px / 36px), so products group by row the way they do on a page of a printed catalogue rather than reading as a uniform mesh.", hardPart: "Skeletons must match the real card's box exactly or the grid jumps on load — same aspect ratio, same four text bars. A spinner here is always the wrong answer."},
   { slug: "filter-panel", title: "Faceted filter panel", stage: "Browse", kind: "block", status: "planned", summary: "Applied chips, counts, dual-handle price slider, colour swatches." },
   { slug: "filter-sheet", title: "Filter sheet", stage: "Browse", kind: "block", status: "planned", summary: "The same facets in a slide-over with a sticky Clear / Show N footer." },
   { slug: "sort-toolbar", title: "Sort toolbar", stage: "Browse", kind: "component", status: "planned", summary: "Result count, sort select, density toggle, mobile filter trigger." },
@@ -61,7 +65,7 @@ export const BLOCKS: Block[] = [
 
   // Product
   { slug: "product-gallery", title: "Product gallery", stage: "Product", kind: "block", status: "planned", summary: "Thumbnail rail, counter overlay, swipe on mobile." },
-  { slug: "price-tag", title: "Price tag", stage: "Product", kind: "ui", status: "shipped", summary: "Locale-aware price with compare-at strike and a computed discount badge." },
+  { slug: "price-tag", title: "Price tag", stage: "Product", kind: "ui", status: "shipped", summary: "Locale-aware price with compare-at strike and a computed discount badge.", designNote: "Tabular numerals throughout, so a column of prices aligns. A discounted price turns sale-red and gains a computed percentage; a regular price stays ink and stays quiet.", hardPart: "Intl.NumberFormat with currency and locale as props. Hardcoding a dollar sign is the single most common bug in component kits, and the one an adopter in the eurozone hits on day one."},
   { slug: "variant-swatches", title: "Variant swatches", stage: "Product", kind: "block", status: "planned", summary: "Colour swatches and a size grid with out-of-stock strike-through." },
   { slug: "size-guide-dialog", title: "Size guide dialog", stage: "Product", kind: "component", status: "planned", summary: "Measurement table plus a fit note, opened from the size label." },
   { slug: "product-buy-box", title: "Buy box", stage: "Product", kind: "block", status: "planned", summary: "Variants, quantity, add-to-bag carrying the live total, delivery promise." },
@@ -72,7 +76,7 @@ export const BLOCKS: Block[] = [
   // Cart & checkout
   { slug: "cart-line-item", title: "Cart line item", stage: "Cart & checkout", kind: "component", status: "planned", summary: "Quantity stepper, line total, save-for-later, remove-with-undo." },
   { slug: "cart-sheet", title: "Cart sheet", stage: "Cart & checkout", kind: "block", status: "planned", summary: "Slide-over mini cart with a sticky subtotal footer." },
-  { slug: "order-summary", title: "Order summary", stage: "Cart & checkout", kind: "block", status: "shipped", summary: "Free-shipping meter, promo code, itemised totals and a testable totals hook." },
+  { slug: "order-summary", title: "Order summary", stage: "Cart & checkout", kind: "block", status: "shipped", summary: "Free-shipping meter, promo code, itemised totals and a testable totals hook.", designNote: "The total is set in the display serif against a heavy rule — the only thing in the panel that shouts. Everything above it is 13px and tabular.", hardPart: "Tax and shipping are estimates until an address exists, and the block says so. Totals live in a separate hook so they can be unit-tested without rendering anything."},
   { slug: "checkout-stepper", title: "Checkout stepper", stage: "Cart & checkout", kind: "component", status: "planned", summary: "Four-step rail with done / active / pending states." },
   { slug: "payment-selector", title: "Payment selector", stage: "Cart & checkout", kind: "block", status: "planned", summary: "Radio cards for card / wallet / pay-in-3 that expand to their fields." },
   { slug: "address-form", title: "Address form", stage: "Cart & checkout", kind: "block", status: "planned", summary: "Country-aware fields with correct autocomplete tokens." },
