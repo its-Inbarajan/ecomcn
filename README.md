@@ -22,21 +22,30 @@ That's why you can find what you need by the problem you have.
 
 ## Install
 
-```bash
-# register the namespace once
-npx shadcn@latest registry add @ecomcn=https://ecomcn.dev/r/{name}.json
+**Step 1 — register the namespace, once per project.** This is not optional:
+the shadcn CLI never adds a registry on its own, so a block that pulls another
+ecomcn block cannot resolve it until `@ecomcn` exists in your
+`components.json`.
 
-# then
+```bash
+npx shadcn@latest registry add @ecomcn=https://ecomcn.vercel.app/r/{name}.json
+```
+
+`{name}` is literal — the CLI substitutes the item name.
+
+**Step 2 — add blocks by name.**
+
+```bash
 npx shadcn@latest add @ecomcn/product-card
 npx shadcn@latest add @ecomcn/order-summary
 npx shadcn@latest list @ecomcn
 ```
 
-Or skip the namespace and install straight from GitHub:
+Blocks with no ecomcn dependencies — `price-tag`, `order-summary`,
+`theme-editorial` — also install straight from a URL with no setup:
 
 ```bash
-npx shadcn@latest add <owner>/ecomcn/product-card
-npx shadcn@latest add <owner>/ecomcn/product-card#v1.0.0   # pinned
+npx shadcn@latest add https://ecomcn.vercel.app/r/price-tag.json
 ```
 
 Start with the house theme if you want the look from the screenshots:

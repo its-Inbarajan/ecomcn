@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 
 import { BlockPreview } from "@/components/site/block-preview";
 import { CodeViewer } from "@/components/site/code-viewer";
-import { InstallCommand } from "@/components/site/copy-button";
+import { InstallSteps } from "@/components/site/install-steps";
 import { BLOCKS } from "@/lib/blocks";
 import { extractPropsInterfaces, loadRegistryItem } from "@/lib/registry-source";
 
@@ -71,7 +71,12 @@ export default async function BlockPage({
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0 space-y-10">
-          <InstallCommand command={`npx shadcn@latest add @ecomcn/${slug}`} />
+          <InstallSteps
+            slug={slug}
+            needsNamespace={item.registryDependencies.some((dep) =>
+              dep.startsWith("@ecomcn/"),
+            )}
+          />
 
           <BlockPreview slug={slug} title={block.title} />
 

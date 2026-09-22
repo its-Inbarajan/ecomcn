@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "ecomcn",
-  "homepage": "https://ecomcn.dev",
+  "homepage": "https://ecomcn.vercel.app",
   "include": [
     "src/registry/ecomcn/price-tag/registry.json",
     "src/registry/ecomcn/product-card/registry.json",

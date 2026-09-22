@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { SITE_URL as url } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,8 +21,6 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
   display: "swap",
 });
-
-const url = "https://ecomcn.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),

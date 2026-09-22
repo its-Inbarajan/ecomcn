@@ -5,9 +5,9 @@ import { InstallCommand } from "@/components/site/copy-button";
 import { LiveDemo } from "@/components/site/live-demo";
 import { ProductArt } from "@/components/site/product-art";
 import { BLOCKS, DESIGN_RULES, STAGES, byStage, shipped } from "@/lib/blocks";
+import { addCommand, registerCommand } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-const NAMESPACE = "npx shadcn@latest registry add @ecomcn=https://ecomcn.dev/r/{name}.json";
 
 export default function Home() {
   return (
@@ -240,14 +240,19 @@ function Install() {
             Two commands, then it&rsquo;s your code.
           </h2>
           <p className="mt-4 max-w-lg text-[14.5px] leading-[1.75] text-muted-foreground">
-            Register the namespace once, then add blocks by name. Nothing is
-            installed at runtime — the CLI copies source into your repo and
-            resolves the shadcn primitives each block needs.
+            Register the namespace once, then add blocks by name. Step one is
+            not optional: the CLI never adds a registry on its own, so a block
+            that pulls another ecomcn block cannot resolve it until{" "}
+            <code className="ec-rule border px-1 py-px font-mono text-[12px] text-foreground">
+              @ecomcn
+            </code>{" "}
+            exists in your components.json. Nothing is installed at runtime —
+            the CLI copies source into your repo.
           </p>
 
           <div className="mt-6 space-y-2">
-            <InstallCommand command={NAMESPACE} />
-            <InstallCommand command="npx shadcn@latest add @ecomcn/product-card" />
+            <InstallCommand command={registerCommand} />
+            <InstallCommand command={addCommand("product-card")} />
           </div>
 
           <a

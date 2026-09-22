@@ -1,0 +1,22 @@
+# Normalise line endings to LF in the repository.
+#
+# This matters more here than in a normal project: a registry item embeds its
+# source file verbatim as a `content` string in the published JSON. A block
+# saved with CRLF on Windows ships CRLF to every adopter on every platform,
+# and the diff noise makes PRs unreviewable in the meantime.
+#
+# After adding this file, run once:
+#   git add --renormalize .
+* text=auto eol=lf
+
+# Binary — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
