@@ -7,16 +7,16 @@
  * Scaffolds a throwaway Next.js app, installs every item from the built
  * registry, and compiles it.
  *
- * Two things make it safe to run unattended:
- *   - it serves public/r itself on an ephemeral port, so it does not care
- *     whether `next dev` is running and cannot race the rest of the workflow;
- *   - every child process runs with stdin closed and a timeout, so an
- *     unexpected CLI prompt fails the job in seconds instead of hanging it.
+ * IMPORTANT — why every child process is spawned asynchronously:
+ * this script serves the registry from an in-process HTTP server. A
+ * synchronous child (execFileSync/spawnSync) blocks Node's event loop, so
+ * that server can never accept a connection and the installer fails with
+ * ECONNREFUSED. Keep every child async, or move the server out of process.
  *
  *   node scripts/verify-install.mjs            # serve public/r, full run
  *   node scripts/verify-install.mjs http://…   # install from a live origin
  */
-import { execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { createReadStream, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
@@ -24,21 +24,36 @@ import { extname, join, normalize, resolve } from "node:path";
 
 const root = process.cwd();
 const externalOrigin = process.argv[2];
-
 const MINUTE = 60_000;
 
 /**
- * stdin is closed on purpose. `shadcn init` prompts for a component library
- * and a preset unless --defaults is passed; with stdin inherited a missed
- * flag hangs CI until the job times out. With it ignored the prompt hits EOF
- * and the command fails immediately, which is what we want to find out.
+ * stdin is closed on purpose: `shadcn init` prompts for a component library
+ * and a preset unless --defaults is passed, and an inherited stdin turns a
+ * missed flag into a hung job. With it ignored the prompt hits EOF and the
+ * command fails immediately, which is what we want to find out.
  */
-function run(file, args, { cwd, timeout = 5 * MINUTE }) {
-  return execFileSync(file, args, {
-    cwd,
-    stdio: ["ignore", "inherit", "inherit"],
-    timeout,
-    env: { ...process.env, CI: "1", ADBLOCK: "1", NEXT_TELEMETRY_DISABLED: "1" },
+function run(file, args, { cwd, timeout = 6 * MINUTE, label = file }) {
+  return new Promise((resolve_, reject) => {
+    const child = spawn(file, args, {
+      cwd,
+      stdio: ["ignore", "inherit", "inherit"],
+      timeout,
+      killSignal: "SIGKILL",
+      // npx/pnpm are .cmd shims on Windows; spawn cannot exec them directly.
+      shell: process.platform === "win32",
+      env: { ...process.env, CI: "1", NEXT_TELEMETRY_DISABLED: "1" },
+    });
+
+    child.on("error", (error) => reject(new Error(`${label}: ${error.message}`)));
+    child.on("close", (code, signal) => {
+      if (signal) {
+        reject(new Error(`${label}: killed by ${signal} after ${timeout / MINUTE} min`));
+      } else if (code !== 0) {
+        reject(new Error(`${label}: exited with code ${code}`));
+      } else {
+        resolve_();
+      }
+    });
   });
 }
 
@@ -63,7 +78,7 @@ const publicDir = resolve(root, "public");
 
 if (!externalOrigin && !existsSync(join(publicDir, "r", "registry.json"))) {
   console.log("▸ public/r is missing — running shadcn build");
-  run("npx", ["--yes", "shadcn@latest", "build"], { cwd: root });
+  await run("npx", ["--yes", "shadcn@latest", "build"], { cwd: root, label: "shadcn build" });
 }
 
 const TYPES = { ".json": "application/json", ".txt": "text/plain" };
@@ -84,6 +99,7 @@ async function serve() {
     createReadStream(file).pipe(res);
   });
 
+  server.unref();
   await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
   return { origin: `http://127.0.0.1:${server.address().port}`, close: () => server.close() };
 }
@@ -92,13 +108,26 @@ async function serve() {
 
 const hosted = externalOrigin ? null : await serve();
 const origin = externalOrigin ?? hosted.origin;
+
+// Fail in a second with a clear reason rather than in six minutes with a
+// timeout, if the origin is not actually reachable.
+try {
+  const probe = await fetch(`${origin}/r/${names[0]}.json`);
+  if (!probe.ok) throw new Error(`HTTP ${probe.status}`);
+  console.log(`▸ registry reachable at ${origin} (${names.length} items)`);
+} catch (error) {
+  console.error(`✗ cannot reach ${origin}/r/${names[0]}.json — ${error.message}`);
+  hosted?.close();
+  process.exit(1);
+}
+
 const dir = mkdtempSync(join(tmpdir(), "ecomcn-verify-"));
 const app = join(dir, "app");
 
 let failed = false;
 try {
   console.log(`\n▸ scaffolding a clean Next.js app in ${app}`);
-  run(
+  await run(
     "npx",
     [
       "--yes",
@@ -114,16 +143,16 @@ try {
       "--disable-git",
       "--yes",
     ],
-    { cwd: dir, timeout: 10 * MINUTE },
+    { cwd: dir, timeout: 12 * MINUTE, label: "create-next-app" },
   );
 
   // --defaults is what makes this non-interactive: --yes alone still prompts
-  // for the component library and the preset. It resolves to
-  // --template=next --preset=base-nova, which is what a fresh adopter gets.
+  // for the component library and the preset.
   console.log("\n▸ shadcn init");
-  run("npx", ["--yes", "shadcn@latest", "init", "--yes", "--defaults"], {
+  await run("npx", ["--yes", "shadcn@latest", "init", "--yes", "--defaults"], {
     cwd: app,
-    timeout: 8 * MINUTE,
+    timeout: 10 * MINUTE,
+    label: "shadcn init",
   });
 
   if (!existsSync(join(app, "components.json"))) {
@@ -132,15 +161,15 @@ try {
 
   for (const name of names) {
     console.log(`\n▸ installing ${name}`);
-    run(
+    await run(
       "npx",
       ["--yes", "shadcn@latest", "add", `${origin}/r/${name}.json`, "--yes", "--overwrite"],
-      { cwd: app, timeout: 5 * MINUTE },
+      { cwd: app, timeout: 6 * MINUTE, label: `add ${name}` },
     );
   }
 
   console.log("\n▸ compiling the installed blocks");
-  run("npx", ["tsc", "--noEmit"], { cwd: app, timeout: 8 * MINUTE });
+  await run("npx", ["tsc", "--noEmit"], { cwd: app, timeout: 10 * MINUTE, label: "tsc" });
   console.log(`\n✓ all ${names.length} items install and compile cleanly`);
 } catch (error) {
   failed = true;
