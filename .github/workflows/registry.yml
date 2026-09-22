@@ -2,8 +2,14 @@ name: registry
 
 on:
   push:
-    branches: [main]
+    # `develop` is this repo's production branch — Vercel builds it and there
+    # is no `main`. Listing only `main` meant no push to develop ever ran CI,
+    # so the workflow had never executed against current code.
+    branches: [main, develop]
   pull_request:
+  # Lets you run the whole sequence on demand from the Actions tab. Note that
+  # re-running an *old* run replays that run's commit, not the latest code.
+  workflow_dispatch:
 
 # A superseded PR run is wasted CI; cancel it.
 concurrency:
