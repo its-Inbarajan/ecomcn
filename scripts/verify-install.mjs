@@ -60,6 +60,10 @@ function run(file, args, { cwd, timeout = 6 * MINUTE, label = file }) {
 /* ------------------------------------------------------------ item names -- */
 
 const registry = JSON.parse(readFileSync(resolve(root, "registry.json"), "utf8"));
+
+/** `@ecomcn` — derived from the registry so the test cannot drift from it. */
+const namespace = `@${registry.name}`;
+
 const names = [
   ...(registry.items ?? []),
   ...(registry.include ?? []).flatMap(
@@ -155,18 +159,48 @@ try {
     label: "shadcn init",
   });
 
-  if (!existsSync(join(app, "components.json"))) {
+  const componentsJson = join(app, "components.json");
+  if (!existsSync(componentsJson)) {
     throw new Error("shadcn init did not write components.json — it likely hit a prompt.");
   }
 
+  // Register the namespace. This is not optional and not a test artifact: the
+  // CLI never adds a registry on its own, so any block with an `@ecomcn/…`
+  // dependency cannot resolve without it. Doing it here means the test walks
+  // the exact two steps the docs tell an adopter to walk.
+  console.log(`\n▸ registering ${namespace} -> ${origin}/r/{name}.json`);
+  await run(
+    "npx",
+    ["--yes", "shadcn@latest", "registry", "add", `${namespace}=${origin}/r/{name}.json`],
+    { cwd: app, timeout: 3 * MINUTE, label: "registry add" },
+  );
+
+  const registries = JSON.parse(readFileSync(componentsJson, "utf8")).registries ?? {};
+  if (!registries[namespace]) {
+    throw new Error(
+      `registry add did not write "${namespace}" into components.json registries.`,
+    );
+  }
+
+  // Install by name, exactly as the install instructions on the site do.
   for (const name of names) {
-    console.log(`\n▸ installing ${name}`);
+    console.log(`\n▸ installing ${namespace}/${name}`);
     await run(
       "npx",
-      ["--yes", "shadcn@latest", "add", `${origin}/r/${name}.json`, "--yes", "--overwrite"],
+      ["--yes", "shadcn@latest", "add", `${namespace}/${name}`, "--yes", "--overwrite"],
       { cwd: app, timeout: 6 * MINUTE, label: `add ${name}` },
     );
   }
+
+  // The README also claims blocks with no ecomcn dependencies install straight
+  // from a URL with no setup. Prove that claim on one of them.
+  const standalone = names.find((name) => name === "price-tag") ?? names[0];
+  console.log(`\n▸ installing ${standalone} from a bare URL (no namespace)`);
+  await run(
+    "npx",
+    ["--yes", "shadcn@latest", "add", `${origin}/r/${standalone}.json`, "--yes", "--overwrite"],
+    { cwd: app, timeout: 6 * MINUTE, label: `add ${standalone} by url` },
+  );
 
   console.log("\n▸ compiling the installed blocks");
   await run("npx", ["tsc", "--noEmit"], { cwd: app, timeout: 10 * MINUTE, label: "tsc" });
