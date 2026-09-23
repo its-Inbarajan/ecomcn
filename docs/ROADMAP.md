@@ -54,7 +54,7 @@ content; targets are correct.
 
 **Evening 2 — the two things still blocking a stranger**
 
-- [ ] **Make the repo public.** `github.com/its-Inbarajan/ecomcn` returns 404,
+- [x] **Make the repo public.** `github.com/its-Inbarajan/ecomcn` returns 404,
       so `npx shadcn add its-Inbarajan/ecomcn/product-card` cannot work for
       anyone, and the shadcn directory requires "open source and publicly
       accessible". One setting, and nothing downstream works without it.
@@ -62,7 +62,7 @@ content; targets are correct.
       `product-card` and `product-grid` fail, because the CLI never adds a
       registry on its own.
 - [x] `registry.json` `homepage` corrected to the live origin.
-- [ ] Run the real install into a scratch app: register the namespace, then
+- [x] Run the real install into a scratch app: register the namespace, then
       `npx shadcn@latest add @ecomcn/product-grid` — the deepest dependency
       chain in the registry (`product-grid` → `product-card` → `price-tag`).
 - [ ] Tag `v0.1.0` so installs can pin.
@@ -80,7 +80,12 @@ pinning mechanism either way.
 
 ---
 
-## Milestone 1 — Browse complete (7 evenings · ~4 weeks)
+## Milestone 1 — Browse complete (7 evenings · ~4 weeks) — **done**
+
+All four blocks shipped with docs pages, Usage sections and a composed
+[`/examples/listing-page`](https://ecomcn.vercel.app/examples/listing-page).
+The install test now compiles every block against both Base UI and Radix, and
+`pnpm registry:check` enforces the directory requirements in CI.
 
 The listing page is where most of a store's revenue is decided, and you already
 have `product-grid` for these to slot into.

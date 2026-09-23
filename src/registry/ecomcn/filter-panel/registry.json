@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "filter-panel",
+      "type": "registry:block",
+      "title": "Filter Panel",
+      "description": "Faceted filters with state that lives in the URL: applied-filter chips, checkbox lists with counts, a dual-handle range with typed inputs, colour swatches and toggles. Ships a pure parser for server components and a useFilterParams hook for the client.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["checkbox", "input", "slider", "switch"],
+      "files": [
+        {
+          "path": "filter-panel.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/filter-panel.tsx"
+        },
+        {
+          "path": "filter-params.ts",
+          "type": "registry:lib",
+          "target": "lib/filter-params.ts"
+        },
+        {
+          "path": "use-filter-params.ts",
+          "type": "registry:hook",
+          "target": "hooks/use-filter-params.ts"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing", "filters"]
+    }
+  ]
+}

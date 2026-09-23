@@ -6,12 +6,22 @@ import {
   ProductCardDemo,
   ProductGridDemo,
 } from "@/demos";
-import { BLOCKS } from "@/lib/blocks";
+import {
+  EmptyResultsDemo,
+  FilterPanelDemo,
+  FilterSheetDemo,
+  ListingPageDemo,
+  SortToolbarDemo,
+} from "@/demos/browse";
+import { BLOCKS, EXAMPLES } from "@/lib/blocks";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return BLOCKS.filter((b) => b.status === "shipped").map((b) => ({ slug: b.slug }));
+  return [
+    ...BLOCKS.filter((b) => b.status === "shipped").map((b) => ({ slug: b.slug })),
+    ...EXAMPLES.map((e) => ({ slug: e.slug })),
+  ];
 }
 
 export default async function PreviewPage({
@@ -31,8 +41,18 @@ export default async function PreviewPage({
       return <ProductCardDemo />;
     case "product-grid":
       return <ProductGridDemo />;
+    case "sort-toolbar":
+      return <SortToolbarDemo />;
+    case "empty-results":
+      return <EmptyResultsDemo />;
+    case "filter-panel":
+      return <FilterPanelDemo />;
+    case "filter-sheet":
+      return <FilterSheetDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
+    case "listing-page":
+      return <ListingPageDemo />;
     default:
       notFound();
   }

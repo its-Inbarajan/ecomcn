@@ -40,9 +40,10 @@ export function ProductGrid({
   ...props
 }: ProductGridProps) {
   // Column gap tighter than row gap: products group by row, like a printed page.
+  // Compact adds a column from `sm` up, so a density switch always does something.
   const grid = cn(
     "grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-3",
-    density === "compact" && "gap-y-7 lg:grid-cols-4",
+    density === "compact" && "gap-y-7 sm:grid-cols-3 lg:grid-cols-4",
     className
   )
 

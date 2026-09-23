@@ -15,6 +15,7 @@ public/r
 # lives in src/registry/ecomcn/**. Editing a mirror is always a mistake.
 src/components/ecomcn/
 src/hooks/use-*.ts
+src/lib/filter-params.ts
 
 # Superseded — safe to delete this folder.
 _to_delete/

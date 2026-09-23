@@ -4,15 +4,22 @@
   "private": true,
   "description": "Open-source e-commerce blocks for shadcn/ui.",
   "license": "MIT",
+  "homepage": "https://ecomcn.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/its-Inbarajan/ecomcn"
+  },
   "scripts": {
     "sync": "node scripts/sync-registry.mjs",
-    "dev": "node scripts/sync-registry.mjs && next dev",
+    "dev": "node scripts/dev.mjs",
     "build": "node scripts/sync-registry.mjs && shadcn build && next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "node scripts/sync-registry.mjs && tsc --noEmit",
     "registry:validate": "shadcn registry validate",
     "registry:build": "shadcn build",
+    "registry:check": "shadcn build && node scripts/check-registry.mjs",
+    "registry:check:live": "node scripts/check-registry.mjs --remote",
     "test:install": "node scripts/verify-install.mjs"
   },
   "dependencies": {

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "sort-toolbar",
+      "type": "registry:component",
+      "title": "Sort Toolbar",
+      "description": "The rule above a listing: a result count announced to screen readers once results settle, a native sort select, a density switch and a slot for the mobile filter trigger.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "sort-toolbar.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/sort-toolbar.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing"]
+    }
+  ]
+}

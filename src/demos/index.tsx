@@ -7,6 +7,7 @@ import { ProductCard, type ProductCardProduct } from "@/components/ecomcn/produc
 import { ProductGrid } from "@/components/ecomcn/product-grid";
 import { OrderSummary } from "@/components/ecomcn/order-summary";
 import { ProductArt, type ArtKind } from "@/components/site/product-art";
+import { Labelled, Toggle } from "@/demos/controls";
 
 /**
  * Demo fixtures for the preview routes. Deliberately not part of any registry
@@ -97,14 +98,6 @@ export function PriceTagDemo() {
   );
 }
 
-function Labelled({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="ec-eyebrow mb-3 text-muted-foreground">{label}</p>
-      {children}
-    </div>
-  );
-}
 
 export function ProductCardDemo() {
   return (
@@ -148,29 +141,6 @@ export function ProductGridDemo() {
   );
 }
 
-function Toggle({
-  on,
-  onClick,
-  children,
-}: {
-  on: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={on}
-      className={
-        "ec-eyebrow ec-rule border px-2.5 py-1.5 transition-colors " +
-        (on ? "bg-primary text-primary-foreground" : "hover:bg-secondary")
-      }
-    >
-      {children}
-    </button>
-  );
-}
 
 export function OrderSummaryDemo() {
   const [code, setCode] = React.useState<string | null>(null);

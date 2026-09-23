@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "empty-results",
+      "type": "registry:component",
+      "title": "Empty Results",
+      "description": "A no-match state that names the filters that emptied the grid, offers the single change that brings the most back, and lets shoppers remove filters one at a time. Left-aligned, never centred.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "empty-results.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/empty-results.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing", "empty-state"]
+    }
+  ]
+}

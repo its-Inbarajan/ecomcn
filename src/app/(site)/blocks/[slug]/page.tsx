@@ -6,8 +6,9 @@ import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { BlockPreview } from "@/components/site/block-preview";
 import { CodeViewer } from "@/components/site/code-viewer";
 import { InstallSteps } from "@/components/site/install-steps";
-import { BLOCKS } from "@/lib/blocks";
+import { BLOCKS, EXAMPLES } from "@/lib/blocks";
 import { extractPropsInterfaces, loadRegistryItem } from "@/lib/registry-source";
+import { USAGE } from "@/lib/usage";
 
 export const dynamicParams = false;
 
@@ -40,6 +41,15 @@ export default async function BlockPage({
   const { slug } = await params;
   const block = shipped.find((b) => b.slug === slug);
   const item = loadRegistryItem(slug);
+  // A block marked shipped with no registry data behind it means a stale
+  // src/lib/registry-data.json, not a missing page. Say so in development
+  // instead of rendering a 404 that sends you looking in the wrong place.
+  if (block && !item && process.env.NODE_ENV !== "production") {
+    throw new Error(
+      `"${slug}" is shipped in src/lib/blocks.ts but missing from src/lib/registry-data.json. ` +
+        "Run `pnpm sync`, or restart `pnpm dev` (it re-syncs on every registry change).",
+    );
+  }
   if (!block || !item) notFound();
 
   const index = shipped.findIndex((b) => b.slug === slug);
@@ -47,6 +57,8 @@ export default async function BlockPage({
   const next = shipped[index + 1];
 
   const props = item.files.flatMap((file) => extractPropsInterfaces(file.content));
+  const usage = USAGE[slug] ?? [];
+  const example = EXAMPLES.find((e) => e.slug === block.example);
 
   return (
     <main className="mx-auto w-full max-w-[1180px] flex-1 px-5 py-12 sm:px-8">
@@ -80,6 +92,17 @@ export default async function BlockPage({
 
           <BlockPreview slug={slug} title={block.title} />
 
+          {usage.length > 0 && (
+            <section>
+              <h2 className="ec-display mb-4 text-3xl">Usage</h2>
+              <div className="space-y-4">
+                {usage.map((snippet) => (
+                  <CodeViewer key={snippet.label} label={snippet.label} code={snippet.code} maxHeight={false} />
+                ))}
+              </div>
+            </section>
+          )}
+
           {props.length > 0 && (
             <section>
               <h2 className="ec-display mb-3 text-3xl">Props</h2>
@@ -110,6 +133,18 @@ export default async function BlockPage({
             <Note label="Design decision" body={block.designNote} />
           )}
           {block.hardPart && <Note label="The hard part" body={block.hardPart} accent />}
+
+          {example && (
+            <Link
+              href={`/examples/${example.slug}`}
+              className="ec-rule group block border p-4 transition-colors hover:bg-secondary/60"
+            >
+              <p className="ec-eyebrow text-muted-foreground">See it composed</p>
+              <p className="ec-display mt-1 flex items-center gap-2 text-2xl group-hover:text-brand">
+                {example.title} <ArrowRight className="size-4" aria-hidden />
+              </p>
+            </Link>
+          )}
 
           <Meta label="Registry dependencies">
             {item.registryDependencies.length === 0 ? (

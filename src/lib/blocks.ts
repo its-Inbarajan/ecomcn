@@ -22,7 +22,29 @@ export type Block = {
   designNote?: string;
   /** What most component kits get wrong here. */
   hardPart?: string;
+  /** Slug of a composed example this block appears in. */
+  example?: string;
 };
+
+/** Whole pages built from several blocks — previewed at /examples/<slug>. */
+export type Example = {
+  slug: string;
+  title: string;
+  stage: Stage;
+  summary: string;
+  blocks: string[];
+};
+
+export const EXAMPLES: Example[] = [
+  {
+    slug: "listing-page",
+    title: "Listing page",
+    stage: "Browse",
+    summary:
+      "A collection page built from ecomcn alone: toolbar, URL-driven filters on desktop, a staged sheet on mobile, the grid and a useful empty state.",
+    blocks: ["sort-toolbar", "filter-panel", "filter-sheet", "product-grid", "empty-results", "product-card", "price-tag"],
+  },
+];
 
 export const STAGES: { name: Stage; blurb: string }[] = [
   {
@@ -57,11 +79,11 @@ export const BLOCKS: Block[] = [
 
   // Browse
   { slug: "product-card", title: "Product card", stage: "Browse", kind: "block", status: "shipped", summary: "Badges, compare-at pricing, colour swatches and a keyboard-reachable quick-add.", designNote: "Quick-add slides up from the bottom edge of the image rather than floating over it, so it never covers the product. One link target for the whole card via an ::after overlay on the title anchor — no nested anchors.", hardPart: "Quick-add has to be reachable without a pointer, so it carries focus-visible:translate-y-0 alongside the hover rule. The image arrives as a ReactNode, which is what keeps the block free of next/image."},
-  { slug: "product-grid", title: "Product grid", stage: "Browse", kind: "block", status: "shipped", summary: "Responsive grid with box-matched skeletons, a density switch and an empty state.", designNote: "Column gap is tighter than row gap (20px / 36px), so products group by row the way they do on a page of a printed catalogue rather than reading as a uniform mesh.", hardPart: "Skeletons must match the real card's box exactly or the grid jumps on load — same aspect ratio, same four text bars. A spinner here is always the wrong answer."},
-  { slug: "filter-panel", title: "Faceted filter panel", stage: "Browse", kind: "block", status: "planned", summary: "Applied chips, counts, dual-handle price slider, colour swatches." },
-  { slug: "filter-sheet", title: "Filter sheet", stage: "Browse", kind: "block", status: "planned", summary: "The same facets in a slide-over with a sticky Clear / Show N footer." },
-  { slug: "sort-toolbar", title: "Sort toolbar", stage: "Browse", kind: "component", status: "planned", summary: "Result count, sort select, density toggle, mobile filter trigger." },
-  { slug: "empty-results", title: "Empty results", stage: "Browse", kind: "component", status: "planned", summary: "Names the offending filter and offers the one useful escape." },
+  { slug: "product-grid", title: "Product grid", stage: "Browse", kind: "block", status: "shipped", example: "listing-page", summary: "Responsive grid with box-matched skeletons, a density switch and an empty state.", designNote: "Column gap is tighter than row gap (20px / 36px), so products group by row the way they do on a page of a printed catalogue rather than reading as a uniform mesh.", hardPart: "Skeletons must match the real card's box exactly or the grid jumps on load — same aspect ratio, same four text bars. A spinner here is always the wrong answer."},
+  { slug: "filter-panel", title: "Filter panel", stage: "Browse", kind: "block", status: "shipped", example: "listing-page", summary: "Applied chips, counts, a dual-handle range, swatches and toggles — with state that lives in the URL.", designNote: "Groups are divided by top rules, not boxed, and counts sit right-aligned in tabular figures so the column reads like an index. Swatches always print their name; the selected state adds a check and a heavier border, so colour is never the only signal.", hardPart: "The state belongs in the URL, not in React: deep links, refresh and the Back button are the point of a listing page. A pure parser runs in server components to fetch the right results; useFilterParams drives the client, commits the slider on release rather than per pixel, and never pushes a duplicate history entry." },
+  { slug: "filter-sheet", title: "Filter sheet", stage: "Browse", kind: "block", status: "shipped", example: "listing-page", summary: "The same facets in a slide-over — staged, applied once, with a live “Show N” count.", designNote: "The footer sits outside the scroll area, so its rule runs edge to edge and the primary action never scrolls away. The apply button carries the staged count, so a shopper sees the outcome before committing to it.", hardPart: "Staging. Applying every tap re-fetches the listing behind the sheet; this applies once — on Show or on close — and only if something changed. And it uses a real SheetTrigger: a plain button that flips `open` leaves focus on <body> when the sheet closes." },
+  { slug: "sort-toolbar", title: "Sort toolbar", stage: "Browse", kind: "component", status: "shipped", example: "listing-page", summary: "Result count, native sort select, density switch and a slot for the mobile filter trigger.", designNote: "Hairlines above and below and nothing else — it reads as the masthead rule of the listing, not a floating control bar. Sort is a native select on purpose: on a phone the OS picker beats any popover we could draw.", hardPart: "Screen-reader users can't see the grid reflow, so the count must be announced — but announcing every intermediate count while someone clicks through filters is noise. The live region stays silent on first render and while loading, then speaks once when results settle." },
+  { slug: "empty-results", title: "Empty results", stage: "Browse", kind: "component", status: "shipped", example: "listing-page", summary: "Names the filters that emptied the grid and offers the one change that brings the most back.", designNote: "Left-aligned: eyebrow, headline, one primary action, then the filters as removable chips. A centred icon-and-sentence empty state is the most reliable tell of a generated interface.", hardPart: "Being specific. “No results” is a dead end; “Nothing matches Sage and Up to $50 — remove ‘Up to $50’ to see 4” is a detour. The block takes that suggestion as data, so the count can come from your search backend." },
 
   // Product
   { slug: "product-gallery", title: "Product gallery", stage: "Product", kind: "block", status: "planned", summary: "Thumbnail rail, counter overlay, swipe on mobile." },

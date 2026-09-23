@@ -1,0 +1,7 @@
+{
+  "name": "@ecomcn",
+  "homepage": "https://ecomcn.vercel.app",
+  "url": "https://ecomcn.vercel.app/r/{name}.json",
+  "description": "E-commerce blocks for shadcn/ui, organised by the purchase funnel — product cards and grids, URL-driven filters, sort, empty states and the order summary.",
+  "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M3 3h8.4L21 12.6 12.6 21 3 11.4V3Z' stroke='var(--foreground)' stroke-width='1.75' stroke-linejoin='miter'/><circle cx='7.6' cy='7.6' r='1.6' fill='var(--foreground)'/></svg>"
+}

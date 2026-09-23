@@ -84,36 +84,46 @@ Responsive grid wrapper with loading skeletons and a density switch.
   jumps on load. Never a spinner here.
 - Composes: `skeleton`, `@ecomcn/product-card`
 
-### `filter-panel` · block · effort 3
-Applied-filter chips, category checkboxes with counts, dual-handle price slider,
-colour swatches, in-stock switch.
+### `filter-panel` · block · effort 3 · **shipped**
+Applied-filter chips, checkbox lists with counts, a dual-handle range with typed
+inputs, colour swatches and toggles. Ships `lib/filter-params.ts` (pure parse /
+serialise, safe in server components) and `hooks/use-filter-params.ts`.
 - **Design:** groups separated by top rules, not cards. Counts tabular-aligned to
-  the right edge.
+  the right edge. Swatches print their name; selection adds a check and a
+  heavier border.
 - **Hard part:** filter state belongs in the URL, not React state — deep links
-  and back-button behaviour are the whole point of a listing page.
-- Composes: `checkbox`, `slider`, `switch`, `label`
+  and back-button behaviour are the whole point of a listing page. The slider
+  commits on release, and an unchanged state never pushes a history entry.
+- Composes: `checkbox`, `slider`, `switch`, `input`
 
-### `filter-sheet` · block · effort 2
+### `filter-sheet` · block · effort 2 · **shipped**
 The same facets in a left slide-over with a sticky Clear / Show N footer.
-- **Design:** sticky footer flush to the sheet edges via negative margin, so the
-  rule runs full width.
-- **Hard part:** mobile filters should stage changes and apply on close —
-  applying live re-fetches on every tap.
+- **Design:** the footer sits outside the scroll area, so its rule runs full
+  width and the primary action never scrolls away.
+- **Hard part:** mobile filters stage changes and apply once, on Show or on
+  close — applying live re-fetches on every tap. Uses a real `SheetTrigger`
+  (styled with `buttonVariants`, no `asChild`) so focus returns on close in
+  both Radix and Base UI.
 - Composes: `sheet`, `button`, `@ecomcn/filter-panel`
 
-### `sort-toolbar` · component · effort 1
-Result count, sort select, density toggle, mobile filter trigger.
+### `sort-toolbar` · component · effort 1 · **shipped**
+Result count, sort select, density toggle, and a slot for the mobile filter
+trigger.
 - **Design:** bounded top and bottom by hairlines so it reads as a masthead rule
-  across the listing.
-- **Hard part:** announce result-count changes with an `aria-live` region.
-- Composes: `select`, `button`, `@ecomcn/filter-sheet`
+  across the listing. Sort is a native `<select>` — the OS picker beats any
+  popover on a phone.
+- **Hard part:** announce result-count changes with an `aria-live` region —
+  silent on first render and while loading, once per burst of changes.
+- Composes: nothing. The filter trigger is a slot, so installing the toolbar
+  doesn't drag in the whole filter stack.
 
-### `empty-results` · component · effort 1
+### `empty-results` · component · effort 1 · **shipped**
 No-match state that names the offending filters and offers the one useful escape.
 - **Design:** left-aligned, not centred. Centred empty states are the most
   reliable tell of a generated UI.
-- **Hard part:** be specific — "no results" is useless; "no Sage pieces under
-  $80, widening price brings back 31" converts.
+- **Hard part:** be specific — "no results" is useless; "nothing matches “Sage”
+  and “Up to $50” — remove “Up to $50” to see 4" converts. The suggestion is
+  data, so the count can come from your search backend.
 - Composes: `button`
 
 ---
