@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ThemeToggle } from "@/components/site/theme-toggle";
+import { REPO_URL } from "@/lib/site";
 
 const NAV = [
   { href: "/blocks", label: "Blocks" },
@@ -31,12 +32,12 @@ export function SiteHeader() {
               </a>
             ))}
           </nav>
-          {/* <a
-            href="https://github.com/ecomcn/ecomcn"
+          <a
+            href={REPO_URL}
             className="ec-eyebrow ec-rule border px-3 py-2 transition-colors hover:bg-secondary"
           >
             GitHub
-          </a> */}
+          </a>
           <ThemeToggle />
         </div>
       </div>

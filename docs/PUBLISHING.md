@@ -119,28 +119,47 @@ Do both: GitHub on day one, hosted the week you have a docs page worth linking.
 ## Getting into the official Registry Directory
 
 shadcn maintains a directory of community registries. Getting listed is a PR
-against `shadcn-ui/ui`, and there's a bar to clear first.
+against `shadcn-ui/ui` that adds one entry to `apps/v4/registry/directory.json`.
+Once merged, `npx shadcn add @ecomcn/<block>` works with **no** `registry add`
+step — the CLI looks the namespace up in the directory itself.
 
-**Requirements**
+**Requirements, and how ecomcn meets each one**
 
-- Open source and publicly accessible.
-- Valid JSON conforming to the registry and registry-item schemas.
-- The served structure must be **flat**: `/registry.json` and
-  `/<component-name>.json` at the root of the served path.
-- The `files` array in the served catalogue must **not** include a `content`
-  property.
+| Requirement (from the docs) | How it is met | Checked by |
+| --- | --- | --- |
+| 1. Open source and publicly accessible | MIT `LICENSE`; public repo named in `package.json` | `registry:check` (+ GitHub API with `--remote`) |
+| 2. Valid JSON conforming to the registry schema | `shadcn build` output, parsed with `registrySchema` / `registryItemSchema` from `shadcn/schema` | `registry:validate`, `registry:check` |
+| 3. Flat: `/registry.json` and `/<name>.json` at one root | Source uses `include`, but the **served** index is flattened by `shadcn build`; every item lands at `/r/<name>.json` beside `/r/registry.json` | `registry:check` |
+| 4. `files` must NOT include `content` | The served `/r/registry.json` lists paths and targets only; the per-item files carry the source | `registry:check` |
+
+`pnpm registry:check` runs all of that against `public/r` in CI.
+`pnpm registry:check:live` runs it against the deployed site, the way the
+directory's monitor will — including the JSON content type and the
+repository's public flag.
+
+**What happens after you are listed.** Registry Health (experimental) checks
+listed registries hourly (index reachable and schema-valid), daily (a rotating
+sample of items) and weekly (`shadcn add --dry-run` on one item, in a bare
+project using the `radix-vega` style). `pnpm test:install` replays that dry run
+for every item, so a failure shows up in our CI before it shows up in the score.
+
+**The entry.** It lives in [`docs/directory-entry.json`](directory-entry.json)
+and is validated against the directory's own strict schema by
+`registry:check` — `name`, `homepage`, `url` (must contain `{name}`),
+`description`, optional `author`, and an inline SVG `logo` drawn with
+`var(--foreground)` so it follows the directory's theme.
 
 **Steps**
 
 1. Fork and clone `shadcn-ui/ui`.
-2. Add your entry to `apps/v4/registry/directory.json`.
-3. Run `pnpm validate:registries`.
+2. Paste the entry from `docs/directory-entry.json` into
+   `apps/v4/registry/directory.json`.
+3. Run `pnpm validate:registries` there.
 4. Open the PR and wait for review.
 
-**Don't open the PR on day one.** A directory entry pointing at three
-half-finished blocks is a wasted first impression on the one audience that
-matters. Ship the whole v1, write the docs pages, get a screenshot grid into the
-README, then submit.
+**Don't open the PR on day one.** A directory entry pointing at half the funnel
+is a wasted first impression on the one audience that matters. Ship v1, get a
+screenshot grid into the README, then submit — the roadmap has this as M4.
 
 In parallel, list on `registry.directory` and the `awesome-shadcn-ui` repo — in
 practice those send meaningful traffic well before an official listing does.

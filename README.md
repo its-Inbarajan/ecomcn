@@ -68,16 +68,18 @@ npx shadcn@latest add @ecomcn/theme-editorial
 27 blocks across five funnel stages. Full spec with per-block design notes and
 the hard parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 
-| Stage | Blocks |
-| --- | --- |
-| **Discover** | `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip` |
-| **Browse** | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results` |
-| **Product** | `product-gallery` · `price-tag` · `variant-swatches` · `size-guide-dialog` · `product-buy-box` · `product-details-accordion` · `review-summary` · `related-products` |
-| **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `payment-selector` · `address-form` |
-| **Post-purchase** | `order-confirmation` · `order-tracking` |
+| Stage               | Blocks                                                                                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Discover**        | `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip`                                                                       |
+| **Browse**          | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results`                                                                 |
+| **Product**         | `product-gallery` · `price-tag` · `variant-swatches` · `size-guide-dialog` · `product-buy-box` · `product-details-accordion` · `review-summary` · `related-products` |
+| **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `payment-selector` · `address-form`                                                         |
+| **Post-purchase**   | `order-confirmation` · `order-tracking`                                                                                                                              |
 
-In this scaffold: `price-tag`, `product-card`, `product-grid`, `order-summary`,
-`theme-editorial`.
+Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
+`filter-panel`, `filter-sheet`, `sort-toolbar`, `empty-results` — plus
+`price-tag`, `order-summary` and `theme-editorial`. See them composed into one
+listing page at <https://ecomcn.vercel.app/examples/listing-page>.
 
 ## Repo layout
 
@@ -87,7 +89,8 @@ src/registry/ecomcn/<block>/
   registry.json                     one item file per block
   <block>.tsx                       the source that gets copied
 src/lib/utils.ts                    cn()
-scripts/verify-install.mjs          installs every block into a clean app
+scripts/verify-install.mjs          installs every block into clean Base UI + Radix apps
+scripts/check-registry.mjs          the Registry Directory requirements, as checks
 docs/                               catalogue, design rules, publishing guide
 .github/workflows/registry.yml      validate → build → typecheck → install test
 ```
@@ -98,14 +101,15 @@ docs/                               catalogue, design rules, publishing guide
 pnpm install
 pnpm registry:validate     # schema, duplicate names, include paths, missing files
 pnpm registry:build        # emits public/r/*.json
-pnpm dev                   # serves http://localhost:3000/r/product-card.json
+pnpm registry:check        # rebuilds public/r, then checks the directory requirements
+pnpm dev                   # site + docs; re-syncs the registry mirrors on every change
 pnpm test:install          # installs everything into a throwaway app and compiles
 ```
 
 Then install into a scratch project and see what an adopter sees:
 
 ```bash
-npx shadcn@latest add http://localhost:3000/r/product-card.json
+npx shadcn@latest add https://localhost:3000/r/product-card.json
 ```
 
 ## Contributing

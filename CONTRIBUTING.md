@@ -11,9 +11,9 @@ stage, the states the block must cover, and the hard part. If a maintainer
 can't answer "what does a store have to build today without this?", the block
 doesn't belong in v1.
 
-## The six rules
+## The rules
 
-Every block in this registry follows all six. A PR that breaks one gets a
+Every block in this registry follows all of them. A PR that breaks one gets a
 review comment pointing at this section.
 
 1. **Never hardcode currency.** Take `currency` and `locale` props and go
@@ -35,6 +35,12 @@ review comment pointing at this section.
    `next/navigation` inside `src/registry/**` — a block has to compile in a
    Vite or React Router project too. Take an image or link element as a prop.
    This one is enforced by ESLint, not just asked for.
+8. **Use only the primitive API that Radix and Base UI share.** shadcn/ui now
+   ships both, and `shadcn init --defaults` picks Base UI. So: no `asChild`
+   (style a `SheetTrigger` with `buttonVariants()` instead), no
+   primitive-specific callbacks like `onValueCommit`, and handlers typed to
+   accept either library's arguments. `pnpm test:install` compiles every block
+   against both; React Aria is out of scope.
 
 ## Styling
 
@@ -52,8 +58,8 @@ review comment pointing at this section.
 - [ ] Path added to the root `registry.json` `include` array
 - [ ] `registryDependencies` lists every primitive the block imports
 - [ ] `target` puts files under `components/ecomcn/…`
-- [ ] `pnpm registry:validate` and `pnpm lint` pass
-- [ ] Installed into a blank Next.js app and compiled (`pnpm test:install`)
+- [ ] `pnpm registry:validate`, `pnpm registry:check` and `pnpm lint` pass
+- [ ] Installed into blank Base UI and Radix apps and compiled (`pnpm test:install`)
 - [ ] Keyboard path verified; no colour-only state
 - [ ] Loading and empty states included
 - [ ] Docs page added with a live preview and the props table

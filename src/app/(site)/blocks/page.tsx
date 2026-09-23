@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 
-import { BLOCKS, STAGES, byStage } from "@/lib/blocks";
+import { BLOCKS, EXAMPLES, STAGES, byStage } from "@/lib/blocks";
 
 export const metadata: Metadata = {
   title: "Blocks",
@@ -38,6 +38,24 @@ export default function BlocksIndex() {
                 {stage.blurb}
               </p>
             </div>
+
+            {EXAMPLES.filter((e) => e.stage === stage.name).map((example) => (
+              <Link
+                key={example.slug}
+                href={`/examples/${example.slug}`}
+                className="group mb-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-l-2 border-l-brand py-1 pl-4"
+              >
+                <span>
+                  <span className="ec-eyebrow text-brand">Composed example</span>
+                  <span className="ec-display ml-3 text-2xl group-hover:text-brand">
+                    {example.title}
+                  </span>
+                </span>
+                <span className="ec-eyebrow flex items-center gap-1.5 text-muted-foreground group-hover:text-foreground">
+                  {example.blocks.length} blocks, one page <ArrowRight className="size-3" aria-hidden />
+                </span>
+              </Link>
+            ))}
 
             <ul className="ec-rule grid border-t border-l sm:grid-cols-2 lg:grid-cols-3">
               {byStage(stage.name).map((block) => {

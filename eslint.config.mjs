@@ -22,6 +22,7 @@ const eslintConfig = defineConfig([
     // which is what actually gets linted.
     "src/components/ecomcn/**",
     "src/hooks/use-*.ts",
+    "src/lib/filter-params.ts",
   ]),
 
   {

@@ -6,6 +6,10 @@
     "src/registry/ecomcn/price-tag/registry.json",
     "src/registry/ecomcn/product-card/registry.json",
     "src/registry/ecomcn/product-grid/registry.json",
+    "src/registry/ecomcn/sort-toolbar/registry.json",
+    "src/registry/ecomcn/empty-results/registry.json",
+    "src/registry/ecomcn/filter-panel/registry.json",
+    "src/registry/ecomcn/filter-sheet/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],
