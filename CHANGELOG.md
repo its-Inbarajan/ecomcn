@@ -7,6 +7,25 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `load-more` — progress rule, announced "Showing 24 of 312", button / hybrid /
+  infinite modes, focus moved to the first new item, error with retry.
+- `product-quick-view` — the card image morphs into a native `<dialog>` and back
+  (Motion `layoutId`). Adds `motion` as a dependency **for this block only**.
+- Compound parts for `filter-panel` (`FilterPanelHeader`, `FilterPanelChips`,
+  `FilterPanelFacet`, `useFilterPanel()`) and `product-card`
+  (`ProductCardMedia`, `ProductCardImage`, `ProductCardBadge`,
+  `ProductCardQuickAdd`, `ProductCardBody`, `ProductCardBrand`,
+  `ProductCardTitle`, `ProductCardPrice`, `ProductCardMeta`,
+  `ProductCardSwatches`, `ProductCardRating`, `useProductCard()`).
+  **Backwards compatible:** with no children both render exactly as before.
+- `product-card`: colours can carry their own `image`, shown when selected;
+  controlled `colorIndex` / `defaultColorIndex`.
+- `product-grid`: `renderCard` for composed cards, `loadingMore` /
+  `loadingMoreCount` to append skeletons.
+- `filter-panel`: uncontrolled use via `defaultValue`. `filter-sheet` accepts
+  FilterPanel parts as children and stages them.
+- Docs pages list a compound block's parts and hook, and show its context
+  interface next to its props.
 - **Browse stage complete.** `filter-panel` (with `lib/filter-params.ts` and
   `hooks/use-filter-params.ts` — filter state in the URL, a pure parser for
   server components), `filter-sheet` (staged changes, applied once),

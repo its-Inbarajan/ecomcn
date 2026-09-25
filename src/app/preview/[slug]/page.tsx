@@ -11,6 +11,8 @@ import {
   FilterPanelDemo,
   FilterSheetDemo,
   ListingPageDemo,
+  LoadMoreDemo,
+  ProductQuickViewDemo,
   SortToolbarDemo,
 } from "@/demos/browse";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
@@ -49,6 +51,10 @@ export default async function PreviewPage({
       return <FilterPanelDemo />;
     case "filter-sheet":
       return <FilterSheetDemo />;
+    case "load-more":
+      return <LoadMoreDemo />;
+    case "product-quick-view":
+      return <ProductQuickViewDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":

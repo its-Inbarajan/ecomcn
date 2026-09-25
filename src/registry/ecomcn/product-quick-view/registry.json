@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "product-quick-view",
+      "type": "registry:block",
+      "title": "Product Quick View",
+      "description": "Quick view with a shared-element morph: the card image grows into the dialog and shrinks back on close. Motion's layoutId drives the morph, a native <dialog> does the modal work, focus returns to the trigger, and reduced-motion users get no movement. The one ecomcn block that depends on motion — opt-in.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["motion", "lucide-react"],
+      "registryDependencies": ["button", "@ecomcn/price-tag", "@ecomcn/product-card"],
+      "files": [
+        {
+          "path": "product-quick-view.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/product-quick-view.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing", "animation"]
+    }
+  ]
+}

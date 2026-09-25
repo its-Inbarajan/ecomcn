@@ -56,7 +56,8 @@ npx shadcn@latest add @ecomcn/theme-editorial
 
 ## What you get
 
-- **Zero runtime dependencies** beyond `lucide-react` where icons are used
+- **Zero runtime dependencies** beyond `lucide-react` where icons are used —
+  `product-quick-view` is the one opt-in exception, for `motion`
 - **`Intl.NumberFormat` pricing** with `currency` and `locale` props on every
   money-rendering block
 - **Loading, empty, out-of-stock and error states** shipped in the same file
@@ -65,19 +66,20 @@ npx shadcn@latest add @ecomcn/theme-editorial
 
 ## The v1 catalogue
 
-27 blocks across five funnel stages. Full spec with per-block design notes and
+29 blocks across five funnel stages. Full spec with per-block design notes and
 the hard parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 
 | Stage               | Blocks                                                                                                                                                               |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Discover**        | `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip`                                                                       |
-| **Browse**          | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results`                                                                 |
+| **Browse**          | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results` · `load-more` · `product-quick-view`                            |
 | **Product**         | `product-gallery` · `price-tag` · `variant-swatches` · `size-guide-dialog` · `product-buy-box` · `product-details-accordion` · `review-summary` · `related-products` |
 | **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `payment-selector` · `address-form`                                                         |
 | **Post-purchase**   | `order-confirmation` · `order-tracking`                                                                                                                              |
 
 Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
-`filter-panel`, `filter-sheet`, `sort-toolbar`, `empty-results` — plus
+`filter-panel`, `filter-sheet`, `sort-toolbar`, `empty-results`, `load-more` and
+`product-quick-view` — plus
 `price-tag`, `order-summary` and `theme-editorial`. See them composed into one
 listing page at <https://ecomcn.vercel.app/examples/listing-page>.
 
@@ -121,3 +123,8 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) — especially the six rules. Open a
 
 MIT. Anything more restrictive and teams won't clear it with legal, which
 defeats the point.
+
+The product photos on the docs site are free [Unsplash](https://unsplash.com)
+photos, used under the [Unsplash License](https://unsplash.com/license) and
+loaded from Unsplash's CDN. They are not in this repo, not in any registry
+item, and not covered by the MIT licence.

@@ -5,10 +5,16 @@
       "name": "filter-sheet",
       "type": "registry:block",
       "title": "Filter Sheet",
-      "description": "The filter panel in a slide-over for small screens. Changes are staged and applied once — on Show or on close — with a live result count on the button and focus returned to the trigger.",
+      "description": "The filter panel in a slide-over for small screens. Changes are staged and applied once — on Show or on close — with a live result count on the button and focus returned to the trigger. Accepts the same FilterPanel parts as children, so a custom layout stages too.",
       "author": "ecomcn <hello@ecomcn.dev>",
-      "dependencies": ["lucide-react"],
-      "registryDependencies": ["button", "sheet", "@ecomcn/filter-panel"],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "sheet",
+        "@ecomcn/filter-panel"
+      ],
       "files": [
         {
           "path": "filter-sheet.tsx",
@@ -16,7 +22,13 @@
           "target": "components/ecomcn/filter-sheet.tsx"
         }
       ],
-      "categories": ["ecommerce", "catalog", "listing", "filters", "mobile"]
+      "categories": [
+        "ecommerce",
+        "catalog",
+        "listing",
+        "filters",
+        "mobile"
+      ]
     }
   ]
 }

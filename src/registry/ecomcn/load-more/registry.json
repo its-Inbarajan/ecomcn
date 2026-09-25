@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "load-more",
+      "type": "registry:component",
+      "title": "Load More",
+      "description": "Progressive loading for a product list: a progress rule and “Showing 24 of 312” count, a Load more button, optional hybrid or infinite auto-loading, focus moved to the first new item, and an announced count. The pattern Baymard found performs best, in one component.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "load-more.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/load-more.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "catalog", "listing", "pagination"]
+    }
+  ]
+}

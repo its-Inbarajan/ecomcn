@@ -43,8 +43,8 @@ export default async function ExamplePage({
     .filter((b) => b !== undefined);
 
   // Registry dependencies pull the rest in: filter-sheet brings filter-panel,
-  // product-grid brings product-card and price-tag.
-  const install = `npx shadcn@latest add ${["sort-toolbar", "filter-sheet", "product-grid", "empty-results"]
+  // product-grid and product-quick-view bring product-card and price-tag.
+  const install = `npx shadcn@latest add ${["sort-toolbar", "filter-sheet", "product-grid", "product-quick-view", "load-more", "empty-results"]
     .map((s) => `${NAMESPACE}/${s}`)
     .join(" ")}`;
 
@@ -92,9 +92,10 @@ export default async function ExamplePage({
         </ul>
         <p className="mt-4 max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
           Try it at the mobile width: the sidebar panel gives way to the filter
-          sheet, which stages changes and applies them once. Every filter is in
-          the preview frame&apos;s URL — the browser&apos;s Back button undoes them one
-          at a time.
+          sheet, which stages changes and applies them once. Every filter — and
+          how many pages are loaded — is in the preview frame&apos;s URL, and the
+          browser&apos;s Back button undoes filters one at a time. Open a quick view
+          to see the card image morph into the dialog.
         </p>
       </section>
     </main>

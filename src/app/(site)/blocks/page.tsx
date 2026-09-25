@@ -6,8 +6,7 @@ import { BLOCKS, EXAMPLES, STAGES, byStage } from "@/lib/blocks";
 
 export const metadata: Metadata = {
   title: "Blocks",
-  description:
-    "All 27 ecomcn blocks, organised by the decision a buyer is making — from landing surface to order tracking.",
+  description: `All ${BLOCKS.length} ecomcn blocks, organised by the decision a buyer is making — from landing surface to order tracking.`,
 };
 
 export default function BlocksIndex() {

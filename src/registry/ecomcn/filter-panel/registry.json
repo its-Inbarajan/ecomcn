@@ -5,10 +5,17 @@
       "name": "filter-panel",
       "type": "registry:block",
       "title": "Filter Panel",
-      "description": "Faceted filters with state that lives in the URL: applied-filter chips, checkbox lists with counts, a dual-handle range with typed inputs, colour swatches and toggles. Ships a pure parser for server components and a useFilterParams hook for the client.",
+      "description": "Faceted filters with state that lives in the URL: applied-filter chips, checkbox lists with counts, a dual-handle range with typed inputs, colour swatches and toggles. Compound: one tag for the default layout, or FilterPanelHeader, FilterPanelChips and FilterPanelFacet in any order via useFilterPanel(). Ships a pure parser for server components and a useFilterParams hook.",
       "author": "ecomcn <hello@ecomcn.dev>",
-      "dependencies": ["lucide-react"],
-      "registryDependencies": ["checkbox", "input", "slider", "switch"],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "checkbox",
+        "input",
+        "slider",
+        "switch"
+      ],
       "files": [
         {
           "path": "filter-panel.tsx",
@@ -26,7 +33,12 @@
           "target": "hooks/use-filter-params.ts"
         }
       ],
-      "categories": ["ecommerce", "catalog", "listing", "filters"]
+      "categories": [
+        "ecommerce",
+        "catalog",
+        "listing",
+        "filters"
+      ]
     }
   ]
 }

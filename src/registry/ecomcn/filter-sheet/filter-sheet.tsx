@@ -22,7 +22,9 @@ import {
 import { cn } from "@/lib/utils"
 
 export interface FilterSheetProps
-  extends Pick<FilterPanelProps, "facets" | "value" | "currency" | "locale" | "loading"> {
+  extends Pick<FilterPanelProps, "facets" | "currency" | "locale" | "loading"> {
+  /** The applied filters — usually straight from `useFilterParams`. */
+  value: FilterState
   /** Called once with the staged filters when the sheet applies — never per tap. */
   onValueChange: (next: FilterState) => void
   /** Result count for the *staged* filters, shown on the apply button. */
@@ -44,6 +46,12 @@ export interface FilterSheetProps
   className?: string
   contentClassName?: string
   noun?: { one: string; other: string }
+  /**
+   * A custom panel layout built from FilterPanel parts. They render inside a
+   * FilterPanel that holds the *staged* value, so the same layout you use on
+   * desktop stages here without any changes.
+   */
+  children?: React.ReactNode
 }
 
 export function FilterSheet({
@@ -63,6 +71,7 @@ export function FilterSheet({
   className,
   contentClassName,
   noun = { one: "result", other: "results" },
+  children,
 }: FilterSheetProps) {
   const [open, setOpen] = React.useState(false)
   // Changes made inside the sheet are staged here, not pushed to the URL:
@@ -145,7 +154,9 @@ export function FilterSheet({
             currency={currency}
             locale={locale}
             loading={loading}
-          />
+          >
+            {children}
+          </FilterPanel>
         </div>
 
         {/* Outside the scroller, so the footer rule runs edge to edge and the
