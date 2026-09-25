@@ -1,0 +1,1 @@
+ecomcn — the e-commerce blocks shadcn doesn't ship. An open-source shadcn/ui registry.
