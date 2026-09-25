@@ -9,6 +9,7 @@ import { InstallSteps } from "@/components/site/install-steps";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
 import { extractExports, extractPropsInterfaces, loadRegistryItem } from "@/lib/registry-source";
 import { USAGE } from "@/lib/usage";
+import { socialMetadata } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -29,7 +30,7 @@ export async function generateMetadata({
   return {
     title: block.title,
     description: block.summary,
-    openGraph: { title: `${block.title} · ecomcn`, description: block.summary },
+    ...socialMetadata(`${block.title} · ecomcn`, block.summary),
   };
 }
 

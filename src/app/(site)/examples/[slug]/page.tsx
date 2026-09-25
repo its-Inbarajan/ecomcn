@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { BlockPreview } from "@/components/site/block-preview";
 import { InstallCommand } from "@/components/site/copy-button";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
-import { NAMESPACE, registerCommand } from "@/lib/site";
+import { NAMESPACE, registerCommand, socialMetadata } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -25,7 +25,7 @@ export async function generateMetadata({
   return {
     title: example.title,
     description: example.summary,
-    openGraph: { title: `${example.title} · ecomcn`, description: example.summary },
+    ...socialMetadata(`${example.title} · ecomcn`, example.summary),
   };
 }
 
