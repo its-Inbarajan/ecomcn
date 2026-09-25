@@ -3,78 +3,30 @@
 import * as React from "react";
 
 import { PriceTag } from "@/components/ecomcn/price-tag";
-import { ProductCard, type ProductCardProduct } from "@/components/ecomcn/product-card";
+import {
+  ProductCard,
+  ProductCardBody,
+  ProductCardBrand,
+  ProductCardImage,
+  ProductCardMedia,
+  ProductCardPrice,
+  ProductCardQuickAdd,
+  ProductCardSwatches,
+  ProductCardTitle,
+  useProductCard,
+} from "@/components/ecomcn/product-card";
 import { ProductGrid } from "@/components/ecomcn/product-grid";
 import { OrderSummary } from "@/components/ecomcn/order-summary";
-import { ProductArt, type ArtKind } from "@/components/site/product-art";
 import { Labelled, Toggle } from "@/demos/controls";
+import { PRODUCTS } from "@/demos/listing-data";
 
 /**
  * Demo fixtures for the preview routes. Deliberately not part of any registry
  * item — adopters get the block, never our sample data.
  */
 
-const art = (kind: ArtKind) => (
-  <ProductArt
-    kind={kind}
-    className="size-full transition-transform duration-700 group-hover:scale-[1.04]"
-  />
-);
-
-const CATALOGUE: (Omit<ProductCardProduct, "image"> & { art: ArtKind })[] = [
-  {
-    id: "p1", name: "Field Tote 24L", href: "#", brand: "Aarhus Supply",
-    price: 195, compareAt: 240, rating: 4.7, reviewCount: 1022, art: "tote",
-    colors: [
-      { name: "Canvas", hex: "#cbbfa6" },
-      { name: "Olive", hex: "#5d6446" },
-      { name: "Black", hex: "#1c1b1a" },
-    ],
-  },
-  {
-    id: "p2", name: "Ora Table Lamp", href: "#", brand: "Mensa",
-    price: 310, badge: "New", rating: 4.4, reviewCount: 431, art: "lamp",
-    colors: [
-      { name: "Chalk", hex: "#e7e3da" },
-      { name: "Ink", hex: "#232120" },
-      { name: "Sage", hex: "#7d8b7a" },
-    ],
-  },
-  {
-    id: "p3", name: "Kiln Mug, Set of 4", href: "#", brand: "Mira Studio",
-    price: 84, rating: 4.8, reviewCount: 596, art: "mug",
-    colors: [
-      { name: "Terracotta", hex: "#b5563a" },
-      { name: "Bone", hex: "#e2dbcd" },
-    ],
-  },
-  {
-    id: "p4", name: "Vester Chelsea Boot", href: "#", brand: "Lindqvist",
-    price: 420, badge: "Restocked", rating: 4.5, reviewCount: 307, art: "boot",
-    colors: [
-      { name: "Espresso", hex: "#4a332a" },
-      { name: "Black", hex: "#1c1b1a" },
-    ],
-  },
-  {
-    id: "p5", name: "Bellwether Carafe", href: "#", brand: "Nordhaus",
-    price: 128, compareAt: 165, rating: 4.6, reviewCount: 214, art: "bottle",
-    colors: [
-      { name: "Smoke", hex: "#6b6a66" },
-      { name: "Amber", hex: "#b4762f" },
-    ],
-  },
-  {
-    id: "p6", name: "Halden Lounge Chair", href: "#", brand: "Verk",
-    price: 1240, rating: 4.9, reviewCount: 88, art: "chair",
-    colors: [
-      { name: "Oak", hex: "#c8a173" },
-      { name: "Walnut", hex: "#5b3d28" },
-    ],
-  },
-];
-
-const withImages = CATALOGUE.map(({ art: kind, ...p }) => ({ ...p, image: art(kind) }));
+/** The first six products of the Browse catalogue, photos included. */
+const GRID = PRODUCTS.slice(0, 6);
 
 export function PriceTagDemo() {
   return (
@@ -99,12 +51,47 @@ export function PriceTagDemo() {
 }
 
 
+/** A custom part: reads the shared colour through useProductCard(). */
+function ColourName() {
+  const { product, color } = useProductCard();
+  if (!color) return null;
+  return (
+    <p className="mt-2 text-[12px] text-muted-foreground">
+      {color.name}
+      <span className="opacity-60"> · {product.colors?.length} colourways</span>
+    </p>
+  );
+}
+
 export function ProductCardDemo() {
+  const [a, b] = [PRODUCTS[0], PRODUCTS[1]];
   return (
     <div className="mx-auto grid max-w-2xl grid-cols-2 gap-x-5 gap-y-9">
-      {withImages.slice(0, 2).map((product) => (
-        <ProductCard key={product.id} product={product} onQuickAdd={() => {}} />
-      ))}
+      <div>
+        <p className="ec-eyebrow mb-3 text-muted-foreground">Default — one tag</p>
+        <ProductCard product={a} onQuickAdd={() => {}} />
+      </div>
+      <div>
+        <p className="ec-eyebrow mb-3 text-muted-foreground">Composed from parts</p>
+        <ProductCard product={b} onQuickAdd={() => {}}>
+          <ProductCardMedia>
+            <ProductCardImage />
+            <ProductCardQuickAdd />
+          </ProductCardMedia>
+          <ProductCardBody>
+            <ProductCardTitle className="text-base" />
+            <ProductCardBrand className="mt-1" />
+            <ColourName />
+            <ProductCardSwatches className="mt-2" />
+            <ProductCardPrice className="mt-3" />
+          </ProductCardBody>
+        </ProductCard>
+      </div>
+      <p className="col-span-2 text-[12.5px] leading-relaxed text-muted-foreground">
+        Pick a swatch: the image changes with it. The swatches and the image are
+        separate parts that never talk to each other — both read the selected
+        colour from the card&apos;s context.
+      </p>
     </div>
   );
 }
@@ -131,7 +118,7 @@ export function ProductGridDemo() {
       </div>
 
       <ProductGrid
-        products={mode === "empty" ? [] : withImages}
+        products={mode === "empty" ? [] : GRID}
         loading={mode === "loading"}
         density={density}
         onQuickAdd={() => {}}

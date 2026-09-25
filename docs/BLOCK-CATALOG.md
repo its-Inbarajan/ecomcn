@@ -1,6 +1,6 @@
 # ecomcn — v1 block catalogue
 
-27 blocks, five stages, one purchase funnel. Every block maps to a decision a
+29 blocks, five stages, one purchase funnel. Every block maps to a decision a
 buyer makes. That is the organising principle — not "cards, forms, navigation",
 which is how generic kits are structured and why nobody can tell them apart.
 
@@ -66,18 +66,23 @@ Full-bleed campaign image with positioned hotspots opening a product hover card.
 
 The listing page. Where most of a store's revenue is actually decided.
 
-### `product-card` · component · effort 2
+### `product-card` · component · effort 2 · **shipped**
 The workhorse. Image, badges, brand, name, price with compare-at, colour
-swatches, rating, slide-up quick-add.
+swatches that swap the image, rating, slide-up quick-add. **Compound:** one tag
+for the default layout, or `ProductCardMedia` / `ProductCardBody` and their
+parts in any order, all reading `useProductCard()`.
 - **Design:** quick-add slides up from the bottom edge of the image rather than
   floating over it, so it never covers the product.
 - **Hard part:** quick-add must be keyboard-reachable
   (`focus-visible:translate-y-0`), and the card needs one link target — an
-  `::after` overlay on the title anchor, not nested anchors.
-- Composes: `button`, `badge`, `@ecomcn/price-tag`
+  `::after` overlay on the title anchor, not nested anchors. The parts share one
+  context (selected colour, quick-add state) so a swatch can swap the image
+  without either part knowing about the other.
+- Composes: `button`, `@ecomcn/price-tag`
 
-### `product-grid` · block · effort 1
-Responsive grid wrapper with loading skeletons and a density switch.
+### `product-grid` · block · effort 1 · **shipped**
+Responsive grid wrapper with loading skeletons, appended skeletons while more
+results load, a density switch and a `renderCard` slot for composed cards.
 - **Design:** column gap tighter than row gap (20/36px) — products group by row
   the way they do on a page of a printed catalogue.
 - **Hard part:** skeletons must match the real card's box exactly or the grid
@@ -95,6 +100,28 @@ serialise, safe in server components) and `hooks/use-filter-params.ts`.
   and back-button behaviour are the whole point of a listing page. The slider
   commits on release, and an unchanged state never pushes a history entry.
 - Composes: `checkbox`, `slider`, `switch`, `input`
+
+### `load-more` · component · effort 2 · **shipped**
+Progress rule, "Showing 24 of 312", a Load more button, and optional hybrid or
+infinite loading.
+- **Design:** the top hairline is the progress bar, filled to the share already
+  shown. Count left, action right — it reads as the foot of the listing.
+- **Hard part:** Baymard found Load more beats pagination and pure infinite
+  scroll, but only with the details: focus moves to the first new product after
+  a click, the new count is announced, `?page=3` restores the same depth, and
+  hybrid mode auto-loads only after the shopper has asked once.
+- Composes: `button`
+
+### `product-quick-view` · block · effort 2 · **shipped** · depends on `motion`
+The card's image morphs into a dialog and back — a shared-element transition.
+- **Design:** one morph, used where it carries meaning; ease-out with no bounce.
+  The panel surface fades on its own layer, so the moving image is never inside
+  something that is also fading.
+- **Hard part:** the dialog, not the morph — native `<dialog>` for the top
+  layer and an inert page, Escape that plays the closing morph, focus returned
+  only after the image lands, no movement at all under reduced motion. The only
+  block that depends on `motion`, so it is opt-in.
+- Composes: `button`, `@ecomcn/price-tag`, `@ecomcn/product-card`
 
 ### `filter-sheet` · block · effort 2 · **shipped**
 The same facets in a left slide-over with a sticky Clear / Show N footer.

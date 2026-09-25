@@ -5,9 +5,13 @@
       "name": "product-grid",
       "type": "registry:block",
       "title": "Product Grid",
-      "description": "Responsive catalogue grid with box-matched loading skeletons, a density switch and a left-aligned empty state that names the offending filter.",
+      "description": "Responsive catalogue grid with box-matched loading skeletons, appended skeletons while more results load, a density switch, a renderCard slot for composed cards, and a left-aligned empty state.",
       "author": "ecomcn <hello@ecomcn.dev>",
-      "registryDependencies": ["skeleton", "button", "@ecomcn/product-card"],
+      "registryDependencies": [
+        "skeleton",
+        "button",
+        "@ecomcn/product-card"
+      ],
       "files": [
         {
           "path": "product-grid.tsx",
@@ -15,7 +19,11 @@
           "target": "components/ecomcn/product-grid.tsx"
         }
       ],
-      "categories": ["ecommerce", "catalog", "listing"]
+      "categories": [
+        "ecommerce",
+        "catalog",
+        "listing"
+      ]
     }
   ]
 }

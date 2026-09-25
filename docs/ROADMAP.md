@@ -106,6 +106,21 @@ filters on desktop and mobile, and a useful empty state.
 
 ---
 
+## Milestone 1.5 — Composition & motion (4 evenings) — **done**
+
+Added between M1 and M2 so the Product milestone starts on the right API.
+
+| Work | Result |
+| --- | --- |
+| Compound `filter-panel` and `product-card` | Strict context hooks (`useFilterPanel`, `useProductCard`), flat part exports, one-tag default kept |
+| `load-more` | Button / hybrid / infinite, focus to the first new item, `?page=` depth |
+| `product-quick-view` | Motion `layoutId` morph from card to native `<dialog>`; the one `motion` dependency |
+
+**Carry into M2:** design `product-buy-box` compound from the start — gallery,
+swatches, price and add-to-bag all read the selected variant from one context.
+
+---
+
 ## Milestone 2 — Product complete (10 evenings · ~5 weeks)
 
 The detail page. `product-buy-box` is the flagship — the block people
@@ -203,7 +218,9 @@ checklist that keeps quality from drifting when the sessions are far apart.
 - [ ] `registryDependencies` lists **every** primitive the block imports
 - [ ] `target` puts files under `components/ecomcn/…`
 - [ ] Takes `currency` / `locale` props if it renders money
-- [ ] Takes data as props — no `fetch`, no context, no provider
+- [ ] Takes data as props — no `fetch`, no app-level provider. Shared state
+      between a block's own parts lives in a context the block's root renders
+      (CONTRIBUTING rule 9)
 - [ ] Spreads rest props, merges `className` with `cn()`
 - [ ] No state signalled by colour alone
 - [ ] Every hover affordance has a `focus-visible` path

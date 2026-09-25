@@ -222,5 +222,5 @@ fetches server-side.
 | Step 8 | `/blocks/product-card` shows preview + source + install command |
 | Step 10 | A stranger can install a block in one command |
 
-Don't open the shadcn directory PR until step 10 is done for all 27 blocks —
+Don't open the shadcn directory PR until step 10 is done for all 29 blocks —
 see `docs/PUBLISHING.md`.

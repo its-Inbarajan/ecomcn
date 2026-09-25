@@ -7,7 +7,7 @@ import { BlockPreview } from "@/components/site/block-preview";
 import { CodeViewer } from "@/components/site/code-viewer";
 import { InstallSteps } from "@/components/site/install-steps";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
-import { extractPropsInterfaces, loadRegistryItem } from "@/lib/registry-source";
+import { extractExports, extractPropsInterfaces, loadRegistryItem } from "@/lib/registry-source";
 import { USAGE } from "@/lib/usage";
 
 export const dynamicParams = false;
@@ -58,6 +58,12 @@ export default async function BlockPage({
 
   const props = item.files.flatMap((file) => extractPropsInterfaces(file.content));
   const usage = USAGE[slug] ?? [];
+  const exported = item.files
+    .filter((file) => file.type === "registry:component" || file.type === "registry:ui")
+    .map((file) => extractExports(file.content));
+  const parts = exported.flatMap((e) => e.components);
+  const hooks = [...exported, ...item.files.filter((f) => f.type === "registry:hook").map((f) => extractExports(f.content))]
+    .flatMap((e) => e.hooks);
   const example = EXAMPLES.find((e) => e.slug === block.example);
 
   return (
@@ -105,7 +111,9 @@ export default async function BlockPage({
 
           {props.length > 0 && (
             <section>
-              <h2 className="ec-display mb-3 text-3xl">Props</h2>
+              <h2 className="ec-display mb-3 text-3xl">
+                {props.some((p) => p.name.endsWith("ContextValue")) ? "Props & context" : "Props"}
+              </h2>
               <p className="mb-4 max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
                 Read straight out of the source at build time, so this cannot
                 drift from the file you install.
@@ -144,6 +152,23 @@ export default async function BlockPage({
                 {example.title} <ArrowRight className="size-4" aria-hidden />
               </p>
             </Link>
+          )}
+
+          {parts.length > 1 && (
+            <Meta label="Compound parts">
+              <ul className="space-y-1.5">
+                {parts.map((name, i) => (
+                  <li key={name} className="font-mono text-[12px]">
+                    {i === 0 ? name : <span className="text-muted-foreground">{name}</span>}
+                  </li>
+                ))}
+              </ul>
+              {hooks.length > 0 && (
+                <p className="mt-3 font-mono text-[12px] text-brand">
+                  {hooks.map((h) => `${h}()`).join(" · ")}
+                </p>
+              )}
+            </Meta>
           )}
 
           <Meta label="Registry dependencies">

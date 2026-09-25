@@ -3,7 +3,7 @@ import { ArrowDown, ArrowRight, Check } from "lucide-react";
 
 import { InstallCommand } from "@/components/site/copy-button";
 import { LiveDemo } from "@/components/site/live-demo";
-import { ProductArt } from "@/components/site/product-art";
+import { ProductPhoto } from "@/components/site/product-photo";
 import { BLOCKS, DESIGN_RULES, STAGES, byStage, shipped } from "@/lib/blocks";
 import { addCommand, registerCommand } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,14 @@ export default function Home() {
 }
 
 /* ---------------------------------------------------------------- hero --- */
+
+/** Unsplash photos from the demo catalogue: chair, lamp, tote, carafe. */
+const HERO_PHOTOS = [
+  "1580480055273-228ff5388ef8",
+  "1580130281320-0ef0754f2bf7",
+  "1574365569389-a10d488ca3fb",
+  "1647943746660-1640133068d5",
+];
 
 function Hero() {
   return (
@@ -60,9 +68,14 @@ function Hero() {
       </div>
 
       <div className="ec-rule grid grid-cols-2 gap-px self-start border bg-border">
-        {(["chair", "lamp", "tote", "bottle"] as const).map((kind) => (
-          <div key={kind} className="ec-grain aspect-square bg-background">
-            <ProductArt kind={kind} className="size-full" />
+        {HERO_PHOTOS.map((id) => (
+          <div key={id} className="aspect-square bg-background">
+            <ProductPhoto
+              photo={{ id }}
+              aspect="1:1"
+              sizes="(min-width: 1024px) 240px, 50vw"
+              eager
+            />
           </div>
         ))}
       </div>

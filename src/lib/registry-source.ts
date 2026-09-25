@@ -36,13 +36,15 @@ export function loadRegistryItem(name: string): RegistryItem | undefined {
 export type PropsBlock = { name: string; body: string };
 
 /**
- * Pulls every `export interface *Props { … }` straight out of the source.
+ * Pulls every `export interface *Props { … }` (and `*ContextValue`) straight
+ * out of the source.
  * Zero dependencies, cannot drift from the file it documents, and the JSDoc
  * on each prop comes along for free.
  */
 export function extractPropsInterfaces(source: string): PropsBlock[] {
   const out: PropsBlock[] = [];
-  const re = /export interface (\w*Props)\b[^{]*\{/g;
+  // *ContextValue too: for a compound block that is what its hook returns.
+  const re = /export interface (\w*(?:Props|ContextValue))\b[^{]*\{/g;
   let match: RegExpExecArray | null;
 
   while ((match = re.exec(source))) {
@@ -59,4 +61,18 @@ export function extractPropsInterfaces(source: string): PropsBlock[] {
   }
 
   return out;
+}
+
+export type ExportedNames = { components: string[]; hooks: string[] };
+
+/**
+ * The public surface of a block file: its exported components and hooks. For
+ * a compound block that list *is* the API — the root and every part.
+ */
+export function extractExports(source: string): ExportedNames {
+  const names = [...source.matchAll(/^export (?:async )?function (\w+)/gm)].map((m) => m[1]);
+  return {
+    components: names.filter((name) => /^[A-Z]/.test(name)),
+    hooks: names.filter((name) => /^use[A-Z]/.test(name)),
+  };
 }

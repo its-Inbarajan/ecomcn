@@ -41,6 +41,17 @@ review comment pointing at this section.
    primitive-specific callbacks like `onValueCommit`, and handlers typed to
    accept either library's arguments. `pnpm test:install` compiles every block
    against both; React Aria is out of scope.
+9. **Compound blocks own their context.** When parts of a block share state,
+   the root creates the context and renders its own provider — nothing is ever
+   mounted above it by the adopter. Pattern: `createContext<T | null>(null)`,
+   a `useThing()` hook that throws "must be used within `<Thing>`", flat named
+   exports (`ThingHeader`, not `Thing.Header` — a Server Component can't reach
+   into a client module's namespace), `data-slot` on every part, a memoised
+   context value, and the one-tag default layout kept working when no children
+   are passed. Use `<Context.Provider>` so React 18 projects can install.
+10. **Motion is opt-in.** A block may depend on `motion` only when the
+    animation *is* the feature (`product-quick-view`). Everything else animates
+    with CSS. Every animation respects `prefers-reduced-motion`.
 
 ## Styling
 
@@ -62,4 +73,5 @@ review comment pointing at this section.
 - [ ] Installed into blank Base UI and Radix apps and compiled (`pnpm test:install`)
 - [ ] Keyboard path verified; no colour-only state
 - [ ] Loading and empty states included
-- [ ] Docs page added with a live preview and the props table
+- [ ] Docs page added with a live preview, the props table and a Usage snippet
+- [ ] Compound? Parts listed, strict hook exported, default layout still one tag

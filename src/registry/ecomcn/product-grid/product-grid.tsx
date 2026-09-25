@@ -24,6 +24,28 @@ export interface ProductGridProps
   /** Rendered instead of the grid when `products` is empty and not loading. */
   empty?: React.ReactNode
   onResetFilters?: () => void
+  /**
+   * Render each product yourself — typically a ProductCard composed from its
+   * parts. Return one element per product: it becomes a direct grid child.
+   */
+  renderCard?: (product: ProductCardProduct, index: number) => React.ReactNode
+  /** More results are on their way: append skeletons after the current products. */
+  loadingMore?: boolean
+  /** How many skeletons to append while `loadingMore`. Match your page size. */
+  loadingMoreCount?: number
+}
+
+// Skeleton boxes must match the real card exactly or the grid jumps: same
+// aspect ratio, same four text bars.
+function CardSkeleton() {
+  return (
+    <div aria-hidden data-slot="product-grid-skeleton">
+      <Skeleton className="aspect-[4/5] w-full rounded-none" />
+      <Skeleton className="mt-3.5 h-3 w-16 rounded-none" />
+      <Skeleton className="mt-2 h-5 w-3/4 rounded-none" />
+      <Skeleton className="mt-2 h-3 w-14 rounded-none" />
+    </div>
+  )
 }
 
 export function ProductGrid({
@@ -36,6 +58,9 @@ export function ProductGrid({
   onQuickAdd,
   empty,
   onResetFilters,
+  renderCard,
+  loadingMore,
+  loadingMoreCount = 3,
   className,
   ...props
 }: ProductGridProps) {
@@ -49,15 +74,9 @@ export function ProductGrid({
 
   if (loading) {
     return (
-      <div className={grid} aria-busy="true" aria-live="polite" {...props}>
+      <div className={grid} aria-busy="true" data-slot="product-grid" {...props}>
         {Array.from({ length: skeletonCount }).map((_, i) => (
-          <div key={i}>
-            {/* skeleton boxes must match the real card exactly or the grid jumps */}
-            <Skeleton className="aspect-[4/5] w-full rounded-none" />
-            <Skeleton className="mt-3.5 h-3 w-16 rounded-none" />
-            <Skeleton className="mt-2 h-5 w-3/4 rounded-none" />
-            <Skeleton className="mt-2 h-3 w-14 rounded-none" />
-          </div>
+          <CardSkeleton key={i} />
         ))}
         <span className="sr-only">Loading products</span>
       </div>
@@ -84,17 +103,24 @@ export function ProductGrid({
   }
 
   return (
-    <div className={grid} {...props}>
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          density={density}
-          currency={currency}
-          locale={locale}
-          onQuickAdd={onQuickAdd}
-        />
-      ))}
+    <div className={grid} aria-busy={loadingMore || undefined} data-slot="product-grid" {...props}>
+      {products.map((product, index) =>
+        renderCard ? (
+          <React.Fragment key={product.id}>{renderCard(product, index)}</React.Fragment>
+        ) : (
+          <ProductCard
+            key={product.id}
+            product={product}
+            density={density}
+            currency={currency}
+            locale={locale}
+            onQuickAdd={onQuickAdd}
+          />
+        )
+      )}
+      {loadingMore
+        ? Array.from({ length: loadingMoreCount }).map((_, i) => <CardSkeleton key={`more-${i}`} />)
+        : null}
     </div>
   )
 }

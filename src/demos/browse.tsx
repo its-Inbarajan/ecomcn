@@ -3,13 +3,37 @@
 import * as React from "react";
 
 import { EmptyResults } from "@/components/ecomcn/empty-results";
-import { FilterPanel } from "@/components/ecomcn/filter-panel";
+import {
+  FilterPanel,
+  FilterPanelChips,
+  FilterPanelFacet,
+  FilterPanelHeader,
+  useFilterPanel,
+} from "@/components/ecomcn/filter-panel";
 import { FilterSheet } from "@/components/ecomcn/filter-sheet";
+import { LoadMore } from "@/components/ecomcn/load-more";
+import {
+  ProductCard,
+  ProductCardBadge,
+  ProductCardBody,
+  ProductCardImage,
+  ProductCardMedia,
+  ProductCardQuickAdd,
+  useProductCard,
+  type ProductCardProduct,
+} from "@/components/ecomcn/product-card";
 import { ProductGrid } from "@/components/ecomcn/product-grid";
+import {
+  ProductQuickView,
+  ProductQuickViewImage,
+  ProductQuickViewTrigger,
+} from "@/components/ecomcn/product-quick-view";
 import { SortToolbar } from "@/components/ecomcn/sort-toolbar";
 import { ControlBar, ControlLabel, Toggle } from "@/demos/controls";
 import {
   FACETS,
+  LARGE_CATALOGUE,
+  PRODUCTS,
   bestRelaxation,
   filterProducts,
   sortProducts,
@@ -18,8 +42,11 @@ import {
 import { useFilterParams } from "@/hooks/use-filter-params";
 import {
   describeActiveFilters,
+  getRange,
   removeFilter,
   serializeFilterParams,
+  setRange,
+  type FilterRange,
   type FilterState,
 } from "@/lib/filter-params";
 
@@ -73,6 +100,84 @@ function QueryString({ filters }: { filters: FilterState }) {
         {query ? `?${decodeURIComponent(query)}` : "(no filters — try one)"}
       </code>
     </div>
+  );
+}
+
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * `?page=3` means "pages 1–3 are on screen", so reload and Back restore the
+ * same depth. replaceState, not pushState: loading more is not a navigation
+ * a shopper expects Back to undo. useFilterParams drops `page` whenever a
+ * filter changes, which is exactly when it should reset.
+ */
+const LOCATION_EVENT = "ecomcn:locationchange";
+
+function subscribeToLocation(onChange: () => void) {
+  window.addEventListener("popstate", onChange);
+  window.addEventListener(LOCATION_EVENT, onChange);
+  return () => {
+    window.removeEventListener("popstate", onChange);
+    window.removeEventListener(LOCATION_EVENT, onChange);
+  };
+}
+
+function usePageParam() {
+  const search = React.useSyncExternalStore(
+    subscribeToLocation,
+    () => window.location.search,
+    () => "",
+  );
+  const page = Math.max(1, Number(new URLSearchParams(search).get("page")) || 1);
+  const setPage = React.useCallback((next: number) => {
+    const params = new URLSearchParams(window.location.search);
+    if (next <= 1) params.delete("page");
+    else params.set("page", String(next));
+    const query = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`,
+    );
+    window.dispatchEvent(new Event(LOCATION_EVENT));
+  }, []);
+  return [page, setPage] as const;
+}
+
+/* Glue between two compound blocks: read the card's context, feed the quick view. */
+function CardQuickViewImage() {
+  const { product } = useProductCard();
+  return (
+    <ProductQuickViewImage product={product}>
+      <ProductCardImage />
+    </ProductQuickViewImage>
+  );
+}
+
+function CardQuickViewTrigger() {
+  const { product, colorIndex } = useProductCard();
+  return <ProductQuickViewTrigger product={product} colorIndex={colorIndex} />;
+}
+
+function QuickViewCard({
+  product,
+  density,
+  onQuickAdd,
+}: {
+  product: ProductCardProduct;
+  density?: "comfortable" | "compact";
+  onQuickAdd?: () => Promise<void>;
+}) {
+  return (
+    <ProductCard product={product} density={density} onQuickAdd={onQuickAdd}>
+      <ProductCardMedia>
+        <CardQuickViewImage />
+        <ProductCardBadge />
+        <CardQuickViewTrigger />
+        <ProductCardQuickAdd />
+      </ProductCardMedia>
+      <ProductCardBody />
+    </ProductCard>
   );
 }
 
@@ -223,21 +328,88 @@ export function EmptyResultsDemo() {
 
 /* ─── filter-panel ───────────────────────────────────────────────────────── */
 
+const PRICE_PICKS: { label: string; range: FilterRange }[] = [
+  { label: "Under $100", range: { max: 100 } },
+  { label: "$100 – $400", range: { min: 100, max: 400 } },
+  { label: "$400 and up", range: { min: 400 } },
+];
+
+/** A custom part: nothing but useFilterPanel(), and it sits between built-in facets. */
+function QuickPicks() {
+  const { value, setValue, getFacet } = useFilterPanel();
+  const price = getFacet("price");
+  if (price?.type !== "range") return null;
+  const current = getRange(value, "price");
+
+  return (
+    <div className="border-t py-4">
+      <p className="mb-2.5 font-medium">Quick picks</p>
+      <div className="flex flex-wrap gap-1.5">
+        {PRICE_PICKS.map((pick) => {
+          const on = current?.min === pick.range.min && current?.max === pick.range.max;
+          return (
+            <button
+              key={pick.label}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setValue(setRange(value, price, on ? {} : pick.range))}
+              className={
+                "rounded-sm border px-2.5 py-1 text-xs transition-colors hover:border-foreground " +
+                (on ? "border-foreground bg-secondary" : "")
+              }
+            >
+              {pick.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function FilterPanelDemo() {
   const [filters, setFilters] = useFilterParams(FACETS);
   const key = serializeFilterParams(filters, FACETS).toString();
   const settled = useSettled(filters, key);
   const [loadingDemo, setLoadingDemo] = React.useState(false);
+  const [layout, setLayout] = React.useState<"default" | "composed">("default");
   const results = filterProducts(settled.value);
+  const panel = {
+    facets: withCounts(filters),
+    value: filters,
+    onValueChange: setFilters,
+    loading: loadingDemo || settled.loading,
+  };
 
   return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Layout</ControlLabel>
+        {(["default", "composed"] as const).map((l) => (
+          <Toggle key={l} on={layout === l} onClick={() => setLayout(l)}>
+            {l}
+          </Toggle>
+        ))}
+        <span className="ml-2 text-[12px] text-muted-foreground">
+          {layout === "default"
+            ? "One tag: <FilterPanel facets value onValueChange />"
+            : "Parts in any order, plus a custom part built on useFilterPanel()"}
+        </span>
+      </ControlBar>
+
     <div className="grid gap-8 md:grid-cols-[272px_minmax(0,1fr)]">
-      <FilterPanel
-        facets={withCounts(filters)}
-        value={filters}
-        onValueChange={setFilters}
-        loading={loadingDemo || settled.loading}
-      />
+      {layout === "default" ? (
+        <FilterPanel {...panel} />
+      ) : (
+        <FilterPanel {...panel}>
+          <FilterPanelHeader />
+          <FilterPanelFacet id="price" />
+          <QuickPicks />
+          <FilterPanelFacet id="color" />
+          <FilterPanelFacet id="in_stock" />
+          <FilterPanelChips className="border-t pt-4" />
+        </FilterPanel>
+      )}
 
       <div className="space-y-5">
         <QueryString filters={filters} />
@@ -272,6 +444,7 @@ export function FilterPanelDemo() {
           </Toggle>
         </div>
       </div>
+    </div>
     </div>
   );
 }
@@ -327,26 +500,32 @@ export function FilterSheetDemo() {
 
 /* ─── composed: a whole listing page ─────────────────────────────────────── */
 
+const LISTING_PAGE = 6;
+
 export function ListingPageDemo() {
   const [filters, setFilters] = useFilterParams(FACETS);
   const [sort, setSort] = React.useState("featured");
   const [density, setDensity] = React.useState<"comfortable" | "compact">("comfortable");
+  const [page, setPage] = usePageParam();
+  const [loadingMore, setLoadingMore] = React.useState(false);
 
   const key = `${serializeFilterParams(filters, FACETS).toString()}|${sort}`;
   const settled = useSettled({ filters, sort }, key);
   const results = sortProducts(filterProducts(settled.value.filters), settled.value.sort);
+  const visible = results.slice(0, page * LISTING_PAGE);
   const facets = withCounts(filters);
   const empty = useEmptyState(filters, setFilters);
 
   return (
-    <div>
+    <ProductQuickView onAddToBag={() => wait(600)}>
       <header className="mb-6">
         <p className="ec-eyebrow text-brand">Collection</p>
         <h1 className="ec-display mt-2 text-5xl sm:text-6xl">Objects for the table</h1>
         <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-muted-foreground">
-          Five ecomcn blocks and nothing else: sort-toolbar, filter-panel,
-          filter-sheet, product-grid and empty-results. Filter state lives in
-          this frame&apos;s URL.
+          Eight ecomcn blocks and nothing else: sort-toolbar, filter-panel,
+          filter-sheet, product-grid, product-card, product-quick-view,
+          load-more and empty-results. Filters and page depth live in this
+          frame&apos;s URL.
         </p>
       </header>
 
@@ -354,7 +533,10 @@ export function ListingPageDemo() {
         total={results.length}
         loading={settled.loading}
         sort={sort}
-        onSortChange={setSort}
+        onSortChange={(next) => {
+          setSort(next);
+          setPage(1);
+        }}
         density={density}
         onDensityChange={setDensity}
         filters={
@@ -376,15 +558,139 @@ export function ListingPageDemo() {
           onValueChange={setFilters}
           loading={settled.loading}
         />
-        <ProductGrid
-          products={results}
-          loading={settled.loading}
-          skeletonCount={density === "compact" ? 8 : 6}
-          density={density}
-          onQuickAdd={() => new Promise<void>((resolve) => setTimeout(resolve, 600))}
-          empty={<EmptyResults {...empty} />}
-        />
+        <div>
+          <ProductGrid
+            id="listing-grid"
+            products={visible}
+            loading={settled.loading}
+            loadingMore={loadingMore}
+            loadingMoreCount={Math.min(LISTING_PAGE, results.length - visible.length)}
+            skeletonCount={density === "compact" ? 8 : 6}
+            density={density}
+            empty={<EmptyResults {...empty} />}
+            renderCard={(product) => (
+              <QuickViewCard product={product} density={density} onQuickAdd={() => wait(600)} />
+            )}
+          />
+          {!settled.loading && results.length > 0 ? (
+            <LoadMore
+              className="mt-10"
+              shown={visible.length}
+              total={results.length}
+              loading={loadingMore}
+              controls="listing-grid"
+              mode="hybrid"
+              onLoadMore={async () => {
+                setLoadingMore(true);
+                await wait(500);
+                setPage(page + 1);
+                setLoadingMore(false);
+              }}
+            />
+          ) : null}
+        </div>
       </div>
+    </ProductQuickView>
+  );
+}
+
+/* ─── load-more ──────────────────────────────────────────────────────────── */
+
+const PAGE_SIZE = 8;
+
+export function LoadMoreDemo() {
+  const [mode, setMode] = React.useState<"button" | "hybrid" | "infinite">("button");
+  const [page, setPage] = usePageParam();
+  const [loading, setLoading] = React.useState(false);
+  const [failNext, setFailNext] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const visible = LARGE_CATALOGUE.slice(0, page * PAGE_SIZE);
+
+  const loadMore = async () => {
+    setError(null);
+    setLoading(true);
+    await wait(700);
+    setLoading(false);
+    if (failNext) {
+      setFailNext(false);
+      setError("Couldn’t load more products. Check your connection.");
+      return;
+    }
+    setPage(page + 1);
+  };
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Mode</ControlLabel>
+        {(["button", "hybrid", "infinite"] as const).map((m) => (
+          <Toggle key={m} on={mode === m} onClick={() => setMode(m)}>
+            {m}
+          </Toggle>
+        ))}
+        <ControlLabel className="ml-4">Next load</ControlLabel>
+        <Toggle on={failNext} onClick={() => setFailNext((f) => !f)}>
+          fails
+        </Toggle>
+        <Toggle on={false} onClick={() => setPage(1)}>
+          reset
+        </Toggle>
+      </ControlBar>
+
+      <ProductGrid
+        id="load-more-grid"
+        density="compact"
+        products={visible}
+        loadingMore={loading}
+        loadingMoreCount={Math.min(PAGE_SIZE, LARGE_CATALOGUE.length - visible.length)}
+      />
+      <LoadMore
+        className="mt-10"
+        shown={visible.length}
+        total={LARGE_CATALOGUE.length}
+        loading={loading}
+        error={error}
+        mode={mode}
+        controls="load-more-grid"
+        onLoadMore={loadMore}
+      />
+      <p className="mt-6 max-w-xl text-[12.5px] leading-relaxed text-muted-foreground">
+        The page depth is in this frame&apos;s URL as <code>?page={page}</code> —
+        reload and the same products are still on screen. Load by keyboard and
+        focus lands on the first new product, not back on the button.
+      </p>
+    </div>
+  );
+}
+
+/* ─── product-quick-view ─────────────────────────────────────────────────── */
+
+export function ProductQuickViewDemo() {
+  const [log, setLog] = React.useState<string | null>(null);
+  return (
+    <div>
+      <ProductQuickView
+        onAddToBag={async (product, colorIndex) => {
+          await wait(600);
+          setLog(`onAddToBag → ${product.name}, ${product.colors?.[colorIndex]?.name ?? "default"}`);
+        }}
+        renderDetails={(product) => (
+          <p className="max-w-sm leading-relaxed text-muted-foreground">
+            {product.brand} makes the {product.name.toLowerCase()} in small runs. Pass
+            anything here through <code>renderDetails</code> — sizes, materials, a
+            size-guide link.
+          </p>
+        )}
+      >
+        <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3">
+          {PRODUCTS.slice(0, 6).map((product) => (
+            <QuickViewCard key={product.id} product={product} />
+          ))}
+        </div>
+      </ProductQuickView>
+      <p className="mt-4 h-4 font-mono text-[12px] text-muted-foreground" aria-live="polite">
+        {log ?? "Hover a card and choose Quick view — or Tab to it. Escape closes."}
+      </p>
     </div>
   );
 }

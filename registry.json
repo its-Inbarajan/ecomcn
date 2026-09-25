@@ -10,6 +10,8 @@
     "src/registry/ecomcn/empty-results/registry.json",
     "src/registry/ecomcn/filter-panel/registry.json",
     "src/registry/ecomcn/filter-sheet/registry.json",
+    "src/registry/ecomcn/load-more/registry.json",
+    "src/registry/ecomcn/product-quick-view/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],

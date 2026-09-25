@@ -53,7 +53,14 @@ export function SiteFooter() {
           ecomcn · MIT · built with shadcn/ui
         </p>
         <p className="text-[12px] text-muted-foreground">
-          Source you own, not a package you fight.
+          Source you own, not a package you fight. Demo photos from{" "}
+          <a
+            href="https://unsplash.com/license"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Unsplash
+          </a>
+          .
         </p>
       </div>
     </footer>
