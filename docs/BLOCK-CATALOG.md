@@ -119,8 +119,7 @@ The card's image morphs into a dialog and back — a shared-element transition.
   something that is also fading.
 - **Hard part:** the dialog, not the morph — native `<dialog>` for the top
   layer and an inert page, Escape that plays the closing morph, focus returned
-  only after the image lands, no movement at all under reduced motion. The only
-  block that depends on `motion`, so it is opt-in.
+  only after the image lands, no movement at all under reduced motion.
 - Composes: `button`, `@ecomcn/price-tag`, `@ecomcn/product-card`
 
 ### `filter-sheet` · block · effort 2 · **shipped**
@@ -185,10 +184,13 @@ messaging.
   rule) and must stay focusable so screen readers hear it's unavailable.
 - Composes: `label`, `dialog`
 
-### `size-guide-dialog` · component · effort 1
+### `size-guide-dialog` · component · effort 1 · **shipped** · `motion`
 Measurement table plus a fit note, opened from the size label.
 - **Design:** header row uses the eyebrow style; the table is ruled, not striped.
-- **Hard part:** tables need horizontal scroll containment on narrow screens.
+  The panel grows out of the "Size guide" link and folds back into it — a
+  container transform, contents fading in once the surface has landed.
+- **Hard part:** tables need horizontal scroll containment on narrow screens,
+  with the size column pinned; no scrollbars drawn, a soft edge instead.
 - Composes: `dialog`, `table`
 
 ### `product-buy-box` · block · effort 3
@@ -200,10 +202,18 @@ total, wishlist, delivery promise. **The flagship — the block people screensho
   estimate that's a date range, not "ships soon".
 - Composes: `button`, `input`, `@ecomcn/price-tag`, `@ecomcn/variant-swatches`
 
-### `product-details-accordion` · component · effort 1
+### `product-details-accordion` · component · effort 1 · **shipped** · `motion`
 Materials, care, shipping and maker sections, first open by default.
-- **Design:** triggers use the tracked-out eyebrow; body copy muted at 14px/1.7.
-- **Hard part:** render all panels in the DOM for SEO even when collapsed.
+- **Design:** triggers use the tracked-out eyebrow with a one-line summary
+  beside them; body copy muted at 14px/1.7. Panels grow to their measured
+  height with Motion, and the chevron turns with them.
+- **Hard part:** shadcn's Accordion roots disagree (`type="multiple"` on Radix,
+  `multiple` on Base UI), and Base UI's prop leaks into Radix's DOM and breaks
+  hydration. The block keeps the value controlled, toggles from each trigger,
+  and holds a closing section open until its panel has animated shut. Closed
+  content stays findable: the summary line is always on the page, and
+  `contentProps={{ forceMount: true }}` (Radix) or `keepMounted` (Base UI)
+  keeps whole panels in the HTML.
 - Composes: `accordion`
 
 ### `review-summary` · block · effort 3

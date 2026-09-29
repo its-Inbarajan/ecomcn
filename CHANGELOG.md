@@ -6,7 +6,32 @@ describe changes in terms of what to edit, not just what changed.
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-09-29
+
+The first tagged release: the whole Browse stage, the first two Product
+blocks, and a listing in the shadcn Registry Directory.
+
 ### Added
+- `product-details-accordion` — materials, care, shipping and maker sections on
+  your shadcn `accordion`, first section open. Each closed row carries a
+  one-line summary. Sections open and close with Motion (height and a turning
+  chevron) instead of the stock keyframes. One tag from `sections`, or composed
+  from `ProductDetailsSection` and `ProductDetailsSpecs`; open state is shared
+  through `useProductDetailsAccordion()`. To keep closed panels in the HTML,
+  pass `contentProps={{ forceMount: true }}` (Radix) or
+  `{{ keepMounted: true }}` (Base UI). Adds `motion`.
+- `size-guide-dialog` — a measurement table in your shadcn `dialog` and
+  `table`, opened from a link beside the size label. The panel morphs out of
+  that link and back into it (Motion; a plain fade under reduced motion).
+  cm / in with tape-honest rounding, the selected size marked, ranges and text
+  equivalents (`"UK 7"`, never converted), and a pinned size column that
+  scrolls sideways inside the dialog on narrow screens — no scrollbars drawn,
+  a soft edge instead. Parts share the unit through `useSizeGuide()`.
+  Adds `motion`.
+- **Motion is the house style** (CONTRIBUTING rule 10): anything that changes
+  shape animates with `motion` and morphs from where it came from. The quick
+  view, size guide and details accordion follow it; hover and colour stay CSS.
+  Every animation honours `prefers-reduced-motion`.
 - **Listed in the shadcn Registry Directory** (shadcn-ui/ui#12025).
   `npx shadcn@latest add @ecomcn/<block>` now works in any project with no
   setup: the CLI finds `@ecomcn` in the directory and writes it into
@@ -15,7 +40,7 @@ describe changes in terms of what to edit, not just what changed.
 - `load-more` — progress rule, announced "Showing 24 of 312", button / hybrid /
   infinite modes, focus moved to the first new item, error with retry.
 - `product-quick-view` — the card image morphs into a native `<dialog>` and back
-  (Motion `layoutId`). Adds `motion` as a dependency **for this block only**.
+  (Motion `layoutId`). Adds `motion`.
 - Compound parts for `filter-panel` (`FilterPanelHeader`, `FilterPanelChips`,
   `FilterPanelFacet`, `useFilterPanel()`) and `product-card`
   (`ProductCardMedia`, `ProductCardImage`, `ProductCardBadge`,
@@ -81,6 +106,3 @@ describe changes in terms of what to edit, not just what changed.
   and `--destructive` undefined; Select, Dialog and Popover content rendered
   with a transparent background. It now ships the complete shadcn token set.
   **Re-run `shadcn add @ecomcn/theme-editorial` to pick up the missing tokens.**
-
-## [0.1.0] — unreleased
-Initial scaffold.

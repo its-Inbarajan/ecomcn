@@ -313,6 +313,106 @@ function QuickViewButton() {
 }`,
     },
   ],
+  "product-details-accordion": [
+    {
+      label: "One tag, from your product data",
+      code: `import { ProductDetailsAccordion } from "@/components/ecomcn/product-details-accordion"
+
+<ProductDetailsAccordion
+  // The first section opens by default; pass defaultOpen to choose.
+  sections={[
+    { id: "description", title: "Description", summary: "Waxed canvas, 24 litres", content: <p>{product.description}</p> },
+    { id: "care", title: "Care", summary: "Spot clean, re-wax yearly", content: <p>{product.care}</p> },
+    { id: "shipping", title: "Shipping & returns", summary: "Free over $300 · 30-day returns", content: <ShippingPolicy /> },
+  ]}
+/>`,
+    },
+    {
+      label: "Composed — sections, a specs list and your own part",
+      code: `import {
+  ProductDetailsAccordion,
+  ProductDetailsSection,
+  ProductDetailsSpecs,
+  useProductDetailsAccordion,
+} from "@/components/ecomcn/product-details-accordion"
+
+<ProductDetailsAccordion defaultOpen={["materials"]}>
+  <ExpandAll />
+  <ProductDetailsSection id="materials" title="Materials" summary="Organic cotton">
+    <ProductDetailsSpecs
+      items={[
+        ["Body", "18 oz organic cotton canvas"],
+        ["Dimensions", "38 × 42 × 14 cm"],
+      ]}
+    />
+  </ProductDetailsSection>
+  <ProductDetailsSection id="care" title="Care" summary="Spot clean">
+    <p>Brush off dry dirt, then spot clean with a damp cloth.</p>
+  </ProductDetailsSection>
+</ProductDetailsAccordion>
+
+// Any part inside reads and sets the open sections.
+function ExpandAll() {
+  const { open, setOpen } = useProductDetailsAccordion()
+  return <button onClick={() => setOpen(open.length ? [] : ["materials", "care"])}>Toggle all</button>
+}`,
+    },
+    {
+      label: "Keep closed panels in the HTML",
+      code: `// By default a closed section's panel is not rendered — its summary line is.
+// To have crawlers read every panel, keep them mounted: collapsed and inert.
+<ProductDetailsAccordion sections={sections} contentProps={{ forceMount: true }} />  // Radix
+<ProductDetailsAccordion sections={sections} contentProps={{ keepMounted: true }} />  // Base UI`,
+    },
+  ],
+  "size-guide-dialog": [
+    {
+      label: "Beside the size label",
+      code: `import { SizeGuideDialog } from "@/components/ecomcn/size-guide-dialog"
+
+<div className="flex items-baseline justify-between">
+  <span>Size</span>
+  <SizeGuideDialog
+    columns={["Chest", "Waist", "Hip"]}
+    rows={[
+      // Centimetres by default (baseUnit="in" if your data is in inches).
+      // A [min, max] pair is a range; a string is shown as-is and never converted.
+      { size: "S", values: [[87, 91], [71, 75], [93, 97]] },
+      { size: "M", values: [[92, 96], [76, 80], [98, 102]] },
+      { size: "L", values: [[97, 102], [81, 86], [103, 108]] },
+    ]}
+    selectedSize={size}          // marked and announced in the table
+    fitNote="Cut close through the chest. Between two sizes, take the larger."
+  />
+</div>`,
+    },
+    {
+      label: "Composed — your trigger, your layout",
+      code: `import {
+  SizeGuideContent,
+  SizeGuideDialog,
+  SizeGuideTable,
+  SizeGuideTrigger,
+  SizeGuideUnitToggle,
+  useSizeGuide,
+} from "@/components/ecomcn/size-guide-dialog"
+
+<SizeGuideDialog columns={columns} rows={rows} selectedSize={size} defaultUnit="in">
+  <SizeGuideTrigger>Size & fit</SizeGuideTrigger>
+  <SizeGuideContent>
+    <SizeGuideUnitToggle />
+    <SizeGuideTable />
+    <HowToMeasure />
+  </SizeGuideContent>
+</SizeGuideDialog>
+
+// Parts share the unit and the selected size.
+function HowToMeasure() {
+  const { unit } = useSizeGuide()
+  return <p>Measure around the fullest part of the chest, in {unit}.</p>
+}`,
+    },
+  ],
   "empty-results": [
     {
       label: "As the grid's empty state",

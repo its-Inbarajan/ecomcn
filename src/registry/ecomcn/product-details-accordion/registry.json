@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "product-details-accordion",
+      "type": "registry:component",
+      "title": "Product Details Accordion",
+      "description": "Materials, care, shipping and maker sections on your shadcn Accordion, first section open. Each closed row carries a one-line summary, so shoppers get the answer without opening it, and panels open with a Motion height morph. One tag from data, or composed from sections and a specs list; open state is shared through context. Works on Radix and Base UI.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["motion", "lucide-react"],
+      "registryDependencies": ["accordion"],
+      "files": [
+        {
+          "path": "product-details-accordion.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/product-details-accordion.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "product", "pdp"]
+    }
+  ]
+}

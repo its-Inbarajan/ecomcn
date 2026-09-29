@@ -51,8 +51,11 @@ npx shadcn@latest registry add @ecomcn=https://ecomcn.vercel.app/r/{name}.json
 
 ## What you get
 
-- **Zero runtime dependencies** beyond `lucide-react` where icons are used —
-  `product-quick-view` is the one opt-in exception, for `motion`
+- **Motion, with a morph** — the quick view and size guide grow out of what
+  opened them, accordion panels grow to their real height, and all of it
+  falls back to a fade under `prefers-reduced-motion`. `motion` and
+  `lucide-react` are the only runtime dependencies, and only on the blocks
+  that use them
 - **`Intl.NumberFormat` pricing** with `currency` and `locale` props on every
   money-rendering block
 - **Loading, empty, out-of-stock and error states** shipped in the same file
@@ -74,8 +77,8 @@ the hard parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 
 Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
 `filter-panel`, `filter-sheet`, `sort-toolbar`, `empty-results`, `load-more` and
-`product-quick-view` — plus
-`price-tag`, `order-summary` and `theme-editorial`. See them composed into one
+`product-quick-view` — plus `price-tag`, `product-details-accordion` and
+`size-guide-dialog` from **Product**, `order-summary` and `theme-editorial`. See them composed into one
 listing page at <https://ecomcn.vercel.app/examples/listing-page>.
 
 ## Repo layout

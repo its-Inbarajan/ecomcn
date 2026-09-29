@@ -30,14 +30,14 @@ _Updated end of September 2026._
 
 | | |
 | --- | --- |
-| Shipped (11 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag` · Cart: `order-summary` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · **M2 (Product) is next** |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 10 shipped, **8 to go** |
+| Shipped (13 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog` · Cart: `order-summary` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 2 of 5 |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 12 shipped, **6 to go** |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
 
-Still open from M0: tag `v0.1.0`, and an install counter on the JSON route.
+Still open from M0: tag `v0.1.0` (CHANGELOG is cut — steps in PUBLISHING.md), and switch on the install counter — it is built (`src/proxy.ts`) and counts once Upstash is connected.
 
 ---
 
@@ -68,9 +68,10 @@ content; targets are correct.
 - [x] Run the real install into a scratch app: register the namespace, then
       `npx shadcn@latest add @ecomcn/product-grid` — the deepest dependency
       chain in the registry (`product-grid` → `product-card` → `price-tag`).
-- [ ] Tag `v0.1.0` so installs can pin.
-- [ ] Add an install counter on the JSON route — the metric starts now or it
-      starts never.
+- [ ] Tag `v0.1.0` so installs can pin. CHANGELOG cut; tagging steps in
+      `PUBLISHING.md`.
+- [x] Add an install counter on the JSON route — the metric starts now or it
+      starts never. Built as `src/proxy.ts` + Upstash; counts once connected.
 
 **Branching.** Vercel builds `develop` as production and there is no `main`.
 That works, but note the coupling: **whatever GitHub calls the default branch
@@ -131,8 +132,8 @@ screenshot — so it gets built last here, once its dependencies exist.
 
 | Block | Evenings | Notes |
 | --- | --- | --- |
-| `product-details-accordion` | 1 | Cheap win; all panels in the DOM for SEO |
-| `size-guide-dialog` | 1 | Table with scroll containment |
+| `product-details-accordion` | 1 | **Done** — summary line per row keeps closed content findable |
+| `size-guide-dialog` | 1 | **Done** — pinned size column, sideways scroll inside the dialog |
 | `variant-swatches` | 3 | Out-of-stock without colour alone; stays focusable |
 | `product-gallery` | 3 | Swipe, hover-zoom, `aria-current`, preload only image 2 |
 | `product-buy-box` | 2 | Composes the three above + `price-tag` |
@@ -184,8 +185,8 @@ September 2026, long before v1.0.
 | M3 — Cart | 5 | |
 | M4 — Launch | 4 (one done early) | |
 
-**From here:** 19 evenings — M2 10, M3 5, M4 4. At two evenings a week that is
-about ten weeks, so v1.0 lands around early December 2026 with no missed weeks.
+**From here:** 17 evenings — M2 8, M3 5, M4 4. At two evenings a week that is
+about nine weeks, so v1.0 lands around early December 2026 with no missed weeks.
 
 That already assumes no missed weeks — so plan for mid-December, and expect
 January if client work eats a few evenings.

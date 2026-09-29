@@ -49,9 +49,19 @@ review comment pointing at this section.
    into a client module's namespace), `data-slot` on every part, a memoised
    context value, and the one-tag default layout kept working when no children
    are passed. Use `<Context.Provider>` so React 18 projects can install.
-10. **Motion is opt-in.** A block may depend on `motion` only when the
-    animation *is* the feature (`product-quick-view`). Everything else animates
-    with CSS. Every animation respects `prefers-reduced-motion`.
+10. **Motion, with a morph.** Anything that changes shape — a dialog, a
+    sheet, a panel opening, an image moving between two places — animates with
+    `motion` (`motion/react`), and morphs from where it came from rather than
+    fading in from nowhere: a dialog grows out of its trigger, a panel grows to
+    its measured height. Use the shared settle curve,
+    `{ duration: 0.45, ease: [0.2, 0, 0, 1] }` — no springs, no bounce. Turn the
+    primitive's own CSS keyframes off (`animate-none!` on the content, or
+    `animationName: "none"` when only `style` reaches it) so the two never
+    fight, and keep the primitive open until the exit has played. Under
+    `prefers-reduced-motion` it becomes a plain fade (`MotionConfig
+    reducedMotion="user"`, or `useReducedMotion()` for imperative
+    `animate()`). Hover and colour changes stay CSS transitions. Add `motion`
+    to the item's `dependencies`, and check both shadcn bases at runtime.
 
 ## Styling
 

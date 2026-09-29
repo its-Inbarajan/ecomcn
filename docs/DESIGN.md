@@ -73,7 +73,7 @@ Non-negotiable for every block:
 - Disabled options stay in the tab order where a screen reader needs to hear
   they're unavailable.
 - `prefers-reduced-motion` kills marquees, auto-advancing carousels and slide
-  transitions.
+  transitions, and turns every Motion morph into a plain fade.
 
 ## Class-name rule
 
