@@ -187,3 +187,47 @@ path an adopter has. Describe changes as "replace lines X–Y of
 - GitHub registries — <https://ui.shadcn.com/docs/registry/github>
 - Registry Directory — <https://ui.shadcn.com/docs/directory>
 - Adding to the directory — <https://ui.shadcn.com/docs/registry/registry-index>
+
+## Cutting a release
+
+Hosted installs (`@ecomcn/…`) always serve the latest `develop`. A tag gives
+the release a fixed point — a GitHub Release page, a diff between versions, and
+a ref for the GitHub-registry route (`its-Inbarajan/ecomcn/<block>#v0.1.0`).
+After the first tag, try that install once in a scratch app before promising it
+to anyone: the GitHub route has to resolve the `include`d item files at the tag.
+
+1. Move the `[Unreleased]` notes in `CHANGELOG.md` under a new version heading,
+   dated, and merge that PR.
+2. Tag the merge commit on `develop` and push the tag (the branch ruleset does
+   not cover tags):
+   ```bash
+   git switch develop && git pull
+   git tag -a v0.1.0 -m "ecomcn 0.1.0"
+   git push origin v0.1.0
+   ```
+3. On GitHub: **Releases → Draft a new release**, pick the tag, paste that
+   version's CHANGELOG section, **Publish release**.
+4. Bump `version` in `package.json` in the next PR.
+
+## Counting installs
+
+`/r/*.json` is static, so `src/proxy.ts` counts in front of it: every fetch the
+shadcn CLI makes (`User-Agent: shadcn`) for a known item adds one to a total
+and a daily count in Upstash Redis, written after the response is sent. Other
+visitors, `registry.json`, unknown names and non-GET requests are ignored, and
+the file itself is served untouched. See `src/lib/install-counter.ts`.
+
+**Turning it on (once):**
+
+1. In the Vercel project, add **Upstash for Redis** from the Marketplace
+   (Storage → Create database) on the free plan and connect it to this
+   project. That sets `KV_REST_API_URL` and `KV_REST_API_TOKEN`
+   (`UPSTASH_REDIS_REST_URL` / `_TOKEN` work too).
+2. Redeploy — env vars only reach new deployments.
+3. Open `https://ecomcn.vercel.app/api/installs`. Before step 1 it answers 503
+   `configured: false`; after, totals per block and the date counting began.
+
+**Reading the numbers:** a count is one item fetched by the CLI, not one
+project. Installing `product-grid` also fetches `product-card` and
+`price-tag`, and shadcn's Registry Health runs a weekly `add --dry-run` —
+treat the numbers as reach and watch the trend, not the absolute.

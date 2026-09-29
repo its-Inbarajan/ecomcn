@@ -33,10 +33,31 @@ export function BlockPreview({ slug, title }: { slug: string; title: string }) {
     setHeight((current) => (Math.abs(current - next) > 2 ? next : current));
   }, []);
 
-  React.useEffect(() => {
-    const id = window.setInterval(measure, 400);
-    return () => window.clearInterval(id);
+  // Follow the content frame by frame — an accordion opening inside grows
+  // the frame with it, instead of being clipped and then snapping 400ms
+  // later. Same-origin, so the observer can watch inside the iframe.
+  const observer = React.useRef<ResizeObserver | null>(null);
+  const observe = React.useCallback(() => {
+    observer.current?.disconnect();
+    const target = frame.current?.contentDocument?.getElementById("ecomcn-preview-root");
+    if (!target) return;
+    observer.current = new ResizeObserver(measure);
+    observer.current.observe(target);
+    measure();
   }, [measure]);
+
+  React.useEffect(() => {
+    // A slow fallback: the frame can load before hydration finishes.
+    const id = window.setInterval(() => {
+      measure();
+      if (!observer.current) observe();
+    }, 1000);
+    return () => {
+      window.clearInterval(id);
+      observer.current?.disconnect();
+      observer.current = null;
+    };
+  }, [measure, observe]);
 
   return (
     <div className="ec-rule border">
@@ -69,7 +90,7 @@ export function BlockPreview({ slug, title }: { slug: string; title: string }) {
       <div className="overflow-x-auto bg-secondary/40 p-4 sm:p-6">
         <iframe
           ref={frame}
-          onLoad={measure}
+          onLoad={observe}
           src={`/preview/${slug}`}
           title={`${title} preview`}
           loading="lazy"

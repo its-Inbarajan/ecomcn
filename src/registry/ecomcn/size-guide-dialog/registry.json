@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "size-guide-dialog",
+      "type": "registry:component",
+      "title": "Size Guide Dialog",
+      "description": "A measurement table in your shadcn Dialog that morphs out of a quiet link beside the size label, and back into it (Motion; a fade under reduced motion). Centimetres and inches with tape-honest rounding, the shopper's selected size marked and announced, ranges and size equivalents (EU 38) in the same table, and a size column that stays put while the measurements scroll sideways on narrow screens. Composed from parts that share the unit through context.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": ["motion", "lucide-react"],
+      "registryDependencies": ["dialog", "table"],
+      "files": [
+        {
+          "path": "size-guide-dialog.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/size-guide-dialog.tsx"
+        }
+      ],
+      "categories": ["ecommerce", "product", "pdp", "sizing"]
+    }
+  ]
+}

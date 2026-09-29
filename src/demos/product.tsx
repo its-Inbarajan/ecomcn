@@ -1,0 +1,357 @@
+"use client";
+
+import * as React from "react";
+import { ChevronsDownUp, ChevronsUpDown } from "lucide-react";
+
+import {
+  ProductDetailsAccordion,
+  ProductDetailsSection,
+  ProductDetailsSpecs,
+  useProductDetailsAccordion,
+  type ProductDetailsSectionData,
+} from "@/components/ecomcn/product-details-accordion";
+import {
+  SizeGuideContent,
+  SizeGuideDialog,
+  SizeGuideNote,
+  SizeGuideTable,
+  SizeGuideTrigger,
+  SizeGuideUnitToggle,
+  useSizeGuide,
+  type SizeGuideRow,
+} from "@/components/ecomcn/size-guide-dialog";
+import { PriceTag } from "@/components/ecomcn/price-tag";
+import { ProductPhoto } from "@/components/site/product-photo";
+import { ControlBar, ControlLabel, Toggle } from "@/demos/controls";
+import { cn } from "@/lib/utils";
+
+/**
+ * Product-stage demos. Site code, not registry code: adopters get the blocks,
+ * never this sample content.
+ */
+
+/* ─── product-details-accordion ──────────────────────────────────────── */
+
+const SECTIONS: ProductDetailsSectionData[] = [
+  {
+    id: "description",
+    title: "Description",
+    summary: "Waxed canvas, 24 litres",
+    content: (
+      <>
+        <p>
+          A market tote cut from dry-waxed cotton canvas that softens and darkens
+          with use. The gusset takes a laptop sleeve, a jumper and the week&rsquo;s
+          vegetables without losing its shape.
+        </p>
+        <p>
+          Leather handles are saddle-stitched at both ends, so the load sits on the
+          stitching, not the rivets.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "materials",
+    title: "Materials",
+    summary: "Organic cotton, vegetable-tanned leather",
+    content: (
+      <ProductDetailsSpecs
+        items={[
+          ["Body", "18 oz organic cotton canvas, paraffin wax"],
+          ["Handles", "Vegetable-tanned leather"],
+          ["Lining", "Unlined"],
+          ["Dimensions", "38 × 42 × 14 cm"],
+          ["Weight", "620 g"],
+        ]}
+      />
+    ),
+  },
+  {
+    id: "care",
+    title: "Care",
+    summary: "Spot clean, re-wax yearly",
+    content: (
+      <p>
+        Brush off dry dirt, then spot clean with a damp cloth — never machine
+        wash, which strips the wax. Re-wax once a year, or when the canvas
+        stops beading water.
+      </p>
+    ),
+  },
+  {
+    id: "shipping",
+    title: "Shipping & returns",
+    summary: "Free over $300 · 30-day returns",
+    content: (
+      <p>
+        Ships in 1–2 working days. Free standard delivery over $300, otherwise $18.
+        Returns are free within 30 days — <a href="#">start a return</a>.
+      </p>
+    ),
+  },
+  {
+    id: "maker",
+    title: "Made by",
+    summary: "Aarhus Supply, Denmark",
+    content: (
+      <p>
+        Cut and sewn by a family workshop outside Aarhus that has made bags for
+        fishermen since 1962. <strong>Each tote is numbered inside.</strong>
+      </p>
+    ),
+  },
+];
+
+/** A custom part: reads and sets the shared open state through context. */
+function ExpandAll({ ids }: { ids: string[] }) {
+  const { open, setOpen } = useProductDetailsAccordion();
+  const all = ids.every((id) => open.includes(id));
+  const Icon = all ? ChevronsDownUp : ChevronsUpDown;
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(all ? [] : ids)}
+      className="ec-eyebrow -mr-2 inline-flex h-9 items-center gap-2 px-2 text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      {all ? "Collapse all" : "Expand all"}
+      <Icon className="size-3.5" aria-hidden />
+    </button>
+  );
+}
+
+const COMPOSED = SECTIONS.filter((s) => s.id !== "maker");
+
+export function ProductDetailsAccordionDemo() {
+  const [mode, setMode] = React.useState<"default" | "composed">("default");
+  const [open, setOpen] = React.useState<string[]>(["description"]);
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Layout</ControlLabel>
+        <Toggle on={mode === "default"} onClick={() => setMode("default")}>
+          One tag
+        </Toggle>
+        <Toggle on={mode === "composed"} onClick={() => setMode("composed")}>
+          Composed
+        </Toggle>
+        <span className="ml-auto font-mono text-[11.5px] text-muted-foreground" aria-live="polite">
+          open: {open.length ? open.join(", ") : "none"}
+        </span>
+      </ControlBar>
+
+      {/* Tall enough for every section open at once, so the preview frame
+          keeps its height while sections open and close — the page around
+          it never jumps. */}
+      <div className="mx-auto max-w-xl sm:min-h-[48rem]">
+        {mode === "default" ? (
+          <ProductDetailsAccordion sections={SECTIONS} open={open} onOpenChange={setOpen} />
+        ) : (
+          <ProductDetailsAccordion open={open} onOpenChange={setOpen}>
+            <div className="flex items-center justify-between pt-2 pb-4">
+              <p className="ec-eyebrow text-muted-foreground">
+                {COMPOSED.length} sections
+              </p>
+              <ExpandAll ids={COMPOSED.map((s) => s.id)} />
+            </div>
+            {COMPOSED.map((s) => (
+              <ProductDetailsSection key={s.id} id={s.id} title={s.title} summary={s.summary}>
+                {s.content}
+              </ProductDetailsSection>
+            ))}
+          </ProductDetailsAccordion>
+        )}
+        <p className="mt-6 text-[12.5px] leading-relaxed text-muted-foreground">
+          Every closed row still answers its question — the summary line is
+          always on the page. The open state is shared through context, so a
+          custom part like &ldquo;Expand all&rdquo; needs no props.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── size-guide-dialog ──────────────────────────────────────────────── */
+
+const APPAREL_COLUMNS = ["Chest", "Waist", "Hip", "Inside leg"];
+const APPAREL: SizeGuideRow[] = [
+  { size: "XS", values: [[82, 86], [66, 70], [88, 92], 80] },
+  { size: "S", values: [[87, 91], [71, 75], [93, 97], 81] },
+  { size: "M", values: [[92, 96], [76, 80], [98, 102], 82] },
+  { size: "L", values: [[97, 102], [81, 86], [103, 108], 83] },
+  { size: "XL", values: [[103, 108], [87, 92], [109, 114], 84] },
+];
+
+const FOOTWEAR_COLUMNS = ["UK", "US", "Foot length"];
+const FOOTWEAR: SizeGuideRow[] = [
+  { size: "EU 39", values: ["6", "7", 24.5] },
+  { size: "EU 40", values: ["6.5", "7.5", 25.2] },
+  { size: "EU 41", values: ["7.5", "8.5", 25.9] },
+  { size: "EU 42", values: ["8", "9", 26.5] },
+  { size: "EU 43", values: ["9", "10", 27.2] },
+  { size: "EU 44", values: ["9.5", "10.5", 27.9] },
+];
+
+/** A custom part: the selected size's chest measurement, in the current unit. */
+function YourSize() {
+  const { rows, selectedSize, columns, format, unit } = useSizeGuide();
+  const row = rows.find((r) => r.size === selectedSize);
+  if (!row) return null;
+  const chest = columns.indexOf("Chest");
+  return (
+    <p className="text-sm text-muted-foreground">
+      Size <span className="font-medium text-foreground">{row.size}</span> fits a{" "}
+      {format(row.values[chest])} {unit} chest.
+    </p>
+  );
+}
+
+/** The two products the demo can show: the guide follows the catalogue. */
+const PRODUCTS = {
+  apparel: {
+    brand: "Aarhus Supply",
+    name: "Waxed Cotton Bomber",
+    price: 285,
+    photo: { id: "1591047139829-d91aecb6caea" },
+    alt: "A rust waxed-cotton bomber jacket on a hanger",
+    columns: APPAREL_COLUMNS,
+    rows: APPAREL,
+    fitNote: "Cut close through the chest. Between two sizes, take the larger.",
+  },
+  footwear: {
+    brand: "Lindqvist",
+    name: "Vester Chelsea Boot",
+    price: 420,
+    photo: { id: "1773425975272-35f0900a9d8f" },
+    alt: "A tan leather Chelsea boot",
+    columns: FOOTWEAR_COLUMNS,
+    rows: FOOTWEAR,
+    fitNote: "Lasted narrow — if you are between sizes, go up half a size.",
+  },
+} as const;
+
+export function SizeGuideDialogDemo() {
+  const [catalogue, setCatalogue] = React.useState<"apparel" | "footwear">("apparel");
+  const [layout, setLayout] = React.useState<"default" | "composed">("default");
+  const product = PRODUCTS[catalogue];
+  const rows = product.rows;
+  const [size, setSize] = React.useState("M");
+  const selected = rows.some((r) => r.size === size) ? size : rows[2].size;
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Table</ControlLabel>
+        <Toggle on={catalogue === "apparel"} onClick={() => setCatalogue("apparel")}>
+          Apparel · ranges
+        </Toggle>
+        <Toggle on={catalogue === "footwear"} onClick={() => setCatalogue("footwear")}>
+          Footwear · equivalents
+        </Toggle>
+        <ControlLabel className="ml-4">Layout</ControlLabel>
+        <Toggle on={layout === "default"} onClick={() => setLayout("default")}>
+          One tag
+        </Toggle>
+        <Toggle on={layout === "composed"} onClick={() => setLayout("composed")}>
+          Composed
+        </Toggle>
+      </ControlBar>
+
+      {/* A product page's first screen: the guide opens from the size label,
+          and the frame is tall enough to show the whole dialog. */}
+      <div className="grid gap-8 md:min-h-[44rem] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="aspect-[4/5] w-full self-start">
+          <ProductPhoto
+            key={catalogue}
+            photo={product.photo}
+            alt={product.alt}
+            eager
+            sizes="(min-width: 768px) 50vw, 100vw"
+          />
+        </div>
+
+        <div className="flex flex-col gap-8 md:py-6">
+          <div>
+            <p className="ec-eyebrow text-muted-foreground">{product.brand}</p>
+            <h2 className="ec-display mt-3 text-4xl sm:text-5xl">{product.name}</h2>
+            <PriceTag price={product.price} className="mt-4" />
+          </div>
+
+          <div>
+            <div className="mb-3 flex items-baseline justify-between gap-4">
+              <p className="text-xs font-medium tracking-[0.14em] uppercase">
+                Size{" "}
+                <span className="ml-2 font-normal tracking-normal text-muted-foreground normal-case">
+                  {selected}
+                </span>
+              </p>
+              {layout === "default" ? (
+                <SizeGuideDialog
+                  key={catalogue}
+                  columns={[...product.columns]}
+                  rows={rows}
+                  selectedSize={selected}
+                  fitNote={product.fitNote}
+                />
+              ) : (
+                <SizeGuideDialog
+                  key={`${catalogue}-composed`}
+                  columns={[...product.columns]}
+                  rows={rows}
+                  selectedSize={selected}
+                  defaultUnit="in"
+                  title="Size & fit"
+                >
+                  <SizeGuideTrigger>Size &amp; fit</SizeGuideTrigger>
+                  <SizeGuideContent>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      {catalogue === "apparel" ? <YourSize /> : <span />}
+                      <SizeGuideUnitToggle />
+                    </div>
+                    <SizeGuideTable />
+                    <SizeGuideNote className="text-muted-foreground">
+                      Composed from parts, opening in inches — the unit lives in context,
+                      so the sentence above follows the toggle.
+                    </SizeGuideNote>
+                  </SizeGuideContent>
+                </SizeGuideDialog>
+              )}
+            </div>
+
+            <div role="group" aria-label="Size" className="grid grid-cols-5 gap-px border bg-border">
+              {rows.slice(0, 5).map((r) => (
+                <button
+                  key={r.size}
+                  type="button"
+                  aria-pressed={selected === r.size}
+                  onClick={() => setSize(r.size)}
+                  className={cn(
+                    "h-12 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                    selected === r.size ? "bg-foreground text-background" : "bg-background hover:bg-secondary"
+                  )}
+                >
+                  {r.size.replace("EU ", "")}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="h-12 w-full bg-foreground text-sm font-medium tracking-[0.14em] text-background uppercase transition-opacity outline-none hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            Add to bag
+          </button>
+
+          <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+            Open the guide: it grows out of the link and folds back into it.
+            The size you pick is marked in the table; switch to inches and the
+            ranges convert to the nearest half inch, while the UK and US
+            equivalents are text, so they are never converted.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

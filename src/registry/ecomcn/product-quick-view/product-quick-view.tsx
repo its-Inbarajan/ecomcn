@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils"
  * of which product they opened. Motion's `layoutId` does the morph; a native
  * <dialog> does the modal work (top layer, inert page, Escape).
  *
- * Opt-in on purpose — it is the only ecomcn block that depends on `motion`.
+ * The morph every ecomcn block follows: one settle curve, no bounce, and
+ * nothing but a fade under reduced motion.
  */
 
 // Ease-out, no overshoot: an editorial morph should settle, not bounce.
