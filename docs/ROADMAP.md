@@ -26,15 +26,18 @@ twenty-seven undocumented components.
 
 ## Where things stand
 
+_Updated end of September 2026._
+
 | | |
 | --- | --- |
-| Shipped | `price-tag`, `product-card`, `product-grid`, `order-summary`, `theme-editorial` |
-| Specified | 23 more blocks across five funnel stages |
-| Site | marketing page, `/blocks` catalogue, `/blocks/[slug]` docs, `/preview/[slug]` |
-| CI | validate → lint → typecheck → build → install-test |
-| Installable by a stranger | **Not yet** — no deploy, no tag |
+| Shipped (11 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag` · Cart: `order-summary` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · **M2 (Product) is next** |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 10 shipped, **8 to go** |
+| Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
+| CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
+| Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
 
-That last row is the whole of Milestone 0.
+Still open from M0: tag `v0.1.0`, and an install counter on the JSON route.
 
 ---
 
@@ -160,9 +163,13 @@ with nothing but ecomcn blocks. That is the screenshot that gets shared.
 | 2 | README screenshot grid; rewrite the pitch now that 16 blocks exist |
 | 3 | Full pass: every docs page has a demo that exercises its states |
 | 4 | Tag `v1.0.0`; submit to `registry.directory` and `awesome-shadcn-ui` |
-| 5 | Open the `directory.json` PR against `shadcn-ui/ui`; post one build-in-public thread showing **three** blocks, not sixteen |
+| 5 | Post one build-in-public thread showing **three** blocks, not eighteen |
 
-**v1.0 = 16 blocks**, funnel-complete from listing to cart.
+Done early: the social card (a static `opengraph-image.png` rather than
+evening 1's generated one) and the `directory.json` PR — merged in
+September 2026, long before v1.0.
+
+**v1.0 = 18 blocks**, funnel-complete from listing to cart.
 
 ---
 
@@ -170,16 +177,18 @@ with nothing but ecomcn blocks. That is the screenshot that gets shared.
 
 | Milestone | Evenings | Elapsed |
 | --- | --- | --- |
-| M0 — Make it real | 2 | Week 1 |
-| M1 — Browse | 7 | Weeks 2–5 |
-| M2 — Product | 10 | Weeks 6–10 |
-| M3 — Cart | 5 | Weeks 11–13 |
-| M4 — Launch | 5 | Weeks 14–15 |
-| **Total** | **29** | **~15 weeks** |
+| M0 — Make it real | 2 | Week 1 — done |
+| M1 — Browse | 7 | Weeks 2–5 — done |
+| M1.5 — Composition & motion | 4 | done |
+| M2 — Product | 10 | next |
+| M3 — Cart | 5 | |
+| M4 — Launch | 4 (one done early) | |
 
-Roughly **mid-January** from a late-September start. That is the honest number
-at 5 hrs/week, and it already assumes no missed weeks — so plan for late
-January and be pleased if it slips early.
+**From here:** 19 evenings — M2 10, M3 5, M4 4. At two evenings a week that is
+about ten weeks, so v1.0 lands around early December 2026 with no missed weeks.
+
+That already assumes no missed weeks — so plan for mid-December, and expect
+January if client work eats a few evenings.
 
 **If that is too long**, the lever is Milestone 2: ship `product-buy-box` with
 `variant-swatches` but defer `product-gallery` to v1.1 (adopters have an image

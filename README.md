@@ -22,36 +22,31 @@ That's why you can find what you need by the problem you have.
 
 ## Install
 
-**Step 1 — register the namespace, once per project.** This is not optional:
-the shadcn CLI never adds a registry on its own, so a block that pulls another
-ecomcn block cannot resolve it until `@ecomcn` exists in your
-`components.json`.
-
-```bash
-npx shadcn@latest registry add @ecomcn=https://ecomcn.vercel.app/r/{name}.json
-```
-
-`{name}` is literal — the CLI substitutes the item name.
-
-**Step 2 — add blocks by name.**
+ecomcn is listed in the
+[shadcn Registry Directory](https://ui.shadcn.com/docs/registry/registry-index),
+so blocks install by name — no setup:
 
 ```bash
 npx shadcn@latest add @ecomcn/product-card
 npx shadcn@latest add @ecomcn/order-summary
-npx shadcn@latest list @ecomcn
 ```
 
-Blocks with no ecomcn dependencies — `price-tag`, `order-summary`,
-`theme-editorial` — also install straight from a URL with no setup:
-
-```bash
-npx shadcn@latest add https://ecomcn.vercel.app/r/price-tag.json
-```
+The first add looks `@ecomcn` up in the directory and writes it into your
+`components.json`. Blocks that pull other ecomcn blocks resolve on their own —
+`product-grid` brings `product-card`, which brings `price-tag`.
 
 Start with the house theme if you want the look from the screenshots:
 
 ```bash
 npx shadcn@latest add @ecomcn/theme-editorial
+```
+
+**Older shadcn CLI, or want the registry pinned in your config?** Register it
+yourself once per project, then use the same add commands. `{name}` is
+literal — the CLI substitutes the item name.
+
+```bash
+npx shadcn@latest registry add @ecomcn=https://ecomcn.vercel.app/r/{name}.json
 ```
 
 ## What you get

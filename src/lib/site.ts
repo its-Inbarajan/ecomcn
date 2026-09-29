@@ -11,9 +11,11 @@ export const SITE_URL =
 export const NAMESPACE = "@ecomcn";
 
 /**
- * `{name}` is literal — the CLI substitutes the item name itself. Registering
- * the namespace is what lets a block's own `@ecomcn/…` dependencies resolve;
- * the CLI never adds a registry on its own.
+ * The manual route. @ecomcn is listed in the shadcn Registry Directory, so
+ * `addCommand` alone works: the CLI finds the namespace there and writes it
+ * into components.json on first use. This stays for older CLIs and for anyone
+ * who wants the URL pinned in their config. `{name}` is literal — the CLI
+ * substitutes the item name itself.
  */
 export const registerCommand = `npx shadcn@latest registry add ${NAMESPACE}=${SITE_URL}/r/{name}.json`;
 

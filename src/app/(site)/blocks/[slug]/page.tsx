@@ -90,12 +90,7 @@ export default async function BlockPage({
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0 space-y-10">
-          <InstallSteps
-            slug={slug}
-            needsNamespace={item.registryDependencies.some((dep) =>
-              dep.startsWith("@ecomcn/"),
-            )}
-          />
+          <InstallSteps slug={slug} />
 
           <BlockPreview slug={slug} title={block.title} />
 

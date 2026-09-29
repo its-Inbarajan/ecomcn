@@ -209,6 +209,10 @@ npx shadcn@latest add @ecomcn/product-card
 `{name}` is literal — the CLI substitutes it. No CORS config needed; the CLI
 fetches server-side.
 
+> Since the directory listing (see `PUBLISHING.md`), the first line is only
+> needed on older CLIs — `npx shadcn@latest add @ecomcn/product-card` alone
+> finds the namespace.
+
 ---
 
 ## Checkpoints

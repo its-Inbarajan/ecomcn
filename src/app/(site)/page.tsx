@@ -2,10 +2,11 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, Check } from "lucide-react";
 
 import { InstallCommand } from "@/components/site/copy-button";
+import { RegistryFallback } from "@/components/site/install-steps";
 import { LiveDemo } from "@/components/site/live-demo";
 import { ProductPhoto } from "@/components/site/product-photo";
 import { BLOCKS, DESIGN_RULES, STAGES, byStage, shipped } from "@/lib/blocks";
-import { addCommand, registerCommand } from "@/lib/site";
+import { addCommand } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 
@@ -250,22 +251,22 @@ function Install() {
         <div>
           <p className="ec-eyebrow text-brand">Install</p>
           <h2 className="ec-display mt-2 text-4xl sm:text-5xl">
-            Two commands, then it&rsquo;s your code.
+            One command, then it&rsquo;s your code.
           </h2>
           <p className="mt-4 max-w-lg text-[14.5px] leading-[1.75] text-muted-foreground">
-            Register the namespace once, then add blocks by name. Step one is
-            not optional: the CLI never adds a registry on its own, so a block
-            that pulls another ecomcn block cannot resolve it until{" "}
+            ecomcn is listed in the shadcn Registry Directory, so the CLI knows{" "}
             <code className="ec-rule border px-1 py-px font-mono text-[12px] text-foreground">
               @ecomcn
             </code>{" "}
-            exists in your components.json. Nothing is installed at runtime —
-            the CLI copies source into your repo.
+            by name. The first add writes it into your components.json, and a
+            block that pulls another ecomcn block resolves it on its own.
+            Nothing is installed at runtime — the CLI copies source into your
+            repo.
           </p>
 
-          <div className="mt-6 space-y-2">
-            <InstallCommand command={registerCommand} />
+          <div className="mt-6 space-y-3">
             <InstallCommand command={addCommand("product-card")} />
+            <RegistryFallback />
           </div>
 
           <a
