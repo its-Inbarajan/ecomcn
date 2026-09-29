@@ -7,6 +7,11 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- **Listed in the shadcn Registry Directory** (shadcn-ui/ui#12025).
+  `npx shadcn@latest add @ecomcn/<block>` now works in any project with no
+  setup: the CLI finds `@ecomcn` in the directory and writes it into
+  `components.json` on first use. Existing installs need no change — a
+  namespace you registered by hand keeps working.
 - `load-more` — progress rule, announced "Showing 24 of 312", button / hybrid /
   infinite modes, focus moved to the first new item, error with retry.
 - `product-quick-view` — the card image morphs into a native `<dialog>` and back

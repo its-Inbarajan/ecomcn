@@ -5,8 +5,9 @@ import { ArrowLeft } from "lucide-react";
 
 import { BlockPreview } from "@/components/site/block-preview";
 import { InstallCommand } from "@/components/site/copy-button";
+import { RegistryFallback } from "@/components/site/install-steps";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
-import { NAMESPACE, registerCommand, socialMetadata } from "@/lib/site";
+import { NAMESPACE, socialMetadata } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -66,8 +67,8 @@ export default async function ExamplePage({
           </p>
         </div>
         <div className="space-y-3 self-end">
-          <InstallCommand command={registerCommand} />
           <InstallCommand command={install} />
+          <RegistryFallback />
         </div>
       </header>
 

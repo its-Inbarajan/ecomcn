@@ -123,6 +123,13 @@ against `shadcn-ui/ui` that adds one entry to `apps/v4/registry/directory.json`.
 Once merged, `npx shadcn add @ecomcn/<block>` works with **no** `registry add`
 step — the CLI looks the namespace up in the directory itself.
 
+**Status: listed.** Merged in
+[shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025) in September
+2026. From here on, Registry Health watches the live registry: the index
+hourly, a rotating sample of items daily, and `shadcn add --dry-run` weekly.
+Changing the domain or renaming an item now needs a follow-up PR to
+`directory.json`, and a broken deploy shows up as a degraded status there.
+
 **Requirements, and how ecomcn meets each one**
 
 | Requirement (from the docs) | How it is met | Checked by |
