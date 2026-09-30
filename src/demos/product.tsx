@@ -20,6 +20,15 @@ import {
   useSizeGuide,
   type SizeGuideRow,
 } from "@/components/ecomcn/size-guide-dialog";
+import {
+  VariantSwatches,
+  VariantSwatchesOption,
+  VariantSwatchesStatus,
+  useVariantSwatches,
+  type Variant,
+  type VariantOption,
+  type VariantSelection,
+} from "@/components/ecomcn/variant-swatches";
 import { PriceTag } from "@/components/ecomcn/price-tag";
 import { ProductPhoto } from "@/components/site/product-photo";
 import { ControlBar, ControlLabel, Toggle } from "@/demos/controls";
@@ -349,6 +358,183 @@ export function SizeGuideDialogDemo() {
             The size you pick is marked in the table; switch to inches and the
             ranges convert to the nearest half inch, while the UK and US
             equivalents are text, so they are never converted.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── variant-swatches ───────────────────────────────────────────────── */
+
+const BOOT_PHOTOS: Record<string, string> = {
+  Tan: "1773425975272-35f0900a9d8f",
+  Walnut: "1777987601677-3059be0e1388",
+  Black: "1534233812932-59b8fa1b780c",
+};
+
+const BOOT_OPTIONS: VariantOption[] = [
+  {
+    name: "Colour",
+    values: [
+      { value: "Tan", swatch: "#a8764a" },
+      { value: "Walnut", swatch: "#5b3d28" },
+      { value: "Black", swatch: "#1c1b1a" },
+    ],
+  },
+  { name: "Size", values: ["39", "40", "41", "42", "43", "44", "45", "46"] },
+];
+
+/**
+ * Stock per colour, size 39 to 46. Tan is healthy with gaps, Walnut isn't
+ * made in 46, and Black is down to one pair — so every state is on show.
+ */
+const BOOT_STOCK: Record<string, (number | null)[]> = {
+  Tan: [4, 0, 2, 9, 12, 1, 6, 0],
+  Walnut: [0, 5, 8, 0, 3, 7, 0, null],
+  Black: [0, 0, 0, 1, 0, 0, 0, 0],
+};
+
+const BOOT_VARIANTS: Variant[] = Object.entries(BOOT_STOCK).flatMap(([colour, stock]) =>
+  stock.flatMap((units, i) => {
+    const size = String(39 + i);
+    return units === null
+      ? []
+      : [{ id: `vester-${colour.toLowerCase()}-${size}`, options: { Colour: colour, Size: size }, stock: units }];
+  })
+);
+
+const BOOT_GUIDE: SizeGuideRow[] = [
+  ...FOOTWEAR,
+  { size: "EU 45", values: ["10.5", "11.5", 28.6] },
+  { size: "EU 46", values: ["11", "12", 29.2] },
+];
+
+const BOOT_PRICE = 420;
+
+/** Add to bag, carrying the price — or saying what is still missing. */
+function AddToBag({ variant, complete }: { variant?: Variant; complete: boolean }) {
+  const price = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(BOOT_PRICE);
+  const soldOut = complete && (!variant || variant.stock === 0);
+  return (
+    <button
+      type="button"
+      aria-disabled={!complete || undefined}
+      className={cn(
+        "h-12 w-full text-sm font-medium tracking-[0.14em] uppercase transition-opacity outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        soldOut ? "border border-foreground text-foreground" : "bg-foreground text-background hover:opacity-90",
+        !complete && "opacity-60 hover:opacity-60"
+      )}
+    >
+      {!complete ? "Select a size" : soldOut ? "Notify me" : `Add to bag — ${price}`}
+    </button>
+  );
+}
+
+/** A custom part: the buy button reads the resolved variant through context. */
+function AddToBagPart() {
+  const { variant, value, options } = useVariantSwatches();
+  return <AddToBag variant={variant} complete={options.every((o) => value[o.name] !== undefined)} />;
+}
+
+export function VariantSwatchesDemo() {
+  const [layout, setLayout] = React.useState<"default" | "composed">("default");
+  const [loading, setLoading] = React.useState(false);
+  const [value, setValue] = React.useState<VariantSelection>({ Colour: "Tan" });
+  const colour = value.Colour ?? "Tan";
+  const variant = BOOT_VARIANTS.find(
+    (v) => v.options.Colour === value.Colour && v.options.Size === value.Size
+  );
+
+  const guide = (
+    <SizeGuideDialog
+      columns={[...FOOTWEAR_COLUMNS]}
+      rows={BOOT_GUIDE}
+      selectedSize={value.Size ? `EU ${value.Size}` : undefined}
+      fitNote="Lasted narrow — if you are between sizes, go up half a size."
+    />
+  );
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Layout</ControlLabel>
+        <Toggle on={layout === "default"} onClick={() => setLayout("default")}>
+          One tag
+        </Toggle>
+        <Toggle on={layout === "composed"} onClick={() => setLayout("composed")}>
+          Composed
+        </Toggle>
+        <ControlLabel className="ml-4">Stock</ControlLabel>
+        <Toggle on={!loading} onClick={() => setLoading(false)}>
+          Loaded
+        </Toggle>
+        <Toggle on={loading} onClick={() => setLoading(true)}>
+          Loading
+        </Toggle>
+        <span className="ml-auto font-mono text-[11.5px] text-muted-foreground" aria-live="polite">
+          {variant ? `${variant.id} · ${variant.stock} in stock` : "no variant yet"}
+        </span>
+      </ControlBar>
+
+      <div className="grid gap-8 md:min-h-[44rem] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="aspect-[4/5] w-full self-start">
+          <ProductPhoto
+            key={colour}
+            photo={{ id: BOOT_PHOTOS[colour] }}
+            alt={`The Vester Chelsea boot in ${colour.toLowerCase()} leather`}
+            eager
+            sizes="(min-width: 768px) 50vw, 100vw"
+          />
+        </div>
+
+        <div className="flex flex-col gap-8 md:py-6">
+          <div>
+            <p className="ec-eyebrow text-muted-foreground">Lindqvist</p>
+            <h2 className="ec-display mt-3 text-4xl sm:text-5xl">Vester Chelsea Boot</h2>
+            <PriceTag price={BOOT_PRICE} className="mt-4" />
+          </div>
+
+          {layout === "default" ? (
+            <>
+              <VariantSwatches
+                options={BOOT_OPTIONS}
+                variants={BOOT_VARIANTS}
+                value={value}
+                onValueChange={setValue}
+                sizeGuide={guide}
+                loading={loading}
+              />
+              <AddToBag variant={variant} complete={Boolean(value.Colour && value.Size)} />
+            </>
+          ) : (
+            <VariantSwatches
+              options={BOOT_OPTIONS}
+              variants={BOOT_VARIANTS}
+              value={value}
+              onValueChange={setValue}
+              loading={loading}
+              className="gap-7"
+            >
+              <VariantSwatchesOption name="Size" action={guide} columns={8} />
+              <VariantSwatchesOption name="Colour" />
+              <div>
+                <AddToBagPart />
+                <VariantSwatchesStatus />
+              </div>
+            </VariantSwatches>
+          )}
+
+          <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+            Pick Black: every size but 42 is struck through — still focusable,
+            still choosable, and the button turns to &ldquo;Notify me&rdquo;
+            while the line under the grid says why. Sizes with a few pairs left
+            say so. The mark slides from pick to pick; the arrow keys move
+            without choosing, so the photo only changes when you do.
           </p>
         </div>
       </div>

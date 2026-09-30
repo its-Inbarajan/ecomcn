@@ -15,7 +15,11 @@ import {
   ProductQuickViewDemo,
   SortToolbarDemo,
 } from "@/demos/browse";
-import { ProductDetailsAccordionDemo, SizeGuideDialogDemo } from "@/demos/product";
+import {
+  ProductDetailsAccordionDemo,
+  SizeGuideDialogDemo,
+  VariantSwatchesDemo,
+} from "@/demos/product";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
 
 export const dynamicParams = false;
@@ -60,6 +64,8 @@ export default async function PreviewPage({
       return <ProductDetailsAccordionDemo />;
     case "size-guide-dialog":
       return <SizeGuideDialogDemo />;
+    case "variant-swatches":
+      return <VariantSwatchesDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":
