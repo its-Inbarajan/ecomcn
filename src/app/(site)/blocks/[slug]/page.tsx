@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, Link2 } from "lucide-react";
 
 import { BlockPreview } from "@/components/site/block-preview";
 import { CodeViewer } from "@/components/site/code-viewer";
@@ -65,7 +65,9 @@ export default async function BlockPage({
   const parts = exported.flatMap((e) => e.components);
   const hooks = [...exported, ...item.files.filter((f) => f.type === "registry:hook").map((f) => extractExports(f.content))]
     .flatMap((e) => e.hooks);
-  const example = EXAMPLES.find((e) => e.slug === block.example);
+  // Every block the example is built from links to it — not only the ones
+  // that name it — so price-tag and product-card point at the listing page too.
+  const example = EXAMPLES.find((e) => e.slug === block.example || e.blocks.includes(block.slug));
 
   return (
     <main className="mx-auto w-full max-w-[1180px] flex-1 px-5 py-12 sm:px-8">
@@ -145,7 +147,7 @@ export default async function BlockPage({
             >
               <p className="ec-eyebrow text-muted-foreground">See it composed</p>
               <p className="ec-display mt-1 flex items-center gap-2 text-2xl group-hover:text-brand">
-                {example.title} <ArrowRight className="size-4" aria-hidden />
+                {example.title} <Link2 className="size-4 shrink-0" aria-hidden />
               </p>
             </Link>
           )}

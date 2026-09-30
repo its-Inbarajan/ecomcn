@@ -27,11 +27,15 @@ export function InstallCommand({
   return (
     <div
       className={cn(
-        "ec-rule flex items-center justify-between gap-3 border bg-secondary/60 px-3 py-2.5",
+        // contain: inline-size — the box takes its width from the column it
+        // sits in, never from the command. Without it a long command is the
+        // min-content width of every grid or flex parent, and the title and
+        // summary beside it stretch to match.
+        "ec-rule flex min-w-0 items-center justify-between gap-3 border bg-secondary/60 px-3 py-2.5 [contain:inline-size]",
         className,
       )}
     >
-      <code className="ec-scroll-x overflow-x-auto font-mono text-[12.5px] whitespace-nowrap">
+      <code className="ec-scroll-x min-w-0 flex-1 overflow-x-auto font-mono text-[12.5px] whitespace-nowrap">
         <span className="text-muted-foreground select-none">$ </span>
         {command}
       </code>

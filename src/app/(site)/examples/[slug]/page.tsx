@@ -58,15 +58,15 @@ export default async function ExamplePage({
         <ArrowLeft className="size-3.5" aria-hidden /> All blocks
       </Link>
 
-      <header className="ec-rule-strong mt-5 grid gap-6 border-b pb-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div>
+      <header className="ec-rule-strong mt-5 grid gap-6 border-b pb-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <div className="min-w-0">
           <p className="ec-eyebrow text-brand">{example.stage} / composed example</p>
           <h1 className="ec-display mt-3 text-5xl sm:text-6xl">{example.title}</h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted-foreground">
             {example.summary}
           </p>
         </div>
-        <div className="space-y-3 self-end">
+        <div className="min-w-0 space-y-3 self-end">
           <InstallCommand command={install} />
           <RegistryFallback />
         </div>
