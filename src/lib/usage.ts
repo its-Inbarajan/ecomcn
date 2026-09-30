@@ -413,6 +413,70 @@ function HowToMeasure() {
 }`,
     },
   ],
+  "variant-swatches": [
+    {
+      label: "From your product data",
+      code: `import {
+  VariantSwatches,
+  type Variant,
+  type VariantOption,
+} from "@/components/ecomcn/variant-swatches"
+
+const options: VariantOption[] = [
+  {
+    name: "Colour",
+    // swatch is any CSS background: a colour, or url(...) for a fabric.
+    values: [
+      { value: "Tan", swatch: "#a8764a" },
+      { value: "Black", swatch: "#1c1b1a" },
+    ],
+  },
+  { name: "Size", values: ["39", "40", "41", "42"] },
+]
+
+// One per SKU. stock: 0 is sold out; leave it out if you don't track stock.
+// A combination with no variant at all reads as "isn't made in".
+const variants: Variant[] = [
+  { id: "tan-39", options: { Colour: "Tan", Size: "39" }, stock: 4 },
+  { id: "tan-40", options: { Colour: "Tan", Size: "40" }, stock: 0 },
+  // …
+]
+
+<VariantSwatches
+  options={options}
+  variants={variants}
+  defaultValue={{ Colour: "Tan" }}
+  onVariantChange={(variant) => setSku(variant?.id)}
+  sizeGuide={<SizeGuideDialog columns={columns} rows={rows} />}
+/>`,
+    },
+    {
+      label: "Composed — your order, your parts",
+      code: `import {
+  VariantSwatches,
+  VariantSwatchesOption,
+  VariantSwatchesStatus,
+  useVariantSwatches,
+} from "@/components/ecomcn/variant-swatches"
+
+<VariantSwatches options={options} variants={variants} className="gap-7">
+  <VariantSwatchesOption name="Size" action={<SizeGuideDialog … />} />
+  <VariantSwatchesOption name="Colour" />
+  <AddToBag />
+  <VariantSwatchesStatus />
+</VariantSwatches>
+
+// Parts read the resolved variant: undefined until every option is picked.
+function AddToBag() {
+  const { variant, purchasable } = useVariantSwatches()
+  return (
+    <Button disabled={!purchasable} onClick={() => addToBag(variant!.id)}>
+      Add to bag
+    </Button>
+  )
+}`,
+    },
+  ],
   "empty-results": [
     {
       label: "As the grid's empty state",

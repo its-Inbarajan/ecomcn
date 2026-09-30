@@ -6,6 +6,24 @@ describe changes in terms of what to edit, not just what changed.
 
 ## [Unreleased]
 
+### Added
+- `variant-swatches` — colour swatches and a ruled size grid that work out
+  stock from your `variants`. With a colour picked, a size it has none of is
+  struck through with a diagonal rule (a halo on swatches, so it reads on
+  black) and read out as "sold out" — but never disabled: it stays focusable
+  and choosable, for a notify-me, while a live status line says why ("43 is
+  sold out in Black.") and `purchasable` turns false. A few left shows as
+  "2 left" under the size and "Only 2 left." in the status line
+  (`lowStockThreshold`, default 3). A one-value option ("One size") is picked
+  for you. The pick's mark slides between options with Motion (a fade under
+  reduced motion). A radio group with roving focus: the arrow keys move,
+  Space or Enter chooses. `sizeGuide` puts a `<SizeGuideDialog>` beside the
+  size label. Compose from `VariantSwatchesOption` and
+  `VariantSwatchesStatus`; `useVariantSwatches()` gives your own parts the
+  selection, the resolved `variant` and `purchasable`. English strings are
+  overridable through `messages`. No shadcn primitives, so nothing differs
+  between Radix and Base UI. Adds `motion`.
+
 ## [0.1.0] — 2026-09-29
 
 The first tagged release: the whole Browse stage, the first two Product

@@ -175,14 +175,19 @@ Locale-aware price with compare-at strike, computed discount badge, two sizes.
   `$` is the single most common bug in component kits.
 - Composes: nothing — pure Tailwind, zero registry dependencies
 
-### `variant-swatches` · block · effort 3
+### `variant-swatches` · block · effort 3 · **shipped** · `motion`
 Colour swatches and a size grid with out-of-stock strike-through and low-stock
-messaging.
-- **Design:** size grid is 1px gaps over a border track — a single ruled block
-  rather than five buttons.
+messaging, worked out from the product's variants.
+- **Design:** the size grid is one ruled block — hairline cells rather than
+  five buttons — and the pick is a slab of ink that slides from cell to cell
+  on the house settle curve. "2 left" sits under a size that is running out.
 - **Hard part:** out-of-stock must be visible without colour alone (the diagonal
-  rule) and must stay focusable so screen readers hear it's unavailable.
-- Composes: `label`, `dialog`
+  rule) and must stay focusable so screen readers hear it's unavailable. It is
+  never disabled: a sold-out pick is allowed, for a notify-me, and the status
+  line says why it can't be bought. The arrow keys move without choosing, so
+  arrowing past a colour never swaps the photo.
+- Composes: no primitives (a hand-rolled radio group, identical on both
+  bases); the size guide goes in through the `sizeGuide` slot
 
 ### `size-guide-dialog` · component · effort 1 · **shipped** · `motion`
 Measurement table plus a fit note, opened from the size label.

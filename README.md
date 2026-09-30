@@ -77,8 +77,8 @@ the hard parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 
 Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
 `filter-panel`, `filter-sheet`, `sort-toolbar`, `empty-results`, `load-more` and
-`product-quick-view` — plus `price-tag`, `product-details-accordion` and
-`size-guide-dialog` from **Product**, `order-summary` and `theme-editorial`. See them composed into one
+`product-quick-view` — plus `price-tag`, `product-details-accordion`,
+`size-guide-dialog` and `variant-swatches` from **Product**, `order-summary` and `theme-editorial`. See them composed into one
 listing page at <https://ecomcn.vercel.app/examples/listing-page>.
 
 ## Repo layout

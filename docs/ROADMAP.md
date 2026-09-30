@@ -30,9 +30,9 @@ _Updated end of September 2026._
 
 | | |
 | --- | --- |
-| Shipped (13 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog` · Cart: `order-summary` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 2 of 5 |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 12 shipped, **6 to go** |
+| Shipped (14 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches` · Cart: `order-summary` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 3 of 5 |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 13 shipped, **5 to go** |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
@@ -134,7 +134,7 @@ screenshot — so it gets built last here, once its dependencies exist.
 | --- | --- | --- |
 | `product-details-accordion` | 1 | **Done** — summary line per row keeps closed content findable |
 | `size-guide-dialog` | 1 | **Done** — pinned size column, sideways scroll inside the dialog |
-| `variant-swatches` | 3 | Out-of-stock without colour alone; stays focusable |
+| `variant-swatches` | 3 | **Done** — struck through, never disabled; sold-out picks feed a notify-me |
 | `product-gallery` | 3 | Swipe, hover-zoom, `aria-current`, preload only image 2 |
 | `product-buy-box` | 2 | Composes the three above + `price-tag` |
 

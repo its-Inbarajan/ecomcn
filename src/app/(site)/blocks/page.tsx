@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Link2 } from "lucide-react";
 
 import { BLOCKS, EXAMPLES, STAGES, byStage } from "@/lib/blocks";
 
@@ -46,8 +46,9 @@ export default function BlocksIndex() {
               >
                 <span>
                   <span className="ec-eyebrow text-brand">Composed example</span>
-                  <span className="ec-display ml-3 text-2xl group-hover:text-brand">
+                  <span className="ec-display ml-3 inline-flex items-center gap-2 text-2xl group-hover:text-brand">
                     {example.title}
+                    <Link2 className="size-4 shrink-0" aria-hidden />
                   </span>
                 </span>
                 <span className="ec-eyebrow flex items-center gap-1.5 text-muted-foreground group-hover:text-foreground">
