@@ -1,0 +1,6 @@
+# Every change needs the maintainer's approval before it can merge into
+# develop — the ruleset requires a code owner's review (see
+# docs/github-ruleset-develop.json). Registry sources are listed on their own
+# so a future co-maintainer can be added for blocks without owning the site.
+*                 @its-Inbarajan
+/src/registry/    @its-Inbarajan
