@@ -15,6 +15,9 @@
     "src/registry/ecomcn/product-details-accordion/registry.json",
     "src/registry/ecomcn/size-guide-dialog/registry.json",
     "src/registry/ecomcn/variant-swatches/registry.json",
+    "src/registry/ecomcn/product-buy-box/registry.json",
+    "src/registry/ecomcn/review-summary/registry.json",
+    "src/registry/ecomcn/related-products/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],

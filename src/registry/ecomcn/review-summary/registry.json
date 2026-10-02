@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "review-summary",
+      "type": "registry:block",
+      "title": "Review Summary",
+      "description": "The reviews section: the average set large, a star histogram whose rows are buttons that filter the list (and read out as \"5 stars, 226 reviews, 72%\"), a fit scale with its reading in words, and reviews with a Verified buyer badge. The active row's rule slides between rows, bars grow to their share, and the list grows to its measured height as it filters — Motion, a fade under reduced motion. Takes a page of reviews plus overall counts, and reports the filter so you can fetch server-side. Compound, through useReviewSummary().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "badge"
+      ],
+      "files": [
+        {
+          "path": "review-summary.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/review-summary.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "product",
+        "pdp",
+        "reviews"
+      ]
+    }
+  ]
+}

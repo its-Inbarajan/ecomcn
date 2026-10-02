@@ -161,27 +161,36 @@ export function ProductQuickViewTrigger({
 }: ProductQuickViewTriggerProps) {
   const { open } = useProductQuickView()
   return (
-    <button
-      type="button"
-      aria-haspopup="dialog"
-      data-slot="product-quick-view-trigger"
-      onClick={(event) => open(product, { colorIndex, trigger: event.currentTarget })}
-      className={cn(
-        // Sits above the card's ::after link overlay. Revealed on hover and
-        // on keyboard focus; always visible where there is no hover at all.
-        "absolute top-2 right-2 z-10 inline-flex items-center gap-1.5 bg-background/90 px-2.5 py-1.5 text-[11px] tracking-[0.14em] uppercase opacity-0 transition-opacity outline-none group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none [@media(hover:none)]:opacity-100",
-        className
-      )}
-      {...props}
+    // A full-frame layer that measures the card, so the button can drop its
+    // label on a narrow card (two to a row on a phone) and stay clear of the
+    // badge. It lets clicks through to the card everywhere but the button.
+    <span
+      data-slot="product-quick-view-anchor"
+      className="pointer-events-none absolute inset-0 z-10 @container"
     >
-      {children ?? (
-        <>
-          <Eye className="size-3.5" aria-hidden />
-          Quick view
-        </>
-      )}
-      <span className="sr-only">: {product.name}</span>
-    </button>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        data-slot="product-quick-view-trigger"
+        onClick={(event) => open(product, { colorIndex, trigger: event.currentTarget })}
+        className={cn(
+          // Revealed on hover and on keyboard focus; always visible where
+          // there is no hover at all.
+          "pointer-events-auto absolute top-2 right-2 inline-flex h-8 min-w-8 items-center justify-center gap-1.5 bg-background/90 px-2 text-[11px] tracking-[0.14em] uppercase opacity-0 transition-opacity outline-none group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none @min-[15rem]:px-2.5 [@media(hover:none)]:opacity-100",
+          className
+        )}
+        {...props}
+      >
+        {children ?? (
+          <>
+            <Eye className="size-3.5" aria-hidden />
+            {/* The words from 15rem of card up; below, the eye alone. */}
+            <span className="sr-only @min-[15rem]:not-sr-only">Quick view</span>
+          </>
+        )}
+        <span className="sr-only">: {product.name}</span>
+      </button>
+    </span>
   )
 }
 

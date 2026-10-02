@@ -29,6 +29,27 @@ import {
   type VariantOption,
   type VariantSelection,
 } from "@/components/ecomcn/variant-swatches";
+import {
+  ProductBuyBox,
+  ProductBuyBoxActions,
+  ProductBuyBoxDelivery,
+  ProductBuyBoxHeader,
+  ProductBuyBoxPrice,
+  ProductBuyBoxVariants,
+  useProductBuyBox,
+  type BuyBoxProduct,
+  type BuyBoxVariant,
+} from "@/components/ecomcn/product-buy-box";
+import {
+  ReviewSummary,
+  ReviewSummaryFit,
+  ReviewSummaryHistogram,
+  ReviewSummaryList,
+  ReviewSummaryScore,
+  type Review,
+} from "@/components/ecomcn/review-summary";
+import { RelatedProducts } from "@/components/ecomcn/related-products";
+import { PRODUCTS as CATALOGUE } from "@/demos/listing-data";
 import { PriceTag } from "@/components/ecomcn/price-tag";
 import { ProductPhoto } from "@/components/site/product-photo";
 import { ControlBar, ControlLabel, Toggle } from "@/demos/controls";
@@ -538,6 +559,255 @@ export function VariantSwatchesDemo() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ─── product-buy-box ────────────────────────────────────────────────── */
+
+/** The same boot, with Black at its own price — the buy box follows the variant. */
+const BOOT: BuyBoxProduct = {
+  id: "vester",
+  brand: "Lindqvist",
+  name: "Vester Chelsea Boot",
+  price: BOOT_PRICE,
+  rating: 4.6,
+  reviewCount: 312,
+  options: BOOT_OPTIONS,
+  variants: BOOT_VARIANTS.map<BuyBoxVariant>((v) =>
+    v.options.Colour === "Black" ? { ...v, price: 380, compareAt: 420 } : v,
+  ),
+};
+
+/** A custom part: the photo follows the colour picked in the buy box. */
+function BuyBoxPhoto() {
+  const { selection } = useProductBuyBox();
+  const colour = selection.Colour ?? "Tan";
+  return (
+    <div className="aspect-[4/5] w-full self-start">
+      <ProductPhoto
+        key={colour}
+        photo={{ id: BOOT_PHOTOS[colour] }}
+        alt={`The Vester Chelsea boot in ${colour.toLowerCase()} leather`}
+        eager
+        sizes="(min-width: 768px) 50vw, 100vw"
+      />
+    </div>
+  );
+}
+
+export function ProductBuyBoxDemo() {
+  const [layout, setLayout] = React.useState<"default" | "composed">("default");
+  const [fail, setFail] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [bag, setBag] = React.useState(0);
+
+  // A bag that takes a moment — and, when asked, refuses: the button rolls back.
+  const addToBag = ({ quantity }: { quantity: number }) =>
+    new Promise<void>((resolve, reject) =>
+      window.setTimeout(() => {
+        if (fail) reject(new Error("Network"));
+        else {
+          setBag((n) => n + quantity);
+          resolve();
+        }
+      }, 700),
+    );
+
+  const shared = {
+    product: BOOT,
+    defaultValue: { Colour: "Tan" },
+    onAddToBag: addToBag,
+    onNotify: () => {},
+    delivery: { minDays: 2, maxDays: 4, cutoffHour: 15, label: "Free delivery" },
+    loading,
+  };
+  const guide = (
+    <SizeGuideDialog
+      columns={[...FOOTWEAR_COLUMNS]}
+      rows={BOOT_GUIDE}
+      fitNote="Lasted narrow — if you are between sizes, go up half a size."
+    />
+  );
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Layout</ControlLabel>
+        <Toggle on={layout === "default"} onClick={() => setLayout("default")}>
+          One tag
+        </Toggle>
+        <Toggle on={layout === "composed"} onClick={() => setLayout("composed")}>
+          Composed
+        </Toggle>
+        <ControlLabel className="ml-4">Next add</ControlLabel>
+        <Toggle on={!fail} onClick={() => setFail(false)}>
+          Succeeds
+        </Toggle>
+        <Toggle on={fail} onClick={() => setFail(true)}>
+          Fails
+        </Toggle>
+        <ControlLabel className="ml-4">Data</ControlLabel>
+        <Toggle on={!loading} onClick={() => setLoading(false)}>
+          Loaded
+        </Toggle>
+        <Toggle on={loading} onClick={() => setLoading(true)}>
+          Loading
+        </Toggle>
+        <span className="ml-auto font-mono text-[11.5px] text-muted-foreground" aria-live="polite">
+          bag: {bag}
+        </span>
+      </ControlBar>
+
+      {layout === "default" ? (
+        <div className="grid gap-8 md:min-h-[46rem] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+          <div className="aspect-[4/5] w-full self-start">
+            <ProductPhoto
+              photo={{ id: BOOT_PHOTOS.Tan }}
+              alt="The Vester Chelsea boot in tan leather"
+              eager
+              sizes="(min-width: 768px) 50vw, 100vw"
+            />
+          </div>
+          <ProductBuyBox {...shared} headingLevel="h2" className="md:py-6" />
+        </div>
+      ) : (
+        // Composed: the root wraps the photo too, so it reads the same pick.
+        <ProductBuyBox
+          {...shared}
+          className="grid gap-8 md:min-h-[46rem] md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14"
+        >
+          <BuyBoxPhoto />
+          <div className="flex flex-col gap-8 md:py-6">
+            <div className="flex flex-col gap-4">
+              <ProductBuyBoxHeader headingLevel="h2" />
+              <ProductBuyBoxPrice />
+            </div>
+            <ProductBuyBoxVariants sizeGuide={guide} />
+            <ProductBuyBoxActions />
+            <ProductBuyBoxDelivery />
+          </div>
+        </ProductBuyBox>
+      )}
+
+      <p className="mt-8 max-w-2xl text-[12.5px] leading-relaxed text-muted-foreground">
+        Press add before choosing a size: the button asks, and focus goes to
+        the sizes. Pick one and the button carries the total. Set the next add
+        to fail: it says &ldquo;Added&rdquo; at once, then rolls back with a
+        line under it. Black has its own price, and the composed photo follows
+        the colour.
+      </p>
+    </div>
+  );
+}
+
+/* ─── review-summary ─────────────────────────────────────────────────── */
+
+const REVIEWS: Review[] = [
+  { id: "r1", rating: 5, title: "Worth the break-in week", body: "Stiff for the first five or six wears, then they shape to your foot. Two winters in and the sole is barely worn.", author: "Mara K.", date: "2026-09-21", verified: true, fit: -0.4, variant: "Tan · EU 41" },
+  { id: "r2", rating: 5, title: "The colour is better in person", body: "Tan reads almost cognac in daylight. Took my usual size, a little snug across the toes at first.", author: "Jonas P.", date: "2026-09-12", verified: true, fit: -0.3, variant: "Tan · EU 43" },
+  { id: "r3", rating: 4, title: "Size up half", body: "Lovely boot, narrow last. I swapped a 42 for a 43 and they are perfect with wool socks.", author: "Ines R.", date: "2026-08-30", verified: true, fit: -0.8, variant: "Walnut · EU 43" },
+  { id: "r4", rating: 5, title: "Resoled, still going", body: "Third year. Had them resoled in the spring — the welt made that easy and cheap.", author: "Tom B.", date: "2026-08-18", fit: 0, variant: "Black · EU 44" },
+  { id: "r5", rating: 3, title: "Elastic loosened", body: "Leather is great, but the side elastic went slack faster than I expected.", author: "Priya S.", date: "2026-08-02", verified: true, fit: 0.2, variant: "Walnut · EU 40" },
+  { id: "r6", rating: 4, title: "Smart enough for the office", body: "Wear them with suits and with jeans. Took a week to stop squeaking.", author: "Daniel O.", date: "2026-07-25", verified: true, fit: -0.2, variant: "Black · EU 42" },
+  { id: "r7", rating: 2, title: "Too narrow for me", body: "I have wide feet and even a size up pinched. Returns were painless.", author: "Ruth A.", date: "2026-07-11", verified: true, fit: -1, variant: "Tan · EU 42" },
+  { id: "r8", rating: 5, title: "Rain-proof enough", body: "Waxed them once and walked through a wet October without damp socks.", author: "Kofi M.", date: "2026-06-30", fit: 0, variant: "Tan · EU 44" },
+  { id: "r9", rating: 1, title: "Sole separated", body: "Toe of the sole came away after two months. Replaced quickly, to be fair.", author: "Lena W.", date: "2026-06-14", verified: true, variant: "Walnut · EU 39" },
+];
+
+/** The product's counts across all 312 reviews; the list is one page of them. */
+const DISTRIBUTION: [number, number, number, number, number] = [4, 3, 18, 61, 226];
+
+export function ReviewSummaryDemo() {
+  const [state, setState] = React.useState<"loaded" | "loading" | "empty">("loaded");
+  const [layout, setLayout] = React.useState<"default" | "composed">("default");
+  const reviews = state === "empty" ? [] : REVIEWS;
+  const distribution = state === "empty" ? undefined : DISTRIBUTION;
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Layout</ControlLabel>
+        <Toggle on={layout === "default"} onClick={() => setLayout("default")}>
+          One tag
+        </Toggle>
+        <Toggle on={layout === "composed"} onClick={() => setLayout("composed")}>
+          Composed
+        </Toggle>
+        <ControlLabel className="ml-4">Data</ControlLabel>
+        {(["loaded", "loading", "empty"] as const).map((s) => (
+          <Toggle key={s} on={state === s} onClick={() => setState(s)}>
+            {s[0].toUpperCase() + s.slice(1)}
+          </Toggle>
+        ))}
+      </ControlBar>
+
+      {/* Tall enough for the longest list, so the frame keeps its height
+          while the list filters and the page around it never jumps. */}
+      <div className="sm:min-h-[60rem]">
+        {layout === "default" ? (
+          <ReviewSummary
+            id="reviews"
+            reviews={reviews}
+            distribution={distribution}
+            loading={state === "loading"}
+            action={
+              <a
+                href="#"
+                className="w-fit text-sm underline decoration-border underline-offset-4 hover:decoration-foreground"
+              >
+                Write a review
+              </a>
+            }
+          />
+        ) : (
+          <ReviewSummary
+            reviews={reviews}
+            distribution={distribution}
+            loading={state === "loading"}
+            title="What owners say"
+            pageSize={3}
+          >
+            <div className="grid gap-10 pt-8 md:grid-cols-2">
+              <ReviewSummaryScore />
+              <ReviewSummaryFit />
+            </div>
+            <ReviewSummaryHistogram className="mt-8 max-w-md" />
+            <ReviewSummaryList className="mt-10" />
+          </ReviewSummary>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── related-products ───────────────────────────────────────────────── */
+
+export function RelatedProductsDemo() {
+  const [loading, setLoading] = React.useState(false);
+  const [added, setAdded] = React.useState<string | null>(null);
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Data</ControlLabel>
+        <Toggle on={!loading} onClick={() => setLoading(false)}>
+          Loaded
+        </Toggle>
+        <Toggle on={loading} onClick={() => setLoading(true)}>
+          Loading
+        </Toggle>
+        <span className="ml-auto font-mono text-[11.5px] text-muted-foreground" aria-live="polite">
+          {added ?? "quick-add or save a card"}
+        </span>
+      </ControlBar>
+      <RelatedProducts
+        products={CATALOGUE.slice(0, 8)}
+        loading={loading}
+        onQuickAdd={(product) => setAdded(`added ${product.name}`)}
+        cardProps={{
+          onWishlistChange: (saved, product) => setAdded(`${saved ? "saved" : "removed"} ${product.name}`),
+        }}
+      />
     </div>
   );
 }

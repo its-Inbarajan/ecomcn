@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "product-buy-box",
+      "type": "registry:block",
+      "title": "Product Buy Box",
+      "description": "The buy box: brand, name, a rating that links to the reviews, the price (the variant's own when it has one), stock-aware variant swatches, a quantity stepper, and an add-to-bag button that carries the live total — \"Add to bag — $840\". Adding is optimistic and rolls back with an inline message if your handler rejects. A missing size is asked for, not greyed out; a sold-out pick becomes \"Notify me\". Delivery is a date range from business days and a dispatch cut-off, never \"ships soon\". Labels, price and notices morph with Motion (a fade under reduced motion). Compound: the selected variant lives in one context, read through useProductBuyBox().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "input",
+        "@ecomcn/price-tag",
+        "@ecomcn/variant-swatches"
+      ],
+      "files": [
+        {
+          "path": "product-buy-box.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/product-buy-box.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "product",
+        "pdp",
+        "cart"
+      ]
+    }
+  ]
+}

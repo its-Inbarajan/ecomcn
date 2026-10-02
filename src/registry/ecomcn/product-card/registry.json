@@ -5,13 +5,14 @@
       "name": "product-card",
       "type": "registry:block",
       "title": "Product Card",
-      "description": "Catalogue tile with badges, compare-at pricing, colour swatches that swap the image, rating and a keyboard-reachable quick-add. Compound: use it as one tag, or recompose it from ProductCardMedia, ProductCardBody and their parts via useProductCard().",
+      "description": "Catalogue tile with badges, compare-at pricing, colour swatches that swap the image, rating, a keyboard-reachable quick-add, and a wishlist heart under the badge (your shadcn Toggle, optimistic). Colours can be hidden for products that don't come in any. Compound: use it as one tag, or recompose it from ProductCardMedia, ProductCardBody and their parts via useProductCard().",
       "author": "ecomcn <hello@ecomcn.dev>",
       "dependencies": [
         "lucide-react"
       ],
       "registryDependencies": [
         "button",
+        "toggle",
         "@ecomcn/price-tag"
       ],
       "files": [

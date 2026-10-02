@@ -413,6 +413,120 @@ function HowToMeasure() {
 }`,
     },
   ],
+  "product-buy-box": [
+    {
+      label: "On the product page",
+      code: `import { ProductBuyBox, type BuyBoxProduct } from "@/components/ecomcn/product-buy-box"
+
+// options and variants are variant-swatches' own; a variant may carry its own price.
+const product: BuyBoxProduct = {
+  id: "vester",
+  brand: "Lindqvist",
+  name: "Vester Chelsea Boot",
+  price: 420,
+  rating: 4.6,
+  reviewCount: 312,
+  options,
+  variants, // [{ id: "tan-41", options: { Colour: "Tan", Size: "41" }, stock: 2, price?: 380 }]
+}
+
+<ProductBuyBox
+  product={product}
+  defaultValue={{ Colour: "Tan" }}
+  // Shows "Added" at once. Throw (or reject) to roll the button back.
+  onAddToBag={async ({ variant, quantity }) => {
+    await cart.add(variant!.id, quantity)
+  }}
+  onNotify={({ variant }) => openBackInStock(variant)}
+  delivery={{ minDays: 2, maxDays: 4, cutoffHour: 15, label: "Free delivery" }}
+/>`,
+    },
+    {
+      label: "Composed — the gallery reads the same pick",
+      code: `import {
+  ProductBuyBox,
+  ProductBuyBoxActions,
+  ProductBuyBoxDelivery,
+  ProductBuyBoxHeader,
+  ProductBuyBoxPrice,
+  ProductBuyBoxVariants,
+  useProductBuyBox,
+} from "@/components/ecomcn/product-buy-box"
+
+<ProductBuyBox product={product} onAddToBag={add} className="grid md:grid-cols-2 gap-12">
+  <Photo />
+  <div className="flex flex-col gap-8">
+    <ProductBuyBoxHeader />
+    <ProductBuyBoxPrice />
+    <ProductBuyBoxVariants sizeGuide={<SizeGuideDialog … />} />
+    <ProductBuyBoxActions />
+    <ProductBuyBoxDelivery />
+  </div>
+</ProductBuyBox>
+
+function Photo() {
+  const { selection, variant } = useProductBuyBox()
+  return <img src={photos[selection.Colour ?? "Tan"]} alt="" />
+}`,
+    },
+  ],
+  "review-summary": [
+    {
+      label: "One page of reviews, the product's full counts",
+      code: `import { ReviewSummary, type Review } from "@/components/ecomcn/review-summary"
+
+<ReviewSummary
+  id="reviews"                         // the buy box's rating links here
+  reviews={page}                       // Review[]: rating, body, author, date (ISO), verified?, fit? (-1…1)
+  distribution={[4, 3, 18, 61, 226]}   // every review, 1 star first
+  onRatingChange={(rating) => fetchReviews({ rating })}
+  action={<a href="/reviews/new">Write a review</a>}
+/>`,
+    },
+    {
+      label: "Composed",
+      code: `import {
+  ReviewSummary,
+  ReviewSummaryFit,
+  ReviewSummaryHistogram,
+  ReviewSummaryList,
+  ReviewSummaryScore,
+  useReviewSummary,
+} from "@/components/ecomcn/review-summary"
+
+<ReviewSummary reviews={page} distribution={counts} title="What owners say">
+  <ReviewSummaryScore />
+  <ReviewSummaryFit />
+  <ReviewSummaryHistogram />
+  <ReviewSummaryList />
+</ReviewSummary>`,
+    },
+  ],
+  "related-products": [
+    {
+      label: "Under the product",
+      code: `import { RelatedProducts } from "@/components/ecomcn/related-products"
+
+// ProductCardProduct[] — the same data the product card takes.
+<RelatedProducts products={related} onQuickAdd={(product) => cart.add(product.id)} />`,
+    },
+    {
+      label: "Your own card in the rail",
+      code: `import {
+  RelatedProducts,
+  RelatedProductsHeader,
+  RelatedProductsProgress,
+  RelatedProductsRail,
+} from "@/components/ecomcn/related-products"
+import { ProductCard } from "@/components/ecomcn/product-card"
+
+<RelatedProducts products={related} title="Complete the look">
+  <RelatedProductsHeader />
+  <RelatedProductsRail renderCard={(p) => <ProductCard product={p} density="compact" />} />
+  <RelatedProductsProgress />
+</RelatedProducts>`,
+    },
+  ],
   "variant-swatches": [
     {
       label: "From your product data",

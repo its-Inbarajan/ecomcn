@@ -18,6 +18,9 @@ import {
 import {
   ProductDetailsAccordionDemo,
   SizeGuideDialogDemo,
+  ProductBuyBoxDemo,
+  RelatedProductsDemo,
+  ReviewSummaryDemo,
   VariantSwatchesDemo,
 } from "@/demos/product";
 import { BLOCKS, EXAMPLES } from "@/lib/blocks";
@@ -66,6 +69,12 @@ export default async function PreviewPage({
       return <SizeGuideDialogDemo />;
     case "variant-swatches":
       return <VariantSwatchesDemo />;
+    case "product-buy-box":
+      return <ProductBuyBoxDemo />;
+    case "review-summary":
+      return <ReviewSummaryDemo />;
+    case "related-products":
+      return <RelatedProductsDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":

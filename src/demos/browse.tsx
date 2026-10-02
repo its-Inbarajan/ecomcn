@@ -15,12 +15,14 @@ import { LoadMore } from "@/components/ecomcn/load-more";
 import {
   ProductCard,
   ProductCardBadge,
+  ProductCardCorner,
   ProductCardBody,
   ProductCardImage,
   ProductCardMedia,
   ProductCardQuickAdd,
   useProductCard,
   type ProductCardProduct,
+  ProductCardWishlist,
 } from "@/components/ecomcn/product-card";
 import { ProductGrid } from "@/components/ecomcn/product-grid";
 import {
@@ -159,6 +161,9 @@ function CardQuickViewTrigger() {
   return <ProductQuickViewTrigger product={product} colorIndex={colorIndex} />;
 }
 
+/** A wishlist that takes a moment, as a real one would. */
+const saveToWishlist = () => new Promise<void>((resolve) => window.setTimeout(resolve, 350));
+
 function QuickViewCard({
   product,
   density,
@@ -169,10 +174,14 @@ function QuickViewCard({
   onQuickAdd?: () => Promise<void>;
 }) {
   return (
-    <ProductCard product={product} density={density} onQuickAdd={onQuickAdd}>
+    <ProductCard product={product} density={density} onQuickAdd={onQuickAdd} onWishlistChange={saveToWishlist}>
       <ProductCardMedia>
         <CardQuickViewImage />
-        <ProductCardBadge />
+        {/* Badge and heart stacked top-left; quick view alone top-right. */}
+        <ProductCardCorner>
+          <ProductCardBadge />
+          <ProductCardWishlist />
+        </ProductCardCorner>
         <CardQuickViewTrigger />
         <ProductCardQuickAdd />
       </ProductCardMedia>

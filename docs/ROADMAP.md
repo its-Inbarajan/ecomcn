@@ -26,18 +26,18 @@ twenty-seven undocumented components.
 
 ## Where things stand
 
-_Updated end of September 2026._
+_Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (14 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches` · Cart: `order-summary` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 3 of 5 |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 13 shipped, **5 to go** |
+| Shipped (17 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `order-summary` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 4 of 5, `product-gallery` left |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 14 shipped, **4 to go**; `review-summary` and `related-products` shipped ahead of plan |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
 
-Still open from M0: tag `v0.1.0` (CHANGELOG is cut — steps in PUBLISHING.md), and switch on the install counter — it is built (`src/proxy.ts`) and counts once Upstash is connected.
+M0 is closed: `v0.1.0` is tagged, and the install counter is live (`/api/installs`).
 
 ---
 
@@ -136,7 +136,7 @@ screenshot — so it gets built last here, once its dependencies exist.
 | `size-guide-dialog` | 1 | **Done** — pinned size column, sideways scroll inside the dialog |
 | `variant-swatches` | 3 | **Done** — struck through, never disabled; sold-out picks feed a notify-me |
 | `product-gallery` | 3 | Swipe, hover-zoom, `aria-current`, preload only image 2 |
-| `product-buy-box` | 2 | Composes the three above + `price-tag` |
+| `product-buy-box` | 2 | **Done** — optimistic add with rollback; delivery as a date range |
 
 **Done when:** a PDP can be assembled end to end, and the landing-page demo can
 show a real product page instead of three cards.
@@ -210,8 +210,9 @@ They land in v1.1 as presentation shells with a provider slot.
 thing here — every UI kit ships a hero. The funnel blocks are what nobody else
 has.
 
-**`review-summary`, `related-products`, `order-tracking`, `order-confirmation`.**
-Real value, not on the critical path to "a store works."
+**`order-tracking`, `order-confirmation`.**
+Real value, not on the critical path to "a store works." (`review-summary` and
+`related-products` were deferred here too, and shipped early in October.)
 
 **Additional themes — `theme-utility`, `theme-boutique`.** Worth a lot for the
 docs site's theme switcher, worth nothing until there are blocks to skin.

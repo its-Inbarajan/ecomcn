@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "related-products",
+      "type": "registry:block",
+      "title": "Related Products",
+      "description": "A \"pairs well with\" rail of the exact product card on your shadcn Carousel, with the Carousel's own previous / next buttons in the header and a progress rule under it in place of a scrollbar. Below the fold by nature, so nothing in it loads with the page: the cards and their images mount when the rail comes within a screen of the viewport, fading in over skeletons of exactly their shape (Motion). Compound, through useRelatedProducts().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "carousel",
+        "skeleton",
+        "@ecomcn/product-card"
+      ],
+      "files": [
+        {
+          "path": "related-products.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/related-products.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "product",
+        "pdp",
+        "merchandising"
+      ]
+    }
+  ]
+}
