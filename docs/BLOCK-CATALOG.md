@@ -198,13 +198,17 @@ Measurement table plus a fit note, opened from the size label.
   with the size column pinned; no scrollbars drawn, a soft edge instead.
 - Composes: `dialog`, `table`
 
-### `product-buy-box` · block · effort 3
+### `product-buy-box` · block · effort 3 · **shipped** · `motion`
 Title, price, rating link, variants, quantity stepper, add-to-bag with live
 total, wishlist, delivery promise. **The flagship — the block people screenshot.**
 - **Design:** the CTA carries the price. "ADD TO BAG — $420" outperforms a bare
   "Add to cart" because it removes a mental step.
 - **Hard part:** optimistic add-to-bag with a rollback path, and a delivery
-  estimate that's a date range, not "ships soon".
+  estimate that's a date range, not "ships soon". The button says "Added" at
+  once and rolls back with a line under it if the handler rejects; a missing
+  size is asked for, not greyed out. The dates are worked out on the
+  shopper's clock after hydration. The selected variant lives in one
+  context, so the gallery can read it.
 - Composes: `button`, `input`, `@ecomcn/price-tag`, `@ecomcn/variant-swatches`
 
 ### `product-details-accordion` · component · effort 1 · **shipped** · `motion`
@@ -221,20 +225,24 @@ Materials, care, shipping and maker sections, first open by default.
   keeps whole panels in the HTML.
 - Composes: `accordion`
 
-### `review-summary` · block · effort 3
+### `review-summary` · block · effort 3 · **shipped** · `motion`
 Average score, star distribution histogram, fit slider, review list with
 verified badges.
 - **Design:** the average is set in the display serif at 60px — the number is
   the headline, not a label.
 - **Hard part:** histogram bars must be buttons that filter the list, and the fit
-  slider needs a text equivalent.
-- Composes: `progress`, `button`
+  slider needs a text equivalent. Each row reads "5 stars, 226 reviews, 72%";
+  the fit's reading is on screen in words. Dates are formatted in UTC so a
+  calendar date never shifts by a day.
+- Composes: `button`, `badge` (the bars are drawn, not `progress`: a
+  progressbar inside a button would be announced as one)
 
-### `related-products` · block · effort 1
+### `related-products` · block · effort 1 · **shipped** · `motion`
 Snap-scrolling "pairs well with" rail built from product cards.
 - **Design:** reuses the exact product card — never build a second, smaller card.
 - **Hard part:** lazy-load below the fold; this rail is pure LCP tax otherwise.
-- Composes: `carousel`, `@ecomcn/product-card`
+  Cards mount within a screen of the viewport, over skeletons of their shape.
+- Composes: `carousel`, `skeleton`, `@ecomcn/product-card`
 
 ---
 

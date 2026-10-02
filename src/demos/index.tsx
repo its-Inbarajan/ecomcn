@@ -63,17 +63,40 @@ function ColourName() {
   );
 }
 
+/** A wishlist that takes a moment, as a real one would. */
+const saveToWishlist = () => new Promise<void>((resolve) => window.setTimeout(resolve, 350));
+
 export function ProductCardDemo() {
-  const [a, b] = [PRODUCTS[0], PRODUCTS[1]];
+  const [a, b, c] = [PRODUCTS[0], PRODUCTS[1], PRODUCTS[2]];
+  const [colours, setColours] = React.useState(true);
   return (
-    <div className="mx-auto grid max-w-2xl grid-cols-2 gap-x-5 gap-y-9">
+    <div className="mx-auto grid max-w-3xl grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-3">
+      <div className="col-span-2 flex flex-wrap items-center gap-2 sm:col-span-3">
+        <span className="ec-eyebrow mr-1 text-muted-foreground">Colours</span>
+        <Toggle on={colours} onClick={() => setColours(true)}>
+          Shown
+        </Toggle>
+        <Toggle on={!colours} onClick={() => setColours(false)}>
+          Hidden
+        </Toggle>
+      </div>
       <div>
         <p className="ec-eyebrow mb-3 text-muted-foreground">Default — one tag</p>
-        <ProductCard product={a} onQuickAdd={() => {}} />
+        <ProductCard product={a} onQuickAdd={() => {}} onWishlistChange={saveToWishlist} showColors={colours} />
+      </div>
+      <div>
+        <p className="ec-eyebrow mb-3 text-muted-foreground">Saved, with a badge</p>
+        <ProductCard
+          product={b}
+          onQuickAdd={() => {}}
+          onWishlistChange={saveToWishlist}
+          defaultWishlisted
+          showColors={colours}
+        />
       </div>
       <div>
         <p className="ec-eyebrow mb-3 text-muted-foreground">Composed from parts</p>
-        <ProductCard product={b} onQuickAdd={() => {}}>
+        <ProductCard product={c} onQuickAdd={() => {}} showColors={colours}>
           <ProductCardMedia>
             <ProductCardImage />
             <ProductCardQuickAdd />
@@ -87,10 +110,11 @@ export function ProductCardDemo() {
           </ProductCardBody>
         </ProductCard>
       </div>
-      <p className="col-span-2 text-[12.5px] leading-relaxed text-muted-foreground">
+      <p className="col-span-2 text-[12.5px] leading-relaxed text-muted-foreground sm:col-span-3">
         Pick a swatch: the image changes with it. The swatches and the image are
         separate parts that never talk to each other — both read the selected
-        colour from the card&apos;s context.
+        colour from the card&apos;s context. The heart sits under the badge and
+        saves at once; hide the colours for products that don&apos;t come in any.
       </p>
     </div>
   );

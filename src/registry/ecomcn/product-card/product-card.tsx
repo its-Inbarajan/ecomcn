@@ -1,9 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { Check, Plus, Star } from "lucide-react"
+import { Check, Heart, Plus, Star } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Toggle } from "@/components/ui/toggle"
 import { PriceTag } from "@/components/ecomcn/price-tag"
 import { cn } from "@/lib/utils"
 
@@ -52,6 +53,12 @@ export interface ProductCardContextValue {
   /** Undefined when the card was given no `onQuickAdd`. */
   quickAdd?: () => void
   quickAddState: QuickAddState
+  /** False when the product's colours are not worth showing — `showColors`. */
+  showColors: boolean
+  /** On the shopper's wishlist — optimistically, while a change is in flight. */
+  wishlisted: boolean
+  /** Undefined when the card was given no `onWishlistChange`. */
+  toggleWishlist?: () => void
 }
 
 const ProductCardContext = React.createContext<ProductCardContextValue | null>(null)
@@ -97,6 +104,18 @@ export interface ProductCardProps
   defaultColorIndex?: number
   onColorChange?: (color: ProductCardColor, index: number) => void
   /**
+   * Show the colour swatches. Turn off for products that do not come in
+   * colours worth choosing between — a book, a print, one-colour stock.
+   */
+  showColors?: boolean
+  /** Controlled wishlist state. */
+  wishlisted?: boolean
+  defaultWishlisted?: boolean
+  /**
+   * Shows the heart. Optimistic: it fills at once; reject to roll it back.
+   */
+  onWishlistChange?: (wishlisted: boolean, product: ProductCardProduct) => void | Promise<void>
+  /**
    * Compose your own card from ProductCardMedia, ProductCardBody and their
    * parts. Leave empty for the default layout.
    */
@@ -112,6 +131,10 @@ export function ProductCard({
   colorIndex: colorIndexProp,
   defaultColorIndex = 0,
   onColorChange,
+  showColors = true,
+  wishlisted: wishlistedProp,
+  defaultWishlisted = false,
+  onWishlistChange,
   className,
   children,
   ...props
@@ -150,6 +173,29 @@ export function ProductCard({
     }
   }, [onQuickAdd, quickAddState, product, colorIndex])
 
+  // The heart's optimistic value while the shopper's change is in flight.
+  const [savedState, setSaved] = useControllableState(wishlistedProp, defaultWishlisted)
+  const [pendingSave, setPendingSave] = React.useState<boolean | null>(null)
+  const wishlisted = pendingSave ?? savedState
+  const toggleWishlist = React.useMemo(() => {
+    if (!onWishlistChange) return undefined
+    return () => {
+      if (pendingSave !== null) return
+      const next = !savedState
+      setPendingSave(next)
+      Promise.resolve()
+        .then(() => onWishlistChange(next, product))
+        .then(
+          () => {
+            setSaved(next)
+            setPendingSave(null)
+          },
+          // Rejected: the heart returns to what is true.
+          () => setPendingSave(null)
+        )
+    }
+  }, [onWishlistChange, pendingSave, savedState, setSaved, product])
+
   const color = product.colors?.[colorIndex]
   const context = React.useMemo<ProductCardContextValue>(
     () => ({
@@ -163,8 +209,11 @@ export function ProductCard({
       image: color?.image ?? product.image,
       quickAdd,
       quickAddState,
+      showColors,
+      wishlisted,
+      toggleWishlist,
     }),
-    [product, currency, locale, density, colorIndex, setColorIndex, color, quickAdd, quickAddState]
+    [product, currency, locale, density, colorIndex, setColorIndex, color, quickAdd, quickAddState, showColors, wishlisted, toggleWishlist]
   )
 
   return (
@@ -187,7 +236,10 @@ export function ProductCard({
 
 /* ─── media ────────────────────────────────────────────────────────────── */
 
-/** The 4:5 frame. Defaults to image, badge and quick-add; pass children to recompose. */
+/**
+ * The 4:5 frame. Defaults to the image, the badge with the wishlist heart
+ * under it, and quick-add; pass children to recompose.
+ */
 export function ProductCardMedia({
   className,
   children,
@@ -203,7 +255,10 @@ export function ProductCardMedia({
       {children ?? (
         <>
           <ProductCardImage />
-          <ProductCardBadge />
+          <ProductCardCorner>
+            <ProductCardBadge />
+            <ProductCardWishlist />
+          </ProductCardCorner>
           <ProductCardQuickAdd />
         </>
       )}
@@ -221,6 +276,24 @@ export function ProductCardImage({ className, ...props }: React.HTMLAttributes<H
   )
 }
 
+/**
+ * The top-left corner: a column for the badge and the heart, so the heart
+ * sits under the badge whatever the badge says — and at the top when there
+ * is none. Above the card's link overlay.
+ */
+export function ProductCardCorner({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      data-slot="product-card-corner"
+      className={cn(
+        "absolute top-0 left-0 z-10 flex flex-col items-start gap-2 [&>[data-slot=product-card-badge]]:static",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 export function ProductCardBadge({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   const { product } = useProductCard()
   if (!product.badge) return null
@@ -235,6 +308,29 @@ export function ProductCardBadge({ className, ...props }: React.HTMLAttributes<H
     >
       {product.badge}
     </span>
+  )
+}
+
+/**
+ * The heart, on your shadcn Toggle. Shown when the card has
+ * `onWishlistChange`; fills at once and rolls back if the handler rejects.
+ */
+export function ProductCardWishlist({ className }: { className?: string }) {
+  const { product, wishlisted, toggleWishlist } = useProductCard()
+  if (!toggleWishlist) return null
+  return (
+    <Toggle
+      data-slot="product-card-wishlist"
+      pressed={wishlisted}
+      onPressedChange={() => toggleWishlist()}
+      aria-label={`${wishlisted ? "Saved" : "Save"} ${product.name} to your wishlist`}
+      className={cn(
+        "relative z-10 ml-2 size-8 min-w-8 rounded-none first:mt-2 bg-background/90 p-0 text-foreground hover:bg-background hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=on]:bg-background/90 data-[state=on]:text-foreground",
+        className
+      )}
+    >
+      <Heart aria-hidden className={cn("size-4 transition-colors", wishlisted && "fill-current")} />
+    </Toggle>
   )
 }
 
@@ -342,9 +438,10 @@ export function ProductCardPrice({ className }: { className?: string }) {
 
 /** Swatches and rating on one line. Hidden in the compact density. */
 export function ProductCardMeta({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const { product, density } = useProductCard()
+  const { product, density, showColors } = useProductCard()
   if (density === "compact") return null
-  if (!children && !product.colors?.length && product.rating === undefined) return null
+  const colors = showColors && product.colors?.length
+  if (!children && !colors && product.rating === undefined) return null
   return (
     <div
       data-slot="product-card-meta"
@@ -362,8 +459,8 @@ export function ProductCardMeta({ className, children, ...props }: React.HTMLAtt
 }
 
 export function ProductCardSwatches({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const { product, colorIndex, setColorIndex } = useProductCard()
-  if (!product.colors?.length) return <span />
+  const { product, colorIndex, setColorIndex, showColors } = useProductCard()
+  if (!showColors || !product.colors?.length) return <span />
   return (
     <div
       role="group"

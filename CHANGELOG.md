@@ -7,6 +7,70 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `product-buy-box` — the flagship. Brand, name, a rating that links to
+  `#reviews` (`reviewsHref`), the price — a variant's own `price` /
+  `compareAt` when it has one — `variant-swatches` for the options, a
+  quantity stepper capped at the variant's stock, and an add-to-bag button
+  that carries the live total: "Add to bag — $840". Adding is optimistic: the
+  button says "Added" at once, and if `onAddToBag` rejects it rolls back with
+  a line under it. A missing size is asked for (focus goes to the sizes)
+  rather than greyed out; a sold-out pick becomes "Notify me" (`onNotify`).
+  `delivery` gives a date range from business days and a dispatch
+  cut-off — "Arrives Wed, Oct 7 – Fri, Oct 9", "Order within 2h 14m for
+  dispatch today" — worked out on the shopper's clock after hydration.
+  Labels, the price and the notice morph with Motion. Compound:
+  `ProductBuyBoxHeader`, `…Price`, `…Variants`, `…Actions`, `…Quantity`,
+  `…AddToBag`, `…Notice`, `…Delivery`, and `useProductBuyBox()`
+  for your own parts — a gallery reads the same selected variant. Adds
+  `motion`, `lucide-react`; pulls `price-tag` and `variant-swatches`.
+- `review-summary` — the average set at 60px, a star histogram whose rows
+  are buttons that filter the list ("5 stars, 226 reviews, 72%"), a fit scale
+  with its reading in words, and reviews with a Verified buyer badge (your
+  shadcn `badge`). Pass one page of `reviews` with the product's full
+  `distribution`, and fetch per rating from `onRatingChange`. Dates are
+  calendar dates, formatted in UTC. The active row's rule slides between
+  rows, bars grow to their share, and the list grows to its measured height
+  as it filters. Compound, through `useReviewSummary()`. Adds `motion`,
+  `lucide-react`.
+- `related-products` — a "pairs well with" rail of the exact `product-card`
+  on your shadcn `carousel`, with the Carousel's own arrows in the header and
+  a progress rule in place of a scrollbar. The cards and their images mount
+  only when the rail comes within a screen of the viewport (`rootMargin`, or
+  `eager` above the fold), fading in over skeletons of their exact shape.
+  Returns nothing when there are no products. Compound, through
+  `useRelatedProducts()`. Adds `motion`.
+
+### Changed
+- `product-card` — a wishlist heart, on your shadcn `toggle` (now a registry
+  dependency): pass `onWishlistChange` to show it. It fills at once and rolls
+  back if the handler rejects; `wishlisted` / `defaultWishlisted` control it.
+  It sits under the badge in a new `ProductCardCorner` (the default layout
+  uses it). `showColors={false}` hides the swatches for products that don't
+  come in colours. **If you composed `ProductCardMedia` yourself,** wrap
+  `<ProductCardBadge />` and `<ProductCardWishlist />` in
+  `<ProductCardCorner>` to get the heart; a lone badge renders as before.
+- `product-quick-view` — the trigger shows the eye alone on a card narrower
+  than 15rem (two to a row on a phone), so it no longer covers the badge; the
+  words come back on wider cards. It now measures the card through a
+  container query: Tailwind v4, or v3 with `@tailwindcss/container-queries`.
+- `product-buy-box` — no wishlist heart (it moved to the product card), so
+  the add-to-bag button and its price get the width; the label wraps to a
+  second line rather than overflow.
+- `related-products` — passes the shadcn Carousel's whole API through:
+  `opts` (over its own `align: "start"`), `plugins`, `setApi`, `orientation`;
+  and `cardProps` to every card (`onWishlistChange`, `showColors`, `density`).
+  The viewport no longer clips a selected swatch's ring or a focus ring on
+  the first card.
+- `review-summary` — the fit scale is five fixed steps with the reading's
+  step filled, as a `meter`: the old marker on a ruled line looked like a
+  slider you could drag.
+
+### Fixed
+- Hydration in the new blocks: with no `locale` prop they format in en-US
+  until hydrated, then in the visitor's locale. Formatting in the visitor's
+  locale on the first render made the server's HTML ("Sep 21, 2026") disagree
+  with the browser's ("21 Sept 2026"). Older blocks still format with the
+  server's locale on the first render; pass `locale` to pin it.
 - `variant-swatches` — colour swatches and a ruled size grid that work out
   stock from your `variants`. With a colour picked, a size it has none of is
   struck through with a diagonal rule (a halo on swatches, so it reads on
