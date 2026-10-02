@@ -1,18 +1,27 @@
 import Link from "next/link";
 
+import { GitHubButton, HEADER_BUTTON } from "@/components/site/github-button";
+import { MobileNav, type NavItem } from "@/components/site/mobile-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
-import { REPO_URL } from "@/lib/site";
+import { getRepoStars } from "@/lib/github";
 
-const NAV = [
+const NAV: NavItem[] = [
   { href: "/blocks", label: "Blocks" },
   { href: "/#design", label: "Design" },
   { href: "/#install", label: "Install" },
 ];
 
-export function SiteHeader() {
+/**
+ * Fixed, not sticky: the page below scrolls inside ScrollSmoother, which
+ * moves its content with a transform, and sticky stops working there. The
+ * layout pads the content by the header's height (h-15) instead.
+ */
+export async function SiteHeader() {
+  const stars = await getRepoStars();
+
   return (
-    <header className="ec-rule-strong sticky top-0 z-40 border-b bg-background/92 backdrop-blur">
-      <div className="mx-auto flex max-w-295 items-center justify-between gap-4 px-5 py-3 sm:px-8">
+    <header className="ec-rule-strong fixed inset-x-0 top-0 z-40 h-15 border-b bg-background/92 backdrop-blur">
+      <div className="mx-auto flex h-full max-w-295 items-center justify-between gap-4 px-5 sm:px-8">
         <Link href="/" className="flex items-baseline gap-3">
           <span className="ec-display text-3xl leading-none">ecomcn</span>
           <span className="ec-eyebrow hidden text-muted-foreground sm:inline">
@@ -21,24 +30,16 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <nav className="ec-rule hidden items-center gap-px border sm:flex">
+          <nav aria-label="Main" className="hidden items-center gap-2 sm:flex">
             {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="ec-eyebrow px-3 py-2 text-muted-foreground transition-colors hover:text-foreground"
-              >
+              <Link key={item.href} href={item.href} className={HEADER_BUTTON}>
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
-          <a
-            href={REPO_URL}
-            className="ec-eyebrow ec-rule border px-3 py-2 transition-colors hover:bg-secondary"
-          >
-            GitHub
-          </a>
+          <GitHubButton stars={stars} />
           <ThemeToggle />
+          <MobileNav nav={NAV} stars={stars} />
         </div>
       </div>
     </header>

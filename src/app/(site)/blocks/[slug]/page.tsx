@@ -134,7 +134,9 @@ export default async function BlockPage({
           </section>
         </div>
 
-        <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
+        {/* lg:sticky for native scrolling; under ScrollSmoother, where sticky
+            can't work, data-smooth-pin pins it at the same 96px instead. */}
+        <aside data-smooth-pin="96" className="space-y-8 lg:sticky lg:top-24 lg:self-start">
           {block.designNote && (
             <Note label="Design decision" body={block.designNote} />
           )}

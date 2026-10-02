@@ -117,7 +117,7 @@ function Stats() {
 function Demo() {
   return (
     <section className="py-20">
-      <header className="ec-rule-strong mb-8 flex flex-wrap items-end justify-between gap-4 border-b pb-4">
+      <header data-reveal className="ec-rule-strong mb-8 flex flex-wrap items-end justify-between gap-4 border-b pb-4">
         <div>
           <p className="ec-eyebrow text-brand">Running, not screenshotted</p>
           <h2 className="ec-display mt-2 text-4xl sm:text-5xl">
@@ -145,7 +145,7 @@ function Demo() {
 function Catalogue() {
   return (
     <section id="blocks" className="scroll-mt-20 py-6">
-      <header className="ec-rule-strong border-b pb-5">
+      <header data-reveal className="ec-rule-strong border-b pb-5">
         <p className="ec-eyebrow text-brand">The catalogue</p>
         <h2 className="ec-display mt-2 text-5xl sm:text-6xl">
           {BLOCKS.length} blocks, five stages,
@@ -216,7 +216,7 @@ function BlockCell({ block }: { block: (typeof BLOCKS)[number] }) {
 function DesignRules() {
   return (
     <section id="design" className="scroll-mt-20 py-20">
-      <header className="ec-rule-strong border-b pb-4">
+      <header data-reveal className="ec-rule-strong border-b pb-4">
         <p className="ec-eyebrow text-brand">House style</p>
         <h2 className="ec-display mt-2 text-4xl sm:text-5xl">
           Six rules that keep it from looking generated
@@ -247,7 +247,7 @@ function DesignRules() {
 function Install() {
   return (
     <section id="install" className="ec-rule-strong scroll-mt-20 border-t py-16">
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div data-reveal className="grid gap-10 lg:grid-cols-2">
         <div>
           <p className="ec-eyebrow text-brand">Install</p>
           <h2 className="ec-display mt-2 text-4xl sm:text-5xl">

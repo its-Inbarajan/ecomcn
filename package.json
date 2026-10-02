@@ -23,11 +23,14 @@
     "test:install": "node scripts/verify-install.mjs"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
+    "gsap": "^3.15.0",
     "lucide-react": "^1.37.0",
     "motion": "^13.4.4",
     "next": "^16.3.3",
