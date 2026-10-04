@@ -49,6 +49,7 @@ import {
   type Review,
 } from "@/components/ecomcn/review-summary";
 import { RelatedProducts } from "@/components/ecomcn/related-products";
+import { ProductGallery, type GalleryImage } from "@/components/ecomcn/product-gallery";
 import { PRODUCTS as CATALOGUE } from "@/demos/listing-data";
 import { PriceTag } from "@/components/ecomcn/price-tag";
 import { ProductPhoto } from "@/components/site/product-photo";
@@ -811,3 +812,198 @@ export function RelatedProductsDemo() {
     </div>
   );
 }
+
+/* ─── product-gallery ────────────────────────────────────────────────── */
+
+/**
+ * Unsplash's CDN (imgix) crops to a focal point and zooms in on it, which
+ * turns one photo per colourway into a gallery: the whole boot, then
+ * details of the toe and the shaft. Stock photos don't come in sets.
+ */
+const unsplash = (id: string, width: number, focus = "") =>
+  `https://images.unsplash.com/photo-${id}?w=${width}&q=75&ar=4:5&fit=crop&auto=format${focus}`;
+
+const SHOTS = [
+  { focus: "", alt: "" },
+  { focus: "&crop=focalpoint&fp-x=0.38&fp-y=0.72&fp-z=2.2", alt: "toe and welt, close up" },
+  { focus: "&crop=focalpoint&fp-x=0.6&fp-y=0.3&fp-z=2", alt: "the elastic side panel and pull tab" },
+];
+
+function galleryFor(colour: string): GalleryImage[] {
+  const id = BOOT_PHOTOS[colour];
+  const others = Object.entries(BOOT_PHOTOS).filter(([c]) => c !== colour);
+  const name = `The Vester Chelsea boot in ${colour.toLowerCase()} leather`;
+  return [
+    ...SHOTS.map(({ focus, alt }) => ({
+      src: unsplash(id, 900, focus),
+      srcSet: [480, 900, 1400].map((w) => `${unsplash(id, w, focus)} ${w}w`).join(", "),
+      zoomSrc: unsplash(id, 1800, focus),
+      thumbSrc: unsplash(id, 160, focus),
+      alt: alt ? `${name}: ${alt}` : name,
+    })),
+    // The other colourways, for comparison.
+    ...others.map(([other, otherId]) => ({
+      src: unsplash(otherId, 900),
+      srcSet: [480, 900, 1400].map((w) => `${unsplash(otherId, w)} ${w}w`).join(", "),
+      zoomSrc: unsplash(otherId, 1800),
+      thumbSrc: unsplash(otherId, 160),
+      alt: `The same boot in ${other.toLowerCase()}, for comparison`,
+    })),
+  ];
+}
+
+export function ProductGalleryDemo() {
+  const [colour, setColour] = React.useState("Tan");
+  const [state, setState] = React.useState<"loaded" | "loading" | "empty">("loaded");
+  const images = React.useMemo(() => (state === "empty" ? [] : galleryFor(colour)), [colour, state]);
+
+  return (
+    <div>
+      <ControlBar>
+        <ControlLabel>Colour</ControlLabel>
+        {Object.keys(BOOT_PHOTOS).map((c) => (
+          <Toggle key={c} on={colour === c} onClick={() => setColour(c)}>
+            {c}
+          </Toggle>
+        ))}
+        <ControlLabel className="ml-4">Data</ControlLabel>
+        {(["loaded", "loading", "empty"] as const).map((s) => (
+          <Toggle key={s} on={state === s} onClick={() => setState(s)}>
+            {s[0].toUpperCase() + s.slice(1)}
+          </Toggle>
+        ))}
+      </ControlBar>
+      <div className="mx-auto max-w-2xl">
+        <ProductGallery images={images} label="Vester Chelsea Boot" loading={state === "loading"} />
+      </div>
+      <p className="mx-auto mt-6 max-w-2xl text-[12.5px] leading-relaxed text-muted-foreground">
+        Hover the photo with a mouse to zoom where you point; press it to open
+        full screen — the screen grows out of the photo and folds back into it.
+        On a phone, swipe. Change the colour and the gallery starts again on
+        that colourway&apos;s photos.
+      </p>
+    </div>
+  );
+}
+
+/* ─── product page (composed example) ────────────────────────────────── */
+
+/** A custom part: the gallery reads the colour picked in the buy box. */
+function BuyBoxGallery() {
+  const { selection } = useProductBuyBox();
+  const colour = selection.Colour ?? "Tan";
+  const images = React.useMemo(() => galleryFor(colour), [colour]);
+  return <ProductGallery images={images} label="Vester Chelsea Boot" className="md:sticky md:top-6 md:self-start" />;
+}
+
+const BOOT_DETAILS: ProductDetailsSectionData[] = [
+  {
+    id: "description",
+    title: "Description",
+    summary: "Goodyear-welted, resoleable",
+    content: (
+      <p>
+        A Chelsea boot on a narrow last, cut from full-grain calf and
+        Goodyear-welted to a leather sole with a rubber heel, so it can be
+        resoled for years rather than replaced.
+      </p>
+    ),
+  },
+  {
+    id: "materials",
+    title: "Materials",
+    summary: "Full-grain calf, leather sole",
+    content: (
+      <ProductDetailsSpecs
+        items={[
+          ["Upper", "Full-grain calf leather"],
+          ["Lining", "Vegetable-tanned leather"],
+          ["Sole", "Leather, with a rubber heel"],
+          ["Construction", "Goodyear welt"],
+        ]}
+      />
+    ),
+  },
+  {
+    id: "care",
+    title: "Care",
+    summary: "Brush, condition, re-wax",
+    content: <p>Brush off dirt after wear, condition monthly, and wax the welt before a wet season.</p>,
+  },
+  {
+    id: "shipping",
+    title: "Shipping & returns",
+    summary: "Free delivery · 30-day returns",
+    content: <p>Free delivery in 2–4 working days. Returns are free within 30 days, unworn.</p>,
+  },
+];
+
+export function ProductPageDemo() {
+  const [bag, setBag] = React.useState(0);
+  const addToBag = ({ quantity }: { quantity: number }) =>
+    new Promise<void>((resolve) =>
+      window.setTimeout(() => {
+        setBag((n) => n + quantity);
+        resolve();
+      }, 600),
+    );
+
+  return (
+    <div className="flex flex-col gap-16">
+      <nav aria-label="Breadcrumb" className="flex items-center justify-between gap-4 text-[12.5px] text-muted-foreground">
+        <ol className="flex flex-wrap items-center gap-2">
+          <li>Shop</li>
+          <li aria-hidden>/</li>
+          <li>Footwear</li>
+          <li aria-hidden>/</li>
+          <li aria-current="page" className="text-foreground">
+            Vester Chelsea Boot
+          </li>
+        </ol>
+        <span className="font-mono text-[11.5px]" aria-live="polite">
+          bag: {bag}
+        </span>
+      </nav>
+
+      <ProductBuyBox
+        product={BOOT}
+        defaultValue={{ Colour: "Tan" }}
+        onAddToBag={addToBag}
+        onNotify={() => {}}
+        delivery={{ minDays: 2, maxDays: 4, cutoffHour: 15, label: "Free delivery" }}
+        className="grid gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16"
+      >
+        <BuyBoxGallery />
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4">
+            <ProductBuyBoxHeader />
+            <ProductBuyBoxPrice />
+          </div>
+          <ProductBuyBoxVariants
+            sizeGuide={
+              <SizeGuideDialog
+                columns={[...FOOTWEAR_COLUMNS]}
+                rows={BOOT_GUIDE}
+                fitNote="Lasted narrow — if you are between sizes, go up half a size."
+              />
+            }
+          />
+          <ProductBuyBoxActions />
+          <ProductBuyBoxDelivery />
+          <ProductDetailsAccordion sections={BOOT_DETAILS} />
+        </div>
+      </ProductBuyBox>
+
+      <ReviewSummary id="reviews" reviews={REVIEWS} distribution={DISTRIBUTION} />
+
+      <RelatedProducts
+        products={CATALOGUE.slice(0, 8).filter((p) => p.id !== "p4")}
+        title="Pairs well with"
+        onQuickAdd={() => wait(500)}
+        cardProps={{ onWishlistChange: () => wait(350) }}
+      />
+    </div>
+  );
+}
+
+const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));

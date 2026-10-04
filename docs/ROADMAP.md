@@ -30,10 +30,10 @@ _Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (17 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `order-summary` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · **M2 (Product) in progress** — 4 of 5, `product-gallery` left |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 14 shipped, **4 to go**; `review-summary` and `related-products` shipped ahead of plan |
-| Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
+| Shipped (18 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `order-summary` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · M2 (Product) **done** · **M3 (Cart) next** |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 15 shipped, **3 to go** (the M3 cart blocks); `review-summary` and `related-products` shipped ahead of plan |
+| Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/examples/product-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
 
@@ -125,7 +125,11 @@ swatches, price and add-to-bag all read the selected variant from one context.
 
 ---
 
-## Milestone 2 — Product complete (10 evenings · ~5 weeks)
+## Milestone 2 — Product complete (10 evenings · ~5 weeks) — **done**
+
+Every Product block shipped, composed into
+[`/examples/product-page`](https://ecomcn.vercel.app/examples/product-page):
+the gallery reads the buy box's selected colour from its context.
 
 The detail page. `product-buy-box` is the flagship — the block people
 screenshot — so it gets built last here, once its dependencies exist.
@@ -135,7 +139,7 @@ screenshot — so it gets built last here, once its dependencies exist.
 | `product-details-accordion` | 1 | **Done** — summary line per row keeps closed content findable |
 | `size-guide-dialog` | 1 | **Done** — pinned size column, sideways scroll inside the dialog |
 | `variant-swatches` | 3 | **Done** — struck through, never disabled; sold-out picks feed a notify-me |
-| `product-gallery` | 3 | Swipe, hover-zoom, `aria-current`, preload only image 2 |
+| `product-gallery` | 3 | **Done** — swipe, hover-zoom, full screen from the photo; photo 2 preloads |
 | `product-buy-box` | 2 | **Done** — optimistic add with rollback; delivery as a date range |
 
 **Done when:** a PDP can be assembled end to end, and the landing-page demo can
