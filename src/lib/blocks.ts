@@ -32,7 +32,12 @@ export type Example = {
   title: string;
   stage: Stage;
   summary: string;
+  /** Every block on the page, for "What it is made of". */
   blocks: string[];
+  /** What to `add`: registry dependencies bring in the rest. */
+  install: string[];
+  /** What to try in the preview. */
+  notes: string;
 };
 
 export const EXAMPLES: Example[] = [
@@ -43,6 +48,24 @@ export const EXAMPLES: Example[] = [
     summary:
       "A collection page built from ecomcn alone: toolbar, URL-driven filters on desktop, a staged sheet on mobile, composed cards with a quick-view morph, load more, and a useful empty state.",
     blocks: ["sort-toolbar", "filter-panel", "filter-sheet", "product-grid", "product-card", "product-quick-view", "load-more", "empty-results", "price-tag"],
+    // filter-sheet brings filter-panel; product-grid and product-quick-view
+    // bring product-card and price-tag.
+    install: ["sort-toolbar", "filter-sheet", "product-grid", "product-quick-view", "load-more", "empty-results"],
+    notes:
+      "Try it at the mobile width: the sidebar panel gives way to the filter sheet, which stages changes and applies them once. Every filter \u2014 and how many pages are loaded \u2014 is in the preview frame\u2019s URL, and the browser\u2019s Back button undoes filters one at a time. Open a quick view to see the card image morph into the dialog.",
+  },
+  {
+    slug: "product-page",
+    title: "Product page",
+    stage: "Product",
+    summary:
+      "A product page built from ecomcn alone: a gallery that follows the colour you pick, the buy box with stock-aware swatches and a size guide, details, reviews that filter, and a rail of related products.",
+    blocks: ["product-gallery", "product-buy-box", "variant-swatches", "size-guide-dialog", "price-tag", "product-details-accordion", "review-summary", "related-products", "product-card"],
+    // product-buy-box brings variant-swatches and price-tag; related-products
+    // brings product-card.
+    install: ["product-gallery", "product-buy-box", "size-guide-dialog", "product-details-accordion", "review-summary", "related-products"],
+    notes:
+      "Pick Black: the gallery swaps to its photos, the price drops to its own, and most sizes strike through. Press add before choosing a size and the button asks. Hover the photo to zoom; press it to open full screen. The rating under the name jumps to the reviews, whose histogram filters the list.",
   },
 ];
 
@@ -88,7 +111,7 @@ export const BLOCKS: Block[] = [
   { slug: "empty-results", title: "Empty results", stage: "Browse", kind: "component", status: "shipped", example: "listing-page", summary: "Names the filters that emptied the grid and offers the one change that brings the most back.", designNote: "Left-aligned: eyebrow, headline, one primary action, then the filters as removable chips. A centred icon-and-sentence empty state is the most reliable tell of a generated interface.", hardPart: "Being specific. “No results” is a dead end; “Nothing matches Sage and Up to $50 — remove ‘Up to $50’ to see 4” is a detour. The block takes that suggestion as data, so the count can come from your search backend." },
 
   // Product
-  { slug: "product-gallery", title: "Product gallery", stage: "Product", kind: "block", status: "planned", summary: "Thumbnail rail, counter overlay, swipe on mobile." },
+  { slug: "product-gallery", title: "Product gallery", stage: "Product", kind: "block", status: "shipped", example: "product-page", summary: "Main photo with a counter and thumbnails; swipe on a phone, hover-zoom on a desktop, full screen from the photo itself.", designNote: "The active thumbnail carries a solid frame that slides to the next; the rest drop to 60% rather than being greyed out. Thumbnails stand in a column beside the photo on a desktop and run in a row under it on a phone, scrolling without a scrollbar. Pressing the photo opens it full screen: the photo\u2019s box opens to the screen and folds back into it, the same container morph as the size guide.", hardPart: "Three ways in, one gallery. A finger swipes; a mouse zooms where it points instead of dragging, since Embla drags only for touch; and the full-screen view is the zoom for touch and the keyboard, so nothing is hover-only. Loading is rationed: the first photo has priority, the second is fetched early, and the rest wait until they are next. Images are data, rendered as <img> or through your own renderImage, so the gallery still decides what loads when \u2014 next/image included."},
   { slug: "price-tag", title: "Price tag", stage: "Product", kind: "ui", status: "shipped", summary: "Locale-aware price with compare-at strike and a computed discount badge.", designNote: "Tabular numerals throughout, so a column of prices aligns. A discounted price turns sale-red and gains a computed percentage; a regular price stays ink and stays quiet.", hardPart: "Intl.NumberFormat with currency and locale as props. Hardcoding a dollar sign is the single most common bug in component kits, and the one an adopter in the eurozone hits on day one."},
   { slug: "variant-swatches", title: "Variant swatches", stage: "Product", kind: "block", status: "shipped", summary: "Colour swatches and a ruled size grid that work out stock from your variants — sold-out options struck through, still choosable, and a line that says why.", designNote: "The size grid is one ruled block — hairlines between cells, not eight separate buttons — and the pick is a slab of ink that slides from cell to cell on the same settle curve as the other morphs. Swatches are square chips with a ruled frame for the pick. A size with a few pairs left carries “2 left” under its number; the status line underneath says the rest in a sentence.", hardPart: "Unavailable without colour alone, and without disappearing. A diagonal rule strikes a sold-out size or colour — with a halo on swatches, so it reads on black as well as chalk — and the option is never disabled: it stays in the tab order, a screen reader hears “43, sold out”, and it can still be chosen, because a shopper who wants that size wants to be told when it is back. The status line says why the pick can't be bought (“43 is sold out in Black.”) and the root reports purchasable: false for your button. Stock is worked out per option against the other picks, and the arrow keys move without choosing, so arrowing past a colour never swaps the photo on the way." },
   { slug: "size-guide-dialog", title: "Size guide dialog", stage: "Product", kind: "component", status: "shipped", summary: "Measurement table in cm or inches with the shopper's size marked, opened from a quiet link beside the size label.", designNote: "Ruled, not striped: the header row uses the tracked-out eyebrow and every row sits on one hairline, so it reads like a printed size chart. The trigger is a text link with a ruler, not a button — it answers a question beside the size label without competing with add-to-bag. The panel grows out of that link and folds back into it: a container transform in Motion, contents fading in only once the surface has landed.", hardPart: "Scroll containment. A five-column chart is wider than a phone, so the table scrolls sideways inside itself — never the page — while the size column stays pinned — with no scrollbar drawn, a soft edge says there are more columns. And conversion has to be honest: ranges round to the nearest half inch the way a tape reads, and equivalents like \u201cUK 7\u201d are text that no toggle ever touches." },

@@ -19,6 +19,8 @@ import {
   ProductDetailsAccordionDemo,
   SizeGuideDialogDemo,
   ProductBuyBoxDemo,
+  ProductGalleryDemo,
+  ProductPageDemo,
   RelatedProductsDemo,
   ReviewSummaryDemo,
   VariantSwatchesDemo,
@@ -75,6 +77,10 @@ export default async function PreviewPage({
       return <ReviewSummaryDemo />;
     case "related-products":
       return <RelatedProductsDemo />;
+    case "product-gallery":
+      return <ProductGalleryDemo />;
+    case "product-page":
+      return <ProductPageDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":

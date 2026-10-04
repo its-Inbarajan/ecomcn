@@ -18,6 +18,7 @@
     "src/registry/ecomcn/product-buy-box/registry.json",
     "src/registry/ecomcn/review-summary/registry.json",
     "src/registry/ecomcn/related-products/registry.json",
+    "src/registry/ecomcn/product-gallery/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],

@@ -43,11 +43,8 @@ export default async function ExamplePage({
     .map((s) => BLOCKS.find((b) => b.slug === s))
     .filter((b) => b !== undefined);
 
-  // Registry dependencies pull the rest in: filter-sheet brings filter-panel,
-  // product-grid and product-quick-view bring product-card and price-tag.
-  const install = `npx shadcn@latest add ${["sort-toolbar", "filter-sheet", "product-grid", "product-quick-view", "load-more", "empty-results"]
-    .map((s) => `${NAMESPACE}/${s}`)
-    .join(" ")}`;
+  // Registry dependencies pull the rest in, so only the top blocks are added.
+  const install = `npx shadcn@latest add ${example.install.map((s) => `${NAMESPACE}/${s}`).join(" ")}`;
 
   return (
     <main className="mx-auto w-full max-w-[1180px] flex-1 px-5 py-12 sm:px-8">
@@ -92,11 +89,7 @@ export default async function ExamplePage({
           ))}
         </ul>
         <p className="mt-4 max-w-2xl text-[13.5px] leading-relaxed text-muted-foreground">
-          Try it at the mobile width: the sidebar panel gives way to the filter
-          sheet, which stages changes and applies them once. Every filter — and
-          how many pages are loaded — is in the preview frame&apos;s URL, and the
-          browser&apos;s Back button undoes filters one at a time. Open a quick view
-          to see the card image morph into the dialog.
+          {example.notes}
         </p>
       </section>
     </main>

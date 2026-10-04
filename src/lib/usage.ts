@@ -413,6 +413,45 @@ function HowToMeasure() {
 }`,
     },
   ],
+  "product-gallery": [
+    {
+      label: "Photos as data",
+      code: `import { ProductGallery, type GalleryImage } from "@/components/ecomcn/product-gallery"
+
+const images: GalleryImage[] = [
+  {
+    src: "/boots/tan-900.jpg",
+    srcSet: "/boots/tan-480.jpg 480w, /boots/tan-900.jpg 900w, /boots/tan-1400.jpg 1400w",
+    zoomSrc: "/boots/tan-1800.jpg",  // hover zoom and full screen
+    thumbSrc: "/boots/tan-160.jpg",
+    alt: "The Vester Chelsea boot in tan leather",
+  },
+  // …
+]
+
+<ProductGallery images={images} label="Vester Chelsea Boot" />`,
+    },
+    {
+      label: "With next/image, following the buy box's colour",
+      code: `import Image from "next/image"
+import { ProductGallery } from "@/components/ecomcn/product-gallery"
+import { useProductBuyBox } from "@/components/ecomcn/product-buy-box"
+
+// Inside <ProductBuyBox>: the gallery starts again on each colour's photos.
+function Gallery() {
+  const { selection } = useProductBuyBox()
+  return (
+    <ProductGallery
+      images={photos[selection.Colour ?? "Tan"]}
+      label="Vester Chelsea Boot"
+      renderImage={(image, { priority, sizes, className }) => (
+        <Image src={image.src} alt={image.alt} fill sizes={sizes} priority={priority} className={className} />
+      )}
+    />
+  )
+}`,
+    },
+  ],
   "product-buy-box": [
     {
       label: "On the product page",

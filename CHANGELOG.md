@@ -7,6 +7,27 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `product-gallery` — the last Product block. A main photo on your shadcn
+  `carousel` with a counter, and thumbnails beside it from md up and under it
+  on a phone, scrolling without a scrollbar. Swipe on touch; with a mouse the
+  photo zooms 2× where the pointer is (Embla drags only for touch, so the
+  mouse is free to zoom) and fades in `zoomSrc` once loaded. Pressing the
+  photo opens it full screen on your shadcn `dialog` — the photo's box opens
+  to the screen and folds back into it, the image fading in once it has
+  landed — which is also the zoom for touch and the keyboard; swipe or the
+  arrow keys move between photos there, and the main photo follows. The
+  active thumbnail's frame slides to the next (`aria-current`); the rest sit
+  at 60%. Loading is rationed: photo 1 has priority, photo 2 is fetched
+  early, the rest when they are next. Images are data (`src`, `srcSet`,
+  `zoomSrc`, `thumbSrc`, `alt`) rendered as `<img>`, or through
+  `renderImage` for next/image. A new set of `images` — another colour —
+  starts again at the first. Compound: `ProductGalleryMain`,
+  `ProductGalleryThumbs`, `useProductGallery()`. Adds `motion`,
+  `lucide-react`.
+- `/examples/product-page` — the Product blocks composed into one page: the
+  gallery follows the buy box's colour through `useProductBuyBox()`, with the
+  details accordion under the buy box, reviews and a related rail. Examples
+  now carry their own install command and notes.
 - `product-buy-box` — the flagship. Brand, name, a rating that links to
   `#reviews` (`reviewsHref`), the price — a variant's own `price` /
   `compareAt` when it has one — `variant-swatches` for the options, a

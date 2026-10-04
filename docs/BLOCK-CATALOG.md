@@ -158,14 +158,17 @@ No-match state that names the offending filters and offers the one useful escape
 
 The detail page. Every objection a buyer has gets answered here or nowhere.
 
-### `product-gallery` · block · effort 3
+### `product-gallery` · block · effort 3 · **shipped** · `motion`
 Thumbnail rail plus main image, counter overlay, horizontal thumb scroll on
 mobile.
 - **Design:** active thumb gets a solid border; inactive thumbs drop to 60%
   opacity instead of being greyed.
 - **Hard part:** swipe on mobile, hover-zoom on desktop, `aria-current` on the
-  active thumb. Preload only image 2.
-- Composes: `carousel`, `aspect-ratio`
+  active thumb. Preload only image 2. Embla drags only for touch, so a mouse
+  is free to zoom; pressing the photo opens it full screen, which is the
+  zoom for touch and the keyboard — nothing is hover-only.
+- Composes: `carousel`, `dialog` (the frame's ratio is plain CSS
+  `aspect-ratio`, so the `aspect-ratio` primitive isn't needed)
 
 ### `price-tag` · ui · effort 1
 Locale-aware price with compare-at strike, computed discount badge, two sizes.
