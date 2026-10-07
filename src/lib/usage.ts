@@ -472,9 +472,15 @@ const product: BuyBoxProduct = {
 <ProductBuyBox
   product={product}
   defaultValue={{ Colour: "Tan" }}
-  // Shows "Added" at once. Throw (or reject) to roll the button back.
+  // Shows "Added" at once. If this rejects, the button rolls back and says so.
   onAddToBag={async ({ variant, quantity }) => {
-    await cart.add(variant!.id, quantity)
+    bag.increment(quantity) // your bag count, optimistic too
+    try {
+      await cart.add(variant!.id, quantity)
+    } catch (error) {
+      bag.decrement(quantity) // roll your count back…
+      throw error // …and rethrow, or the button thinks it worked
+    }
   }}
   onNotify={({ variant }) => openBackInStock(variant)}
   delivery={{ minDays: 2, maxDays: 4, cutoffHour: 15, label: "Free delivery" }}
