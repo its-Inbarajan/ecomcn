@@ -7,7 +7,8 @@ import { getRepoStars } from "@/lib/github";
 
 const NAV: NavItem[] = [
   { href: "/blocks", label: "Blocks" },
-  { href: "/#design", label: "Design" },
+  { href: "/examples", label: "Examples" },
+  { href: "/demo", label: "Demo store" },
   { href: "/#install", label: "Install" },
 ];
 
@@ -24,13 +25,13 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-full max-w-295 items-center justify-between gap-4 px-5 sm:px-8">
         <Link href="/" className="flex items-baseline gap-3">
           <span className="ec-display text-3xl leading-none">ecomcn</span>
-          <span className="ec-eyebrow hidden text-muted-foreground sm:inline">
+          <span className="ec-eyebrow hidden text-muted-foreground lg:inline">
             shadcn/ui registry
           </span>
         </Link>
 
         <div className="flex items-center gap-2">
-          <nav aria-label="Main" className="hidden items-center gap-2 sm:flex">
+          <nav aria-label="Main" className="hidden items-center gap-2 md:flex">
             {NAV.map((item) => (
               <Link key={item.href} href={item.href} className={HEADER_BUTTON}>
                 {item.label}

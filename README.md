@@ -82,7 +82,9 @@ Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
 `product-details-accordion`, `review-summary` and `related-products` — plus
 `order-summary` and `theme-editorial`. See them composed into a
 [listing page](https://ecomcn.vercel.app/examples/listing-page) and a
-[product page](https://ecomcn.vercel.app/examples/product-page).
+[product page](https://ecomcn.vercel.app/examples/product-page) — or shop
+through the [demo store](https://ecomcn.vercel.app/demo), built from nothing
+but these blocks.
 
 ## Repo layout
 

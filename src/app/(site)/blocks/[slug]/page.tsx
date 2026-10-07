@@ -68,6 +68,9 @@ export default async function BlockPage({
   // Every block the example is built from links to it — not only the ones
   // that name it — so price-tag and product-card point at the listing page too.
   const example = EXAMPLES.find((e) => e.slug === block.example || e.blocks.includes(block.slug));
+  // Product-stage blocks open on a product page; everything else on the shop.
+  const demoHref =
+    block.stage === "Product" ? "/demo/p4" : block.slug === "order-summary" ? "/demo/bag" : "/demo";
 
   return (
     <main className="mx-auto w-full max-w-[1180px] flex-1 px-5 py-12 sm:px-8">
@@ -89,6 +92,20 @@ export default async function BlockPage({
           {item.description}
         </p>
       </header>
+
+      {/* Most visitors read block by block: show them the whole shop from each. */}
+      <Link
+        href={demoHref}
+        className="group mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-l-2 border-l-brand bg-secondary/50 px-4 py-3 transition-colors hover:bg-secondary"
+      >
+        <span className="text-[14px]">
+          <span className="font-medium">See {block.title.toLowerCase()} in a working shop</span>
+          <span className="text-muted-foreground"> — the demo store is built from every ecomcn block.</span>
+        </span>
+        <span className="ec-eyebrow flex items-center gap-1.5 text-brand">
+          Open the demo store <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+        </span>
+      </Link>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0 space-y-10">

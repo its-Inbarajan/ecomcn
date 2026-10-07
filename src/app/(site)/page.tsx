@@ -62,6 +62,12 @@ function Hero() {
           >
             Browse the catalogue <ArrowDown className="size-3.5" aria-hidden />
           </a>
+          <Link
+            href="/demo"
+            className="ec-eyebrow ec-rule flex items-center gap-2 border px-5 py-3 transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+          >
+            Open the demo store <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
           <span className="ec-eyebrow ec-rule flex items-center border px-5 py-3 text-muted-foreground">
             MIT · zero config · source you own
           </span>

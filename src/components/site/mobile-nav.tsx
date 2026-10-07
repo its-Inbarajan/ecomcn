@@ -16,7 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { BLOCKS, EXAMPLES } from "@/lib/blocks";
+import { BLOCKS } from "@/lib/blocks";
 import { cn } from "@/lib/utils";
 
 /** The house settle curve — the same one every ecomcn morph uses. */
@@ -33,7 +33,7 @@ type MorphState = {
 };
 
 /**
- * The site menu below the sm breakpoint: a full-screen Sheet that grows out
+ * The site menu below the md breakpoint: a full-screen Sheet that grows out
  * of the menu button as a circle and shrinks back into it. The Sheet's own
  * slide keyframes are off; Motion plays the open and the close, and the Sheet
  * stays open until the close has played. Reduced motion gets a fade.
@@ -68,7 +68,7 @@ export function MobileNav({ nav, stars }: { nav: NavItem[]; stars: number | null
         if (next !== open) setOpen(next);
       }}
     >
-      <SheetTrigger aria-label="Open menu" className={cn(HEADER_BUTTON, "w-9 px-0 sm:hidden")}>
+      <SheetTrigger aria-label="Open menu" className={cn(HEADER_BUTTON, "w-9 px-0 md:hidden")}>
         <span ref={origin} className="grid place-items-center">
           <Menu className="size-4" aria-hidden />
         </span>
@@ -94,7 +94,7 @@ export function MobileNav({ nav, stars }: { nav: NavItem[]; stars: number | null
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <nav aria-label="Main" className="px-5 pt-4">
               <ul>
-                {[...nav, ...EXAMPLES.map((e) => ({ href: `/examples/${e.slug}`, label: e.title }))].map(
+                {nav.map(
                   (item) => (
                     <li key={item.href} className="ec-rule border-b">
                       <Link
