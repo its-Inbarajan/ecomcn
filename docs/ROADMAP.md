@@ -33,7 +33,7 @@ _Updated early October 2026._
 | Shipped (18 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `order-summary` · Theme: `theme-editorial` |
 | Milestones | M0, M1 and M1.5 done · M2 (Product) **done** · **M3 (Cart) next** |
 | v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 15 shipped, **3 to go** (the M3 cart blocks); `review-summary` and `related-products` shipped ahead of plan |
-| Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples/listing-page`, `/examples/product-page`, `/preview/[slug]`; Unsplash photos, favicon set, social card |
+| Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
 
@@ -272,7 +272,7 @@ what is already half-built beats starting something new.
 | Client work eats the schedule | Two skipped weeks | Cut M2 to the buy-box path; ship 13 blocks as v1.0 |
 | `filter-panel` overruns | Not done in 3 evenings | Ship it with React state, file an issue for URL sync — the API does not change |
 | shadcn CLI changes under you | CI red on an untouched PR | The install test catches it; pin `shadcn` in devDependencies rather than tracking latest |
-| Scope creep into a full storefront | "We should add a demo store" | The registry is the product. A demo store is a v2 conversation |
+| Scope creep into a full storefront | The demo store grows features no block has | The registry is the product. `/demo` (October 2026) exists because visitors read block by block and never opened the examples — it composes shipped blocks and nothing else. Its bag lines are site markup only until `cart-line-item` ships; no accounts, payments or search |
 | Nobody installs it | No traffic after launch | Expected at first. The fix is one good build-in-public thread per shipped stage, not more blocks |
 
 ---

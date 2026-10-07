@@ -214,7 +214,7 @@ const APPAREL: SizeGuideRow[] = [
   { size: "XL", values: [[103, 108], [87, 92], [109, 114], 84] },
 ];
 
-const FOOTWEAR_COLUMNS = ["UK", "US", "Foot length"];
+export const FOOTWEAR_COLUMNS = ["UK", "US", "Foot length"];
 const FOOTWEAR: SizeGuideRow[] = [
   { size: "EU 39", values: ["6", "7", 24.5] },
   { size: "EU 40", values: ["6.5", "7.5", 25.2] },
@@ -389,7 +389,7 @@ export function SizeGuideDialogDemo() {
 
 /* ─── variant-swatches ───────────────────────────────────────────────── */
 
-const BOOT_PHOTOS: Record<string, string> = {
+export const BOOT_PHOTOS: Record<string, string> = {
   Tan: "1773425975272-35f0900a9d8f",
   Walnut: "1777987601677-3059be0e1388",
   Black: "1534233812932-59b8fa1b780c",
@@ -426,7 +426,7 @@ const BOOT_VARIANTS: Variant[] = Object.entries(BOOT_STOCK).flatMap(([colour, st
   })
 );
 
-const BOOT_GUIDE: SizeGuideRow[] = [
+export const BOOT_GUIDE: SizeGuideRow[] = [
   ...FOOTWEAR,
   { size: "EU 45", values: ["10.5", "11.5", 28.6] },
   { size: "EU 46", values: ["11", "12", 29.2] },
@@ -567,7 +567,7 @@ export function VariantSwatchesDemo() {
 /* ─── product-buy-box ────────────────────────────────────────────────── */
 
 /** The same boot, with Black at its own price — the buy box follows the variant. */
-const BOOT: BuyBoxProduct = {
+export const BOOT: BuyBoxProduct = {
   id: "vester",
   brand: "Lindqvist",
   name: "Vester Chelsea Boot",
@@ -704,7 +704,7 @@ export function ProductBuyBoxDemo() {
 
 /* ─── review-summary ─────────────────────────────────────────────────── */
 
-const REVIEWS: Review[] = [
+export const REVIEWS: Review[] = [
   { id: "r1", rating: 5, title: "Worth the break-in week", body: "Stiff for the first five or six wears, then they shape to your foot. Two winters in and the sole is barely worn.", author: "Mara K.", date: "2026-09-21", verified: true, fit: -0.4, variant: "Tan · EU 41" },
   { id: "r2", rating: 5, title: "The colour is better in person", body: "Tan reads almost cognac in daylight. Took my usual size, a little snug across the toes at first.", author: "Jonas P.", date: "2026-09-12", verified: true, fit: -0.3, variant: "Tan · EU 43" },
   { id: "r3", rating: 4, title: "Size up half", body: "Lovely boot, narrow last. I swapped a 42 for a 43 and they are perfect with wool socks.", author: "Ines R.", date: "2026-08-30", verified: true, fit: -0.8, variant: "Walnut · EU 43" },
@@ -717,7 +717,7 @@ const REVIEWS: Review[] = [
 ];
 
 /** The product's counts across all 312 reviews; the list is one page of them. */
-const DISTRIBUTION: [number, number, number, number, number] = [4, 3, 18, 61, 226];
+export const DISTRIBUTION: [number, number, number, number, number] = [4, 3, 18, 61, 226];
 
 export function ReviewSummaryDemo() {
   const [state, setState] = React.useState<"loaded" | "loading" | "empty">("loaded");
@@ -896,7 +896,7 @@ function BuyBoxGallery() {
   return <ProductGallery images={images} label="Vester Chelsea Boot" className="md:sticky md:top-6 md:self-start" />;
 }
 
-const BOOT_DETAILS: ProductDetailsSectionData[] = [
+export const BOOT_DETAILS: ProductDetailsSectionData[] = [
   {
     id: "description",
     title: "Description",

@@ -164,14 +164,14 @@ function CardQuickViewTrigger() {
 /** A wishlist that takes a moment, as a real one would. */
 const saveToWishlist = () => new Promise<void>((resolve) => window.setTimeout(resolve, 350));
 
-function QuickViewCard({
+export function QuickViewCard({
   product,
   density,
   onQuickAdd,
 }: {
   product: ProductCardProduct;
   density?: "comfortable" | "compact";
-  onQuickAdd?: () => Promise<void>;
+  onQuickAdd?: (product: ProductCardProduct, colorIndex: number) => void | Promise<void>;
 }) {
   return (
     <ProductCard product={product} density={density} onQuickAdd={onQuickAdd} onWishlistChange={saveToWishlist}>
@@ -511,7 +511,16 @@ export function FilterSheetDemo() {
 
 const LISTING_PAGE = 6;
 
-export function ListingPageDemo() {
+export interface ListingPageOptions {
+  /** Where a card links: the demo store's product pages. Defaults to "#". */
+  hrefFor?: (product: ProductCardProduct) => string;
+  /** Quick add and the quick view's add-to-bag. Defaults to a short wait. */
+  onAddToBag?: (product: ProductCardProduct, colorIndex: number) => void | Promise<void>;
+  /** The page's intro under the heading. */
+  intro?: React.ReactNode;
+}
+
+export function ListingPageDemo({ hrefFor, onAddToBag, intro }: ListingPageOptions = {}) {
   const [filters, setFilters] = useFilterParams(FACETS);
   const [sort, setSort] = React.useState("featured");
   const [density, setDensity] = React.useState<"comfortable" | "compact">("comfortable");
@@ -521,20 +530,27 @@ export function ListingPageDemo() {
   const key = `${serializeFilterParams(filters, FACETS).toString()}|${sort}`;
   const settled = useSettled({ filters, sort }, key);
   const results = sortProducts(filterProducts(settled.value.filters), settled.value.sort);
-  const visible = results.slice(0, page * LISTING_PAGE);
+  const visible = results
+    .slice(0, page * LISTING_PAGE)
+    .map((product) => (hrefFor ? { ...product, href: hrefFor(product) } : product));
+  const add = onAddToBag ?? (() => wait(600));
   const facets = withCounts(filters);
   const empty = useEmptyState(filters, setFilters);
 
   return (
-    <ProductQuickView onAddToBag={() => wait(600)}>
+    <ProductQuickView onAddToBag={add}>
       <header className="mb-6">
         <p className="ec-eyebrow text-brand">Collection</p>
         <h1 className="ec-display mt-2 text-5xl sm:text-6xl">Objects for the table</h1>
         <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-muted-foreground">
-          Eight ecomcn blocks and nothing else: sort-toolbar, filter-panel,
-          filter-sheet, product-grid, product-card, product-quick-view,
-          load-more and empty-results. Filters and page depth live in this
-          frame&apos;s URL.
+          {intro ?? (
+            <>
+              Eight ecomcn blocks and nothing else: sort-toolbar, filter-panel,
+              filter-sheet, product-grid, product-card, product-quick-view,
+              load-more and empty-results. Filters and page depth live in this
+              frame&apos;s URL.
+            </>
+          )}
         </p>
       </header>
 
@@ -578,7 +594,7 @@ export function ListingPageDemo() {
             density={density}
             empty={<EmptyResults {...empty} />}
             renderCard={(product) => (
-              <QuickViewCard product={product} density={density} onQuickAdd={() => wait(600)} />
+              <QuickViewCard product={product} density={density} onQuickAdd={add} />
             )}
           />
           {!settled.loading && results.length > 0 ? (

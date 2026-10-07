@@ -130,6 +130,16 @@ export const PRODUCTS: DemoProduct[] = ROWS.map(
   }),
 );
 
+/** Each product's colourways with their photo ids — for the demo store's galleries. */
+export type StoreColorway = { name: string; hex: string; photo: string; crop?: Photo["crop"] };
+
+export const COLORWAYS: Record<string, StoreColorway[]> = Object.fromEntries(
+  ROWS.map(([id, , , , , , , colors]) => [
+    id,
+    colors.map(([key, photo, crop]) => ({ name: COLORS[key].label, hex: COLORS[key].hex, photo, crop })),
+  ]),
+);
+
 /** 48 products for the load-more demo: the catalogue three times over. */
 export const LARGE_CATALOGUE: DemoProduct[] = Array.from({ length: 48 }, (_, i) => {
   const base = PRODUCTS[i % PRODUCTS.length];
