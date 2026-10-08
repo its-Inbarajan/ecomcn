@@ -181,6 +181,37 @@ September 2026, long before v1.0.
 
 ---
 
+## Milestone 5 — Checkout, v1.1 (7 evenings · ~4 weeks)
+
+`address-form` and `payment-selector` were kept out of v1.0 on purpose (see
+*Deferred on purpose*): most stores hand payment to Stripe Elements, Shopify
+checkout or a PSP's hosted page and throw a custom payment UI away. So they
+ship in v1.1, after the launch, and only as **presentation shells**: ecomcn
+owns the layout, the selection, the states and the motion; your payment
+provider owns every field that touches a card.
+
+| Block | Evenings | Notes |
+| --- | --- | --- |
+| `address-form` | 3 | Country-driven fields and `autocomplete` tokens; validation is a pure function, not a form library |
+| `payment-selector` | 3 | Radio cards with a provider slot; never renders a card-number field |
+| Demo store checkout | 1 | The stepper's Details, Delivery and Payment steps, on these two blocks and a mock provider |
+
+**Split points:** `address-form` is evening 1 the country format table and
+`validateAddress`, evening 2 the fields, autocomplete tokens and the
+country-change morph, evening 3 demo + docs. `payment-selector` is evening 1
+the radio cards and panel morph, evening 2 the provider slot (kept mounted)
+and unavailable / instalment states, evening 3 demo + docs.
+
+**Done when:** the demo store runs bag → details → delivery → payment on
+nothing but ecomcn blocks, with a mock provider in the payment slot — and no
+block has a field that could hold a card number.
+
+**Before starting:** check that shadcn's `field` component ships for both
+bases; if it does, the address form composes it rather than hand-rolled
+label/description/error markup.
+
+---
+
 ## Timeline
 
 | Milestone | Evenings | Elapsed |
@@ -188,29 +219,26 @@ September 2026, long before v1.0.
 | M0 — Make it real | 2 | Week 1 — done |
 | M1 — Browse | 7 | Weeks 2–5 — done |
 | M1.5 — Composition & motion | 4 | done |
-| M2 — Product | 10 | next |
-| M3 — Cart | 5 | |
-| M4 — Launch | 4 (one done early) | |
+| M2 — Product | 10 | done, early October |
+| M3 — Cart | 5 | done, October |
+| M4 — Launch v1.0 | 4 (social card and directory done early) | next |
+| M5 — Checkout, v1.1 | 7 | after the launch |
 
-**From here:** 17 evenings — M2 8, M3 5, M4 4. At two evenings a week that is
-about nine weeks, so v1.0 lands around early December 2026 with no missed weeks.
-
-That already assumes no missed weeks — so plan for mid-December, and expect
-January if client work eats a few evenings.
-
-**If that is too long**, the lever is Milestone 2: ship `product-buy-box` with
-`variant-swatches` but defer `product-gallery` to v1.1 (adopters have an image
-carousel already). That cuts 3 evenings and ~2 weeks.
+**From here:** 4 evenings to v1.0 — about two weeks at two evenings a week —
+then 7 for v1.1's checkout, about four more. M2 and M3 ran well ahead of the
+original plan, which had v1.0 in December.
 
 ---
 
 ## Deferred on purpose
 
-**Checkout internals — `address-form`, `payment-selector` (6 evenings).**
+**Checkout internals — `address-form`, `payment-selector`.**
 Deliberately out of v1.0. Most stores put Stripe Elements, Shopify checkout or
-a PSP's hosted page here and throw a custom payment UI away. Six evenings on
-the blocks most likely to be discarded is the worst trade in the catalogue.
-They land in v1.1 as presentation shells with a provider slot.
+a PSP's hosted page here and throw a custom payment UI away, so building them
+before the launch is the worst trade in the catalogue. They are planned as
+**Milestone 5 (v1.1)**: presentation shells with a provider slot, specified in
+`BLOCK-CATALOG.md`. Until then the demo store's checkout stops after the bag,
+and says why.
 
 **Discovery stage — `hero-editorial`, `category-rail`, `collection-grid`,
 `announcement-bar`, `lookbook-strip`.** Beautiful, and the least differentiated
