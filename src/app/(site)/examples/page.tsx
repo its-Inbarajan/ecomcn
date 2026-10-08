@@ -16,7 +16,13 @@ export const metadata: Metadata = {
 };
 
 /** Every block that appears in the demo store, counted once. */
-const STORE_BLOCKS = new Set([...EXAMPLES.flatMap((e) => e.blocks), "order-summary"]);
+const STORE_BLOCKS = new Set([
+  ...EXAMPLES.flatMap((e) => e.blocks),
+  "order-summary",
+  "cart-sheet",
+  "cart-line-item",
+  "checkout-stepper",
+]);
 
 export default function ExamplesIndex() {
   return (

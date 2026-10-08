@@ -19,7 +19,10 @@
     "src/registry/ecomcn/review-summary/registry.json",
     "src/registry/ecomcn/related-products/registry.json",
     "src/registry/ecomcn/product-gallery/registry.json",
+    "src/registry/ecomcn/cart-line-item/registry.json",
+    "src/registry/ecomcn/cart-sheet/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
+    "src/registry/ecomcn/checkout-stepper/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],
   "items": []

@@ -2,8 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
+import { CartLineItem, type CartLine } from "@/components/ecomcn/cart-line-item";
+import { CartSheet } from "@/components/ecomcn/cart-sheet";
+import { CheckoutStepper, type CheckoutStep } from "@/components/ecomcn/checkout-stepper";
 import { OrderSummary } from "@/components/ecomcn/order-summary";
 import {
   ProductBuyBox,
@@ -34,7 +38,6 @@ import {
   FOOTWEAR_COLUMNS,
   REVIEWS,
 } from "@/demos/product";
-import { cn } from "@/lib/utils";
 
 /**
  * The demo store: the listing page, a product page for every product, and a
@@ -120,6 +123,50 @@ export function useBag() {
 
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
 
+/** A bag line as cart-line-item and cart-sheet take it. */
+function toCartLine(line: BagLine): CartLine {
+  return {
+    id: line.id,
+    name: line.name,
+    brand: line.brand,
+    href: storeHref(line.productId),
+    variant: line.detail,
+    unitPrice: line.unitPrice,
+    quantity: line.quantity,
+    image: line.photo ? (
+      // eslint-disable-next-line @next/next/no-img-element -- demo thumbnail from the CDN
+      <img src={thumb(line.photo)} alt="" className="absolute inset-0 size-full object-cover" />
+    ) : undefined,
+  };
+}
+
+/** The header's mini cart, and every page's: the shared bag, on cart-sheet. */
+function StoreCart() {
+  const { lines, setQuantity, remove } = useBag();
+  const router = useRouter();
+  return (
+    <CartSheet
+      lines={lines.map(toCartLine)}
+      onQuantityChange={async (id, quantity) => {
+        await wait(300);
+        setQuantity(id, quantity);
+      }}
+      onRemove={async (id) => {
+        await wait(300);
+        remove(id);
+      }}
+      freeShippingThreshold={300}
+      onCheckout={() => router.push("/demo/bag?step=details")}
+      viewBagHref="/demo/bag"
+      empty={
+        <Link href="/demo" className="text-sm underline underline-offset-4">
+          Continue shopping
+        </Link>
+      }
+    />
+  );
+}
+
 /** Adds a catalogue product from a card or the quick view: its colour, no size. */
 function useQuickAdd() {
   const { add } = useBag();
@@ -167,7 +214,6 @@ export function DemoBar() {
 }
 
 export function StoreHeader() {
-  const { count } = useBag();
   return (
     <header className="ec-rule-strong sticky top-0 z-40 border-b bg-background/92 backdrop-blur">
       <div className="mx-auto flex h-15 max-w-295 items-center justify-between gap-4 px-5 sm:px-8">
@@ -185,14 +231,7 @@ export function StoreHeader() {
           </nav>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/demo/bag"
-            aria-label={`Bag, ${count} ${count === 1 ? "item" : "items"}`}
-            className="ec-rule inline-flex h-9 items-center gap-2 border px-3 text-sm transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-          >
-            <ShoppingBag className="size-4" aria-hidden />
-            <span className="tabular-nums">{count}</span>
-          </Link>
+          <StoreCart />
           <ThemeToggle />
         </div>
       </div>
@@ -200,8 +239,12 @@ export function StoreHeader() {
   );
 }
 
-/** Which blocks this page is made of, each a link to its docs. */
-export function BuiltWith({ blocks }: { blocks: string[] }) {
+/** Every page's header carries the mini cart. */
+const HEADER_BLOCKS = ["cart-sheet", "cart-line-item"];
+
+/** Which blocks this page is made of — the header's included — each a link to its docs. */
+export function BuiltWith({ blocks: own }: { blocks: string[] }) {
+  const blocks = [...new Set([...own, ...HEADER_BLOCKS])];
   return (
     <aside aria-label="Built with" className="ec-rule mt-24 border-t pt-6">
       <p className="ec-eyebrow text-muted-foreground">
@@ -258,6 +301,8 @@ const unsplash = (photo: StoreColorway, width: number, focus = "") =>
   `https://images.unsplash.com/photo-${photo.photo}?w=${width}&q=75&ar=4:5&fit=crop&auto=format${
     photo.crop && !focus ? `&crop=${photo.crop}` : ""
   }${focus}`;
+
+const thumb = (photo: StoreColorway) => unsplash(photo, 200);
 
 /** Close-ups from one photo, through the CDN's focal-point zoom. */
 const SHOTS = [
@@ -531,24 +576,45 @@ export function StoreProduct({ id }: { id: string }) {
 
 /* ─── bag ────────────────────────────────────────────────────────────── */
 
-const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const CHECKOUT_STEPS: CheckoutStep[] = [
+  { id: "bag", label: "Bag" },
+  { id: "details", label: "Details" },
+  { id: "delivery", label: "Delivery" },
+  { id: "payment", label: "Payment" },
+];
 
 /**
- * The bag. The lines are the demo's own markup until M3 ships
- * cart-line-item; the summary is the order-summary block.
+ * The bag: cart-line-item lines, order-summary beside them, and the
+ * checkout stepper across the top. Checkout moves the stepper on; the
+ * steps after the bag are address-form and payment-selector, which come
+ * after v1.0, so the demo says so there.
  */
 export function StoreBag() {
   const { lines: bag, setQuantity, remove } = useBag();
   const [code, setCode] = React.useState<string | null>(null);
-  const [checkout, setCheckout] = React.useState(false);
+  // The step lives in the URL, so the mini cart's Checkout can land on it.
+  const router = useRouter();
+  const step = useSearchParams().get("step") ?? "bag";
+  const goTo = (id: string) => router.replace(id === "bag" ? "/demo/bag" : `/demo/bag?step=${id}`, { scroll: false });
 
   return (
     <div>
       <header className="ec-rule-strong border-b pb-5">
-        <h1 className="ec-display text-5xl">Your bag</h1>
+        <h1 className="ec-display text-5xl">{step === "bag" ? "Your bag" : "Checkout"}</h1>
       </header>
 
-      {bag.length === 0 ? (
+      <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
+
+      {step !== "bag" ? (
+        <div className="max-w-xl py-12">
+          <p className="text-2xl">This is where the demo stops.</p>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
+            Details, delivery and payment are the address form and payment
+            selector — ecomcn blocks planned for after v1.0. Press{" "}
+            <span className="text-foreground">Bag</span> in the stepper to go back.
+          </p>
+        </div>
+      ) : bag.length === 0 ? (
         <div className="py-16">
           <p className="text-2xl">Nothing in it yet.</p>
           <Link href="/demo" className="mt-4 inline-flex items-center gap-2 text-sm underline underline-offset-4">
@@ -559,45 +625,22 @@ export function StoreBag() {
         <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
           <ul className="ec-rule border-t">
             {bag.map((line) => (
-              <li key={line.id} className="ec-rule flex gap-4 border-b py-5">
-                <Link href={storeHref(line.productId)} className="w-20 shrink-0 bg-secondary sm:w-24">
-                  {line.photo ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- demo thumbnail from the CDN
-                    <img src={unsplash(line.photo, 200)} alt="" className="aspect-[4/5] w-full object-cover" />
-                  ) : null}
-                </Link>
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <p className="ec-eyebrow text-muted-foreground">{line.brand}</p>
-                  <Link href={storeHref(line.productId)} className="text-lg leading-tight hover:underline">
-                    {line.name}
-                  </Link>
-                  {line.detail ? <p className="text-sm text-muted-foreground">{line.detail}</p> : null}
-                  <div className="mt-auto flex items-center justify-between gap-4 pt-3">
-                    <div role="group" aria-label={`Quantity of ${line.name}`} className="ec-rule flex h-9 items-stretch border">
-                      <button type="button" aria-label="One fewer" onClick={() => setQuantity(line.id, line.quantity - 1)} className="grid w-9 place-items-center hover:bg-secondary">
-                        <Minus className="size-3.5" aria-hidden />
-                      </button>
-                      <span className="grid w-9 place-items-center text-sm tabular-nums">{line.quantity}</span>
-                      <button type="button" aria-label="One more" onClick={() => setQuantity(line.id, line.quantity + 1)} className="grid w-9 place-items-center hover:bg-secondary">
-                        <Plus className="size-3.5" aria-hidden />
-                      </button>
-                    </div>
-                    <p className="tabular-nums">{money.format(line.unitPrice * line.quantity)}</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  aria-label={`Remove ${line.name}`}
-                  onClick={() => remove(line.id)}
-                  className="grid size-9 shrink-0 place-items-center text-muted-foreground hover:bg-secondary hover:text-foreground"
-                >
-                  <X className="size-4" aria-hidden />
-                </button>
-              </li>
+              <CartLineItem
+                key={line.id}
+                line={toCartLine(line)}
+                onQuantityChange={async (quantity) => {
+                  await wait(300);
+                  setQuantity(line.id, quantity);
+                }}
+                onRemove={async () => {
+                  await wait(300);
+                  remove(line.id);
+                }}
+              />
             ))}
           </ul>
 
-          <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+          <div className="lg:sticky lg:top-24 lg:self-start">
             <OrderSummary
               lines={bag.map((l) => ({ id: l.id, unitPrice: l.unitPrice, quantity: l.quantity }))}
               freeShippingThreshold={300}
@@ -610,19 +653,13 @@ export function StoreBag() {
                 setCode("ARCHIVE20");
               }}
               onRemoveCode={() => setCode(null)}
-              onCheckout={() => setCheckout(true)}
+              onCheckout={() => goTo("details")}
             />
-            {checkout ? (
-              <p role="status" className={cn("text-sm leading-relaxed text-muted-foreground")}>
-                Checkout is where the demo stops for now — the checkout stepper and
-                the cart sheet are the next ecomcn blocks (M3).
-              </p>
-            ) : null}
           </div>
         </div>
       )}
 
-      <BuiltWith blocks={["order-summary"]} />
+      <BuiltWith blocks={["checkout-stepper", "cart-line-item", "order-summary"]} />
     </div>
   );
 }

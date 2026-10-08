@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "checkout-stepper",
+      "type": "registry:component",
+      "title": "Checkout Stepper",
+      "description": "Where the shopper is in checkout: a rail of equal ruled cells, edge to edge. Done steps carry a check and are buttons back to them; the current step is aria-current=\"step\"; steps to come are not clickable. Never colour alone — a check, a number, and a heavy rule under the current step that slides on as the shopper moves (Motion; a fade under reduced motion). On a phone the rail shows numbers, with the step named below it.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "checkout-stepper.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/checkout-stepper.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "checkout"
+      ]
+    }
+  ]
+}

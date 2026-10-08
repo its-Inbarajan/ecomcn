@@ -413,6 +413,83 @@ function HowToMeasure() {
 }`,
     },
   ],
+  "cart-line-item": [
+    {
+      label: "In your bag page",
+      code: `import { CartLineItem, type CartLine } from "@/components/ecomcn/cart-line-item"
+
+<ul>
+  {lines.map((line) => (
+    <CartLineItem
+      key={line.id}                // keyed by id: never remount a line mid-undo
+      line={line}                  // id, name, image, unitPrice, quantity, variant?, maxQuantity?
+      // Called once, after the shopper stops pressing. Throw to put it back.
+      onQuantityChange={(quantity) => cart.update(line.id, quantity)}
+      // Called after the 5-second undo window. Throw to put the line back.
+      onRemove={() => cart.remove(line.id)}
+      onSaveForLater={() => cart.saveForLater(line.id)}
+    />
+  ))}
+</ul>`,
+    },
+  ],
+  "cart-sheet": [
+    {
+      label: "In your header",
+      code: `import { CartSheet } from "@/components/ecomcn/cart-sheet"
+
+<CartSheet
+  lines={cart.lines}             // CartLine[], as cart-line-item takes
+  onQuantityChange={(id, quantity) => cart.update(id, quantity)}
+  onRemove={(id) => cart.remove(id)}
+  freeShippingThreshold={300}
+  onCheckout={() => router.push("/checkout")}
+  viewBagHref="/bag"
+  empty={<a href="/shop">Continue shopping</a>}
+/>`,
+    },
+    {
+      label: "Composed — your trigger, your extras",
+      code: `import {
+  CartSheet,
+  CartSheetContent,
+  CartSheetFooter,
+  CartSheetLines,
+  CartSheetTrigger,
+  useCartSheet,
+} from "@/components/ecomcn/cart-sheet"
+
+<CartSheet lines={cart.lines} onRemove={(id) => cart.remove(id)}>
+  <CartSheetTrigger className="border-0" />
+  <CartSheetContent>
+    <CartSheetLines />
+    <GiftNote />
+    <CartSheetFooter />
+  </CartSheetContent>
+</CartSheet>
+
+function GiftNote() {
+  const { subtotal } = useCartSheet()   // follows the lines as the shopper edits them
+  return subtotal > 100 ? <p>Free gift wrap on this order.</p> : null
+}`,
+    },
+  ],
+  "checkout-stepper": [
+    {
+      label: "Above each checkout step",
+      code: `import { CheckoutStepper } from "@/components/ecomcn/checkout-stepper"
+
+const steps = [
+  { id: "bag", label: "Bag" },
+  { id: "details", label: "Details" },
+  { id: "delivery", label: "Delivery" },
+  { id: "payment", label: "Payment" },
+]
+
+// Only done steps call this: the shopper can go back, never skip ahead.
+<CheckoutStepper steps={steps} value={step} onValueChange={setStep} />`,
+    },
+  ],
   "product-gallery": [
     {
       label: "Photos as data",
