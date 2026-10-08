@@ -30,9 +30,9 @@ _Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (18 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `order-summary` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · M2 (Product) **done** · **M3 (Cart) next** |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — 15 shipped, **3 to go** (the M3 cart blocks); `review-summary` and `related-products` shipped ahead of plan |
+| Shipped (21 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · M2 (Product) and M3 (Cart) **done** · **M4 (Launch) next** |
+| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — **all 18 shipped**; `review-summary` and `related-products` shipped ahead of plan |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
@@ -147,13 +147,16 @@ show a real product page instead of three cards.
 
 ---
 
-## Milestone 3 — Cart complete (5 evenings · ~3 weeks)
+## Milestone 3 — Cart complete (5 evenings · ~3 weeks) — **done**
+
+The demo store runs listing → product → mini cart → bag → checkout stepper
+on nothing but ecomcn blocks.
 
 | Block | Evenings | Notes |
 | --- | --- | --- |
-| `cart-line-item` | 2 | Remove needs *undo*, not a confirm dialog |
-| `cart-sheet` | 2 | Focus trap, restore focus on close, no remount per mutation |
-| `checkout-stepper` | 1 | `aria-current="step"`; completed steps clickable |
+| `cart-line-item` | 2 | **Done** — undo window, debounced quantity, rollback on reject |
+| `cart-sheet` | 2 | **Done** — grows from the bag button; subtotal follows the shopper |
+| `checkout-stepper` | 1 | **Done** — only done steps go back; the rule slides on |
 
 **Done when:** the landing page demo runs listing → product → cart → summary
 with nothing but ecomcn blocks. That is the screenshot that gets shared.

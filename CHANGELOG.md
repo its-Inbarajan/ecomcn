@@ -6,6 +6,31 @@ describe changes in terms of what to edit, not just what changed.
 
 ## [Unreleased]
 
+### Added
+- `cart-line-item` — one line in a bag: thumbnail, name and variant, a
+  quantity stepper, a right-aligned tabular line total (unit price under it
+  when there is more than one), save-for-later and remove. Removing never
+  asks: the row folds into a "Removed — Undo" bar, focus moves to Undo, and
+  `onRemove` runs once the undo window (`undoMs`, 5s) passes — or at once if
+  the line leaves the page first. Quantity presses show at once and reach
+  `onQuantityChange` once, after the shopper settles (`debounceMs`, 500).
+  Either handler can reject: the line puts itself back and says so.
+  `onPreviewQuantityChange` lets a subtotal elsewhere follow ahead of your
+  cart. Compound, through `useCartLineItem()`. Adds `motion`, `lucide-react`.
+- `cart-sheet` — the mini cart on your shadcn `sheet`: a bag button whose
+  count turns over, and a sheet that grows out of it as a circle and folds
+  back into it. Ruled header, body and footer; the lines are the only
+  scroller (soft edges, no scrollbar); the footer holds free-delivery
+  progress, the subtotal and checkout. Focus returns to the bag button on
+  close; lines are keyed by id so a cart update never remounts one mid-undo;
+  the subtotal and count follow what the shopper sees. It scrolls natively
+  rather than on `scroll-area`, whose scrollbar the house rules leave out.
+  Compound, through `useCartSheet()`. Pulls `cart-line-item`.
+- `checkout-stepper` — a rail of equal ruled cells: done steps carry a check
+  and go back, the current step is `aria-current="step"`, steps to come are
+  not clickable. A heavy rule slides to the current step; on a phone the rail
+  shows numbers and names the step below. Adds `motion`, `lucide-react`.
+
 ## [0.2.0] — 2026-10-05
 
 The whole Product stage, and a product page composed from it: a gallery that

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "cart-sheet",
+      "type": "registry:block",
+      "title": "Cart Sheet",
+      "description": "The mini cart on your shadcn Sheet: a bag button with a count that turns over, and a sheet that grows out of it as a circle and folds back into it (Motion; a fade under reduced motion). Ruled header, body and footer bands — the lines are the only scroller, with soft edges instead of a scrollbar — and a footer with free-delivery progress, the subtotal and checkout. Focus is trapped and handed back to the bag button; lines are keyed by id, so a cart update never remounts one mid-undo, and the subtotal follows what the shopper sees before your cart catches up. Compound, through useCartSheet().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "sheet",
+        "button",
+        "@ecomcn/cart-line-item"
+      ],
+      "files": [
+        {
+          "path": "cart-sheet.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/cart-sheet.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "cart"
+      ]
+    }
+  ]
+}

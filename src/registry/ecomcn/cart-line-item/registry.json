@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "cart-line-item",
+      "type": "registry:component",
+      "title": "Cart Line Item",
+      "description": "One line in a bag: thumbnail, name and variant, a quantity stepper, a right-aligned tabular line total, and save-for-later / remove. Removing never asks — the row folds into a \"Removed — Undo\" bar, focus moves to Undo, and onRemove runs only once the undo window has passed or the line leaves the page. Quantity changes show at once and reach onQuantityChange once, after the shopper settles. Either handler can reject: the line puts itself back and says so. Rows fold to their measured height with Motion (a fade under reduced motion). Compound, through useCartLineItem().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "cart-line-item.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/cart-line-item.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "cart"
+      ]
+    }
+  ]
+}

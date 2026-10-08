@@ -253,7 +253,7 @@ Snap-scrolling "pairs well with" rail built from product cards.
 
 Pure friction removal. Every element either reduces doubt or gets cut.
 
-### `cart-line-item` · component · effort 2
+### `cart-line-item` · component · effort 2 · **shipped** · `motion`
 Thumbnail, variant line, quantity stepper, line total, save-for-later, remove.
 - **Design:** line total right-aligned and tabular so a column stacks into a
   readable ledger.
@@ -261,13 +261,14 @@ Thumbnail, variant line, quantity stepper, line total, save-for-later, remove.
   must debounce before hitting the cart API.
 - Composes: `button`, `input`
 
-### `cart-sheet` · block · effort 2
+### `cart-sheet` · block · effort 2 · **shipped** · `motion`
 Slide-over mini cart with scrollable lines, sticky subtotal footer, empty state.
 - **Design:** header, body and footer are ruled bands; the body is the only
   scroller.
 - **Hard part:** focus trapping, restoring focus to the bag trigger on close, and
   not remounting on every cart mutation.
-- Composes: `sheet`, `button`, `scroll-area`, `@ecomcn/cart-line-item`
+- Composes: `sheet`, `button`, `@ecomcn/cart-line-item` (native scrolling
+  with soft edges instead of `scroll-area`, which draws a scrollbar)
 
 ### `order-summary` · block · effort 3
 Free-shipping progress, promo code with applied state, itemised totals, CTA.
@@ -277,7 +278,7 @@ Free-shipping progress, promo code with applied state, itemised totals, CTA.
   or you generate support tickets.
 - Composes: `input`, `button`, `progress`
 
-### `checkout-stepper` · component · effort 1
+### `checkout-stepper` · component · effort 1 · **shipped** · `motion`
 Four-step progress rail with done / active / pending states.
 - **Design:** equal-width ruled cells edge to edge — a rail, not floating pills.
 - **Hard part:** completed steps must be clickable to go back; pending ones must
