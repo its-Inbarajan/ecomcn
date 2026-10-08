@@ -8,6 +8,19 @@ import { Toggle } from "@/components/ui/toggle"
 import { PriceTag } from "@/components/ecomcn/price-tag"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 export interface ProductCardColor {
   name: string
   /** Any CSS colour, or a swatch image URL via `background`. */
@@ -125,7 +138,7 @@ export interface ProductCardProps
 export function ProductCard({
   product,
   currency = "USD",
-  locale,
+  locale: localeProp,
   density = "comfortable",
   onQuickAdd,
   colorIndex: colorIndexProp,
@@ -139,6 +152,7 @@ export function ProductCard({
   children,
   ...props
 }: ProductCardProps) {
+  const locale = useFormatLocale(localeProp)
   const colors = product.colors
   const handleColorChange = React.useCallback(
     (index: number) => {

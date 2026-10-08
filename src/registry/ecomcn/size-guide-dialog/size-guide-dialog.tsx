@@ -24,6 +24,19 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 /*
  * A size guide, opened from the size label:
  *
@@ -202,7 +215,7 @@ export function SizeGuideDialog({
   defaultUnit,
   onUnitChange,
   selectedSize,
-  locale,
+  locale: localeProp,
   title = "Size guide",
   description = "Body measurements. Measure over light clothing, with the tape level and snug.",
   fitNote,
@@ -211,6 +224,7 @@ export function SizeGuideDialog({
   onOpenChange,
   children,
 }: SizeGuideDialogProps) {
+  const locale = useFormatLocale(localeProp)
   const [unit, setUnit] = useControllableState(
     unitProp,
     defaultUnit ?? baseUnit,

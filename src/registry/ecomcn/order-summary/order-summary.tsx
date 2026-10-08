@@ -8,6 +8,19 @@ import { Input } from "@/components/ui/input"
 import { useOrderTotals, type OrderLine } from "@/hooks/use-order-totals"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 export interface OrderSummaryProps extends React.HTMLAttributes<HTMLDivElement> {
   lines: OrderLine[]
   currency?: string
@@ -27,7 +40,7 @@ export interface OrderSummaryProps extends React.HTMLAttributes<HTMLDivElement> 
 export function OrderSummary({
   lines,
   currency = "USD",
-  locale,
+  locale: localeProp,
   freeShippingThreshold,
   flatShipping = 0,
   taxRate = 0,
@@ -40,6 +53,7 @@ export function OrderSummary({
   className,
   ...props
 }: OrderSummaryProps) {
+  const locale = useFormatLocale(localeProp)
   const [code, setCode] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
   const [pending, setPending] = React.useState(false)

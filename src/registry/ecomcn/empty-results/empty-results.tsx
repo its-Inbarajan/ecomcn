@@ -1,8 +1,23 @@
+"use client"
+
 import * as React from "react"
 import { ArrowRight, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
 
 export interface EmptyResultsFilter {
   /** Stable key, e.g. `color:sage`. */
@@ -47,12 +62,13 @@ export function EmptyResults({
   onClearAll,
   title,
   description,
-  locale,
+  locale: localeProp,
   noun = { one: "product", other: "products" },
   className,
   children,
   ...props
 }: EmptyResultsProps) {
+  const locale = useFormatLocale(localeProp)
   // Quoted, because filter labels are tokens ("Up to $80", "In stock only")
   // and read badly as bare words in the middle of a sentence.
   const list = new Intl.ListFormat(locale, { type: "conjunction" }).format(

@@ -31,6 +31,20 @@ describe changes in terms of what to edit, not just what changed.
   not clickable. A heavy rule slides to the current step; on a phone the rail
   shows numbers and names the step below. Adds `motion`, `lucide-react`.
 
+### Fixed
+- **Hydration in every block that formats numbers or prices**: `price-tag`,
+  `product-card`, `order-summary`, `sort-toolbar`, `load-more`,
+  `empty-results`, `filter-panel`, `filter-sheet` and `size-guide-dialog`.
+  With no `locale` prop they formatted in the server's locale on the first
+  render and the visitor's in the browser — a server in en-IN sent
+  "$1,28,500" where an en-US browser rendered "$128,500", and React threw a
+  hydration error. They now format in en-US until hydrated, then in the
+  visitor's locale; pass `locale` to pin one. **To fix a copy you already
+  have:** add the `useFormatLocale` hook from the new file under the
+  imports, rename the root's `locale` parameter to `locale: localeProp`, and
+  make `const locale = useFormatLocale(localeProp)` the root's first line.
+  `price-tag` and `empty-results` gain `"use client"` to do so.
+
 ## [0.2.0] — 2026-10-05
 
 The whole Product stage, and a product page composed from it: a gallery that

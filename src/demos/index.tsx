@@ -46,6 +46,11 @@ export function PriceTagDemo() {
       <Labelled label="Rupee, en-IN">
         <PriceTag price={8499} currency="INR" locale="en-IN" />
       </Labelled>
+      {/* No locale: the visitor's, once hydrated. Six figures is where the
+          server's locale and the browser's can disagree (1,28,500 vs 128,500). */}
+      <Labelled label="Your locale, six figures">
+        <PriceTag price={128500} />
+      </Labelled>
     </div>
   );
 }
