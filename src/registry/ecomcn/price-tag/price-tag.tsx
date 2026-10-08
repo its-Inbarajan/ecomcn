@@ -1,6 +1,21 @@
+"use client"
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
 
 export interface PriceTagProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Current price, in major units (e.g. 42.5 for $42.50). */
@@ -9,7 +24,7 @@ export interface PriceTagProps extends React.HTMLAttributes<HTMLDivElement> {
   compareAt?: number
   /** ISO 4217 code. Never hardcode a symbol — stores are not all in the US. */
   currency?: string
-  /** BCP 47 tag. `undefined` follows the visitor's locale. */
+  /** BCP 47 tag. `undefined` follows the visitor's locale, once hydrated. */
   locale?: string
   size?: "sm" | "lg"
 }
@@ -20,9 +35,10 @@ export interface PriceTagProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const PriceTag = React.forwardRef<HTMLDivElement, PriceTagProps>(
   (
-    { price, compareAt, currency = "USD", locale, size = "lg", className, ...props },
+    { price, compareAt, currency = "USD", locale: localeProp, size = "lg", className, ...props },
     ref
   ) => {
+    const locale = useFormatLocale(localeProp)
     const format = React.useMemo(
       () =>
         new Intl.NumberFormat(locale, {

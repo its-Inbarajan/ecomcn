@@ -5,6 +5,19 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 export interface LoadMoreProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Items currently rendered. */
   shown: number
@@ -48,11 +61,12 @@ export function LoadMore({
   controls,
   label = "Load more",
   noun = { one: "product", other: "products" },
-  locale,
+  locale: localeProp,
   rootMargin = "600px 0px",
   className,
   ...props
 }: LoadMoreProps) {
+  const locale = useFormatLocale(localeProp)
   const hasMore = hasMoreProp ?? (total !== undefined ? shown < total : true)
   const format = React.useMemo(() => new Intl.NumberFormat(locale), [locale])
   const plural = React.useMemo(() => new Intl.PluralRules(locale), [locale])

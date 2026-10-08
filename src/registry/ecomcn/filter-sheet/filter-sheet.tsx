@@ -21,6 +21,19 @@ import {
 } from "@/lib/filter-params"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 export interface FilterSheetProps
   extends Pick<FilterPanelProps, "facets" | "currency" | "locale" | "loading"> {
   /** The applied filters — usually straight from `useFilterParams`. */
@@ -66,13 +79,14 @@ export function FilterSheet({
   title = "Filters",
   label = "Filters",
   currency,
-  locale,
+  locale: localeProp,
   loading,
   className,
   contentClassName,
   noun = { one: "result", other: "results" },
   children,
 }: FilterSheetProps) {
+  const locale = useFormatLocale(localeProp)
   const [open, setOpen] = React.useState(false)
   // Changes made inside the sheet are staged here, not pushed to the URL:
   // applying live would re-fetch the listing behind the sheet on every tap.

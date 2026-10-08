@@ -26,6 +26,19 @@ import {
 } from "@/lib/filter-params"
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 /* ─── context ──────────────────────────────────────────────────────────────
  * Compound component: <FilterPanel> owns the state and renders its own
  * provider, so nothing has to be mounted above it. Every part reads that
@@ -111,7 +124,7 @@ export function FilterPanel({
   defaultValue = NO_FILTERS,
   onValueChange,
   currency = "USD",
-  locale,
+  locale: localeProp,
   loading,
   hideHeader,
   title = "Filters",
@@ -119,6 +132,7 @@ export function FilterPanel({
   children,
   ...props
 }: FilterPanelProps) {
+  const locale = useFormatLocale(localeProp)
   const [value, setValue] = useControllableState(valueProp, defaultValue, onValueChange)
   const titleId = React.useId()
   const rootRef = React.useRef<HTMLElement>(null)

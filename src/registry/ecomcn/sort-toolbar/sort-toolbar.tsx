@@ -5,6 +5,19 @@ import { ChevronDown, Grid2x2, Grid3x3 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+const subscribeNothing = () => () => {}
+
+/**
+ * Your locale, or the visitor's once hydrated. The server can't know the
+ * visitor's locale, and its HTML must match the first client render — a
+ * server in en-IN prints "1,24,000" where an en-US browser prints
+ * "124,000" — so until hydration it formats in en-US.
+ */
+function useFormatLocale(locale?: string) {
+  const hydrated = React.useSyncExternalStore(subscribeNothing, () => true, () => false)
+  return locale ?? (hydrated ? undefined : "en-US")
+}
+
 export interface SortOption {
   value: string
   label: string
@@ -45,11 +58,12 @@ export function SortToolbar({
   density = "comfortable",
   onDensityChange,
   filters,
-  locale,
+  locale: localeProp,
   noun = { one: "product", other: "products" },
   className,
   ...props
 }: SortToolbarProps) {
+  const locale = useFormatLocale(localeProp)
   const id = React.useId()
   const label = `${new Intl.NumberFormat(locale).format(total)} ${
     new Intl.PluralRules(locale).select(total) === "one" ? noun.one : noun.other
