@@ -285,21 +285,64 @@ Four-step progress rail with done / active / pending states.
   not be. Use `aria-current="step"`.
 - Composes: nothing
 
-### `payment-selector` · block · effort 3
-Radio cards for card / wallet / pay-in-3 that expand to reveal matching fields.
-- **Design:** the selected option's border darkens and the field block joins it
-  with a shared border — one object, not two.
-- **Hard part:** **never take raw PAN.** This is a presentation shell for Stripe
-  Elements or equivalent; ship it wired to a provider slot.
-- Composes: `radio-group`, `input`, `label`
+### `payment-selector` · block · effort 3 · **v1.1**
+Radio cards for card / wallet / pay-in-3 / bank, each expanding to the
+provider's own fields.
+- **Design:** the selected option's border darkens and its panel joins it with
+  a shared border — one object, not two. The panel grows to its measured
+  height (Motion; a fade under reduced motion).
+- **Hard part:** **never take raw PAN.** The block renders no card-number,
+  expiry or CVC input. Each method's panel is a **provider slot** —
+  `renderPanel(method)` — where you mount Stripe's Payment Element, Adyen's
+  Drop-in, PayPal's buttons, or a redirect notice. A provider iframe must not
+  be remounted by an unrelated re-render, or the shopper's half-typed card
+  vanishes: panels are keyed by method id and stay mounted once opened
+  (`keepMounted`, on by default), hidden rather than destroyed.
+- **API sketch:** `methods: { id, label, description?, icon?, kind: "card" |
+  "wallet" | "bnpl" | "bank" | "other", available?: boolean, unavailableReason?
+  }[]`, controlled `value` / `onValueChange`, `renderPanel`, and `total` with
+  `currency` / `locale` for the instalment line ("3 payments of $140", through
+  `Intl.NumberFormat`). `error` shows a provider failure inside the panel.
+- **States:** loading (methods not known yet); a method unavailable on this
+  device — Apple Pay in Firefox, say — shown with its reason in words, not
+  greyed out alone; a provider error; nothing selected yet.
+- **Accessibility:** one radio group with roving focus; each card's panel is
+  tied to its radio with `aria-controls`; focus stays on the radio when a
+  panel opens, so arrowing through methods never jumps into an iframe.
+- **Composes:** `radio-group`, `label`. No `input` — the provider brings the
+  fields.
 
-### `address-form` · block · effort 3
-Country-aware address fields with autocomplete slot and save-as-default.
-- **Design:** two columns on desktop, one on mobile; labels above, never
-  floating.
-- **Hard part:** address shape differs by country. Drive the field set from the
-  country code and set `autocomplete` tokens correctly.
-- Composes: `form`, `input`, `select`, `checkbox` · npm: `react-hook-form`, `zod`
+### `address-form` · block · effort 3 · **v1.1**
+Country-aware shipping or billing address, with an address-lookup slot and
+save-as-default.
+- **Design:** two columns from md, one on a phone; labels above the field,
+  never floating or placeholder-only. Fields that appear or vanish when the
+  country changes grow and fold to their measured height (Motion; a fade
+  under reduced motion).
+- **Hard part:** address shape differs by country. A format table drives the
+  field set, order, labels ("ZIP code" / "Postcode" / "PIN code"), which
+  fields are required, the region list (US states, Canadian provinces,
+  Australian and Indian states) and a postcode pattern; an unknown country
+  falls back to a generic shape. Every field carries the right `autocomplete`
+  token, prefixed with the section — `shipping given-name`,
+  `shipping address-line1`, `shipping address-level2` (city),
+  `shipping address-level1` (region), `shipping postal-code`,
+  `shipping country`, `shipping tel` — so browser autofill works first time.
+- **API sketch:** controlled `value: Address` / `onValueChange`, `country`
+  driving the format, `section: "shipping" | "billing"`, `errors` keyed by
+  field (yours — from your server or your schema), `formats` to add or
+  override countries, a `lookup` slot above the fields for Google Places /
+  Loqate / your own search, and `onSaveDefaultChange`. A pure
+  `validateAddress(address, format)` is exported, so the same rules run on
+  the server. **No form library is required** — the docs show it wired to
+  react-hook-form + zod, as an example, not a dependency.
+- **States:** loading skeleton in the form's shape; disabled; an error summary
+  at the top on submit that links to each field (`role="alert"`), plus the
+  message under each field with `aria-describedby`.
+- **Composes:** `input`, `label`, `checkbox` (save as default), and `field`
+  if it ships for both bases. Country and region are native `<select>`s: ~250
+  countries want the browser's own typeahead and mobile picker, and Radix's
+  and Base UI's Select differ too much to share one file.
 
 ---
 
@@ -331,7 +374,8 @@ Vertical shipment timeline with a live-node ring and carrier status chip.
 
 | Release | Blocks |
 | --- | --- |
-| **v1.1 — Merchandising** | `bundle-builder` · `recently-viewed` · `trust-badges-row` · `newsletter-capture` · `back-in-stock-form` · `gift-card-block` |
-| **v1.2 — Account** | `order-history-list` · `wishlist-grid` · `returns-request-flow` · `subscription-manager` · `saved-addresses` · `loyalty-tier-card` |
-| **v1.3 — Ops surfaces** | `admin-orders-table` · `inventory-editor` · `product-form` · `discount-builder` · `sales-stat-row` · `fulfilment-queue` |
-| **v1.4 — Theming** | `theme-editorial` (default) · `theme-utility` (dense B2B) · `theme-boutique` (soft DTC) |
+| **v1.1 — Checkout** | `address-form` · `payment-selector` — Milestone 5 in `ROADMAP.md` |
+| **v1.2 — Merchandising** | `bundle-builder` · `recently-viewed` · `trust-badges-row` · `newsletter-capture` · `back-in-stock-form` · `gift-card-block` |
+| **v1.3 — Account** | `order-history-list` · `wishlist-grid` · `returns-request-flow` · `subscription-manager` · `saved-addresses` · `loyalty-tier-card` |
+| **v1.4 — Ops surfaces** | `admin-orders-table` · `inventory-editor` · `product-form` · `discount-builder` · `sales-stat-row` · `fulfilment-queue` |
+| **v1.5 — Theming** | `theme-editorial` (default) · `theme-utility` (dense B2B) · `theme-boutique` (soft DTC) |
