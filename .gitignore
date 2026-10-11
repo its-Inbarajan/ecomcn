@@ -16,6 +16,7 @@ public/r
 src/components/ecomcn/
 src/hooks/use-*.ts
 src/lib/filter-params.ts
+src/lib/address-format.ts
 
 # Superseded — safe to delete this folder.
 _to_delete/

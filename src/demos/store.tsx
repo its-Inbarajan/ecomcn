@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
+import { AddressForm, type Address, type AddressErrors } from "@/components/ecomcn/address-form";
 import { CartLineItem, type CartLine } from "@/components/ecomcn/cart-line-item";
 import { CartSheet } from "@/components/ecomcn/cart-sheet";
 import { CheckoutStepper, type CheckoutStep } from "@/components/ecomcn/checkout-stepper";
@@ -28,6 +29,7 @@ import { ReviewSummary, type Review, type ReviewDistribution } from "@/component
 import { SizeGuideDialog } from "@/components/ecomcn/size-guide-dialog";
 import type { ProductCardProduct } from "@/components/ecomcn/product-card";
 import { ThemeToggle } from "@/components/site/theme-toggle";
+import { Button } from "@/components/ui/button";
 import { ListingPageDemo } from "@/demos/browse";
 import { COLORWAYS, PRODUCTS, type DemoProduct, type StoreColorway } from "@/demos/listing-data";
 import {
@@ -38,6 +40,7 @@ import {
   FOOTWEAR_COLUMNS,
   REVIEWS,
 } from "@/demos/product";
+import { emptyAddress, formatAddressLines, validateAddress } from "@/lib/address-format";
 
 /**
  * The demo store: the listing page, a product page for every product, and a
@@ -583,19 +586,54 @@ const CHECKOUT_STEPS: CheckoutStep[] = [
   { id: "payment", label: "Payment" },
 ];
 
+/** Where the demo "ships": every built-in address format, and Ireland on the generic one. */
+const SHIPS_TO = ["US", "CA", "GB", "IE", "FR", "DE", "IN", "JP", "AU"];
+
 /**
- * The bag: cart-line-item lines, order-summary beside them, and the
- * checkout stepper across the top. Checkout moves the stepper on; the
- * steps after the bag are address-form and payment-selector, which come
- * after v1.0, so the demo says so there.
+ * The bag and checkout: cart-line-item lines, order-summary beside them,
+ * the checkout stepper across the top, and address-form for Details.
+ * Delivery and payment are payment-selector, still to come, so the demo
+ * says so there.
  */
 export function StoreBag() {
   const { lines: bag, setQuantity, remove } = useBag();
   const [code, setCode] = React.useState<string | null>(null);
+  const [address, setAddress] = React.useState<Address>(() => emptyAddress("US"));
+  const [errors, setErrors] = React.useState<AddressErrors | null>(null);
+  const [saveDefault, setSaveDefault] = React.useState(false);
+  const form = React.useRef<HTMLFormElement>(null);
   // The step lives in the URL, so the mini cart's Checkout can land on it.
   const router = useRouter();
   const step = useSearchParams().get("step") ?? "bag";
   const goTo = (id: string) => router.replace(id === "bag" ? "/demo/bag" : `/demo/bag?step=${id}`, { scroll: false });
+
+  const continueToDelivery = (event: React.FormEvent) => {
+    event.preventDefault();
+    const found = validateAddress(address);
+    setErrors(found);
+    if (Object.keys(found).length === 0) goTo("delivery");
+  };
+  const shipTo = Object.keys(validateAddress(address)).length === 0 ? formatAddressLines(address) : null;
+
+  const summary = (
+    <div className="lg:sticky lg:top-24 lg:self-start">
+      <OrderSummary
+        lines={bag.map((l) => ({ id: l.id, unitPrice: l.unitPrice, quantity: l.quantity }))}
+        freeShippingThreshold={300}
+        flatShipping={18}
+        taxRate={0.08}
+        appliedCode={code}
+        discountRate={0.2}
+        onApplyCode={(entered) => {
+          if (entered.trim().toUpperCase() !== "ARCHIVE20") throw new Error("That code isn't valid. Try ARCHIVE20.");
+          setCode("ARCHIVE20");
+        }}
+        onRemoveCode={() => setCode(null)}
+        ctaLabel={step === "details" ? "Continue to delivery" : "Checkout"}
+        onCheckout={() => (step === "details" ? form.current?.requestSubmit() : goTo("details"))}
+      />
+    </div>
+  );
 
   return (
     <div>
@@ -605,21 +643,47 @@ export function StoreBag() {
 
       <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
 
-      {step !== "bag" ? (
-        <div className="max-w-xl py-12">
-          <p className="text-2xl">This is where the demo stops.</p>
-          <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
-            Details, delivery and payment are the address form and payment
-            selector — ecomcn blocks planned for after v1.0. Press{" "}
-            <span className="text-foreground">Bag</span> in the stepper to go back.
-          </p>
-        </div>
-      ) : bag.length === 0 ? (
+      {bag.length === 0 ? (
         <div className="py-16">
           <p className="text-2xl">Nothing in it yet.</p>
           <Link href="/demo" className="mt-4 inline-flex items-center gap-2 text-sm underline underline-offset-4">
             Back to the shop <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>
+        </div>
+      ) : step === "details" ? (
+        <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
+          <form ref={form} noValidate onSubmit={continueToDelivery} className="max-w-2xl">
+            <AddressForm
+              value={address}
+              onValueChange={setAddress}
+              errors={errors}
+              countries={SHIPS_TO}
+              saveAsDefault={saveDefault}
+              onSaveAsDefaultChange={setSaveDefault}
+            />
+            <Button type="submit" size="lg" className="mt-8 h-12 w-full text-[13px] tracking-[0.14em] uppercase">
+              Continue to delivery
+            </Button>
+          </form>
+          {summary}
+        </div>
+      ) : step !== "bag" ? (
+        <div className="max-w-xl py-12">
+          {shipTo ? (
+            <div className="ec-rule mb-8 border-b pb-6 text-[14.5px] leading-relaxed">
+              <p className="ec-eyebrow mb-2 text-muted-foreground">Ship to</p>
+              {shipTo.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          ) : null}
+          <p className="text-2xl">This is where the demo stops — for now.</p>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
+            Delivery and payment are the payment selector, the next ecomcn
+            block (v1.1). Press <span className="text-foreground">Details</span> in
+            the stepper to change the address, or <span className="text-foreground">Bag</span> to
+            go back to the bag.
+          </p>
         </div>
       ) : (
         <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
@@ -639,27 +703,13 @@ export function StoreBag() {
               />
             ))}
           </ul>
-
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <OrderSummary
-              lines={bag.map((l) => ({ id: l.id, unitPrice: l.unitPrice, quantity: l.quantity }))}
-              freeShippingThreshold={300}
-              flatShipping={18}
-              taxRate={0.08}
-              appliedCode={code}
-              discountRate={0.2}
-              onApplyCode={(entered) => {
-                if (entered.trim().toUpperCase() !== "ARCHIVE20") throw new Error("That code isn't valid. Try ARCHIVE20.");
-                setCode("ARCHIVE20");
-              }}
-              onRemoveCode={() => setCode(null)}
-              onCheckout={() => goTo("details")}
-            />
-          </div>
+          {summary}
         </div>
       )}
 
-      <BuiltWith blocks={["checkout-stepper", "cart-line-item", "order-summary"]} />
+      <BuiltWith
+        blocks={step === "bag" ? ["checkout-stepper", "cart-line-item", "order-summary"] : ["checkout-stepper", "address-form", "order-summary"]}
+      />
     </div>
   );
 }

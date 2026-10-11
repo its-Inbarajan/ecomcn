@@ -23,6 +23,7 @@
     "test:install": "node scripts/verify-install.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@vercel/analytics": "^2.0.1",

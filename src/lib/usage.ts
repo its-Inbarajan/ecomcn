@@ -474,6 +474,78 @@ function GiftNote() {
 }`,
     },
   ],
+  "address-form": [
+    {
+      label: "In your checkout",
+      code: `import { AddressForm } from "@/components/ecomcn/address-form"
+import { emptyAddress, validateAddress, type AddressErrors } from "@/lib/address-format"
+
+const [address, setAddress] = React.useState(emptyAddress("US"))
+const [errors, setErrors] = React.useState<AddressErrors>({})
+
+<form
+  noValidate
+  onSubmit={(event) => {
+    event.preventDefault()
+    const found = validateAddress(address)   // {} when it will do
+    setErrors(found)
+    if (Object.keys(found).length === 0) goToDelivery()
+  }}
+>
+  <AddressForm
+    value={address}
+    onValueChange={setAddress}
+    errors={errors}
+    countries={["US", "CA", "GB"]}          // the countries you ship to, in your order
+  />
+  <Button type="submit">Continue</Button>
+</form>`,
+    },
+    {
+      label: "The same rules on your server",
+      code: `// No "use client" in this file: import it from a route handler or server action.
+import { getAddressFormat, validateAddress, type Address } from "@/lib/address-format"
+
+export async function saveAddress(address: Address) {
+  const errors = validateAddress(address, getAddressFormat(address.country, { fields }))
+  if (Object.keys(errors).length) return { errors }   // hand them back to the form
+  // ...
+}`,
+    },
+    {
+      label: "Your address search in the lookup slot",
+      code: `import { AddressForm, useAddressForm } from "@/components/ecomcn/address-form"
+
+function PlacesSearch() {
+  const { setAddress } = useAddressForm()   // fills several fields in one go
+  return <YourPlacesAutocomplete onPick={(place) => setAddress(toAddress(place))} />
+}
+
+<AddressForm
+  value={address}
+  onValueChange={setAddress}
+  lookup={<PlacesSearch />}
+  fields={{ organization: "optional", phone: "required" }}
+  saveAsDefault={saveDefault}
+  onSaveAsDefaultChange={setSaveDefault}
+/>`,
+    },
+    {
+      label: "A country of your own",
+      code: `// Merged over the built-in table — add a country, or relabel one.
+const formats = {
+  NL: {
+    rows: [["givenName", "familyName"], ["line1"], ["line2"], ["postalCode", "city"], ["phone"]],
+    required: ["givenName", "familyName", "line1", "postalCode", "city"],
+    labels: { line1: "Street and number", postalCode: "Postcode" },
+    postalCode: { pattern: /^\\d{4}\\s?[A-Z]{2}$/i, example: "1012 AB" },
+  },
+}
+
+<AddressForm value={address} onValueChange={setAddress} formats={formats} />
+validateAddress(address, getAddressFormat(address.country, { formats }))`,
+    },
+  ],
   "checkout-stepper": [
     {
       label: "Above each checkout step",
