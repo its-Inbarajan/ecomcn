@@ -92,7 +92,7 @@ export function CheckoutStepper({
               </span>
             )
             return (
-              <li key={s.id} data-state={state} className="min-w-0">
+              <li key={s.id} data-state={state} className="relative min-w-0">
                 {state === "done" && onValueChange ? (
                   <button
                     type="button"
