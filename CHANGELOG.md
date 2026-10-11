@@ -32,6 +32,11 @@ describe changes in terms of what to edit, not just what changed.
   shows numbers and names the step below. Adds `motion`, `lucide-react`.
 
 ### Fixed
+- **`checkout-stepper`: a stray full-width line.** The current step's heavy
+  rule is absolutely positioned, but its `<li>` wasn't a containing block, so
+  the rule anchored to the viewport: a line across the whole page at the
+  bottom of the first screen. **To fix a copy you already have:** change the
+  step's `<li className="min-w-0">` to `<li className="relative min-w-0">`.
 - **Hydration in every block that formats numbers or prices**: `price-tag`,
   `product-card`, `order-summary`, `sort-toolbar`, `load-more`,
   `empty-results`, `filter-panel`, `filter-sheet` and `size-guide-dialog`.
