@@ -192,7 +192,7 @@ provider owns every field that touches a card.
 
 | Block | Evenings | Notes |
 | --- | --- | --- |
-| `address-form` | 3 | Country-driven fields and `autocomplete` tokens; validation is a pure function, not a form library |
+| `address-form` | 3 | **Done** — country format table, searchable country and region, autofill tokens, `validateAddress` for the server |
 | `payment-selector` | 3 | Radio cards with a provider slot; never renders a card-number field |
 | Demo store checkout | 1 | The stepper's Details, Delivery and Payment steps, on these two blocks and a mock provider |
 
@@ -208,7 +208,13 @@ block has a field that could hold a card number.
 
 **Before starting:** check that shadcn's `field` component ships for both
 bases; if it does, the address form composes it rather than hand-rolled
-label/description/error markup.
+label/description/error markup. *Checked:* `field` is identical on both, and
+so is `combobox` — built on Base UI in every shadcn style, Radix included —
+so country and region are searchable comboboxes rather than native selects.
+
+**Started early.** `address-form` was built before the v1.0 launch. The demo
+store's Details step runs on it; Delivery and Payment wait for
+`payment-selector`.
 
 ---
 
@@ -222,7 +228,7 @@ label/description/error markup.
 | M2 — Product | 10 | done, early October |
 | M3 — Cart | 5 | done, October |
 | M4 — Launch v1.0 | 4 (social card and directory done early) | next |
-| M5 — Checkout, v1.1 | 7 | after the launch |
+| M5 — Checkout, v1.1 | 7 | started early — `address-form` done |
 
 **From here:** 4 evenings to v1.0 — about two weeks at two evenings a week —
 then 7 for v1.1's checkout, about four more. M2 and M3 ran well ahead of the
@@ -237,8 +243,8 @@ Deliberately out of v1.0. Most stores put Stripe Elements, Shopify checkout or
 a PSP's hosted page here and throw a custom payment UI away, so building them
 before the launch is the worst trade in the catalogue. They are planned as
 **Milestone 5 (v1.1)**: presentation shells with a provider slot, specified in
-`BLOCK-CATALOG.md`. Until then the demo store's checkout stops after the bag,
-and says why.
+`BLOCK-CATALOG.md`. `address-form` is done; until `payment-selector` lands,
+the demo store's checkout stops after Details, and says why.
 
 **Discovery stage — `hero-editorial`, `category-rail`, `collection-grid`,
 `announcement-bar`, `lookbook-strip`.** Beautiful, and the least differentiated

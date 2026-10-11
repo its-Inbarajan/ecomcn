@@ -312,11 +312,12 @@ provider's own fields.
 - **Composes:** `radio-group`, `label`. No `input` — the provider brings the
   fields.
 
-### `address-form` · block · effort 3 · **v1.1**
+### `address-form` · block · effort 3 · **v1.1** · **shipped** · `motion`
 Country-aware shipping or billing address, with an address-lookup slot and
 save-as-default.
-- **Design:** two columns from md, one on a phone; labels above the field,
-  never floating or placeholder-only. Fields that appear or vanish when the
+- **Design:** side by side when the *form* is wide enough (container
+  queries, so a narrow checkout column gets one column), one on a phone;
+  labels above the field, never floating or placeholder-only. Fields that appear or vanish when the
   country changes grow and fold to their measured height (Motion; a fade
   under reduced motion).
 - **Hard part:** address shape differs by country. A format table drives the
@@ -332,17 +333,24 @@ save-as-default.
   driving the format, `section: "shipping" | "billing"`, `errors` keyed by
   field (yours — from your server or your schema), `formats` to add or
   override countries, a `lookup` slot above the fields for Google Places /
-  Loqate / your own search, and `onSaveDefaultChange`. A pure
-  `validateAddress(address, format)` is exported, so the same rules run on
-  the server. **No form library is required** — the docs show it wired to
-  react-hook-form + zod, as an example, not a dependency.
+  Loqate / your own search (it fills the form with
+  `useAddressForm().setAddress`), `fields` to show, hide or require company,
+  second line and phone, and `onSaveAsDefaultChange`. A pure
+  `validateAddress(address, format)` lives in `lib/address-format.ts`, a file
+  with no `"use client"`, so the same rules run on the server. **No form
+  library is required.**
 - **States:** loading skeleton in the form's shape; disabled; an error summary
   at the top on submit that links to each field (`role="alert"`), plus the
   message under each field with `aria-describedby`.
-- **Composes:** `input`, `label`, `checkbox` (save as default), and `field`
-  if it ships for both bases. Country and region are native `<select>`s: ~250
-  countries want the browser's own typeahead and mobile picker, and Radix's
-  and Base UI's Select differ too much to share one file.
+- **Composes:** `field`, `input`, `checkbox` (save as default), `skeleton`,
+  and `combobox` for country and region. Not `select`: Radix's and Base UI's
+  Select differ too much to share one file. Not `dropdown-menu`: a menu is
+  for actions, not a form value — no selected state for screen readers, no
+  search, no autofill. shadcn's Combobox is Base UI in every style, Radix
+  included, so one file works on both; it searches ~250 countries as you
+  type, and its hidden input takes the browser's autofill, matching "US" or
+  "United States". Matches rank code, then prefix, then word, then anywhere
+  — "ger" is Germany, not Algeria.
 
 ---
 

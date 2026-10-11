@@ -81,7 +81,8 @@ Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
 `price-tag`, `variant-swatches`, `size-guide-dialog`, `product-buy-box`,
 `product-details-accordion`, `review-summary` and `related-products` — and
 the cart: `cart-line-item`, `cart-sheet`, `order-summary` and
-`checkout-stepper`, plus `theme-editorial`. See them composed into a
+`checkout-stepper`, plus `theme-editorial` — and, first of v1.1's checkout,
+`address-form`. See them composed into a
 [listing page](https://ecomcn.vercel.app/examples/listing-page) and a
 [product page](https://ecomcn.vercel.app/examples/product-page) — or shop
 through the [demo store](https://ecomcn.vercel.app/demo), built from nothing

@@ -7,6 +7,26 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `address-form` — a shipping or billing address whose fields follow the
+  country. A format table (`lib/address-format.ts`) drives each country's
+  fields, order, labels ("ZIP code", "Postcode", "PIN code"), required
+  fields, region list and postcode pattern: built in for the US, Canada, the
+  UK, Australia, India, Germany, France and Japan (family name first), with a
+  generic shape for everywhere else, and `formats` to add or change one.
+  Country and region are your shadcn `combobox`, searchable — "ger" finds
+  Germany before Algeria — and their lists grow out of the field. Every
+  field carries its section-prefixed `autocomplete` token (`shipping
+  postal-code`), country and state included, so browser autofill fills the
+  form. `validateAddress` is a pure function in a file with no `"use
+  client"`, so your server runs the same rules; pass what it returns as
+  `errors`. An error summary at the top links to each field and takes focus;
+  each error goes when its field is edited. `lookup` slot for Google Places,
+  Loqate or your own search (fill it through `useAddressForm().setAddress`);
+  `fields` to show, hide or require company, second line and phone;
+  save-as-default; loading skeleton. Rows that come and go with the country
+  grow and fold to their measured height. Compound, through
+  `useAddressForm()`. Adds `motion`, `lucide-react`, and — through
+  `combobox` — `@base-ui/react`, which shadcn's Combobox uses on both bases.
 - `cart-line-item` — one line in a bag: thumbnail, name and variant, a
   quantity stepper, a right-aligned tabular line total (unit price under it
   when there is more than one), save-for-later and remove. Removing never
@@ -32,6 +52,10 @@ describe changes in terms of what to edit, not just what changed.
   shows numbers and names the step below. Adds `motion`, `lucide-react`.
 
 ### Fixed
+- **Docs text for the cart blocks.** The `cart-line-item`, `cart-sheet` and
+  `checkout-stepper` pages showed escape codes — `\u201cRemoved \u2014
+  Undo\u201d` — instead of quotes and dashes. Site copy only; the blocks are
+  unchanged.
 - **`checkout-stepper`: a stray full-width line.** The current step's heavy
   rule is absolutely positioned, but its `<li>` wasn't a containing block, so
   the rule anchored to the viewport: a line across the whole page at the

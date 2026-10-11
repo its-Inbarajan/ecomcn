@@ -23,6 +23,7 @@
     "src/registry/ecomcn/cart-sheet/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/checkout-stepper/registry.json",
+    "src/registry/ecomcn/address-form/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],
   "items": []
