@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "payment-selector",
+      "type": "registry:block",
+      "title": "Payment Selector",
+      "description": "How the shopper pays: one ruled list of methods (card, wallet, pay in instalments, bank) where the chosen one opens onto your payment provider's own fields. It never renders a card-number field: each panel is a renderPanel slot for Stripe's Payment Element, Adyen's Drop-in, PayPal or a redirect notice, kept mounted once opened so a provider iframe keeps the half-typed card. Panels sit outside the radio group, so arrow keys move between methods without reaching into a provider's fields, yet render under their own method as one object. Instalment lines from the order total, unavailable methods with their reason in words, a provider error in the open panel, loading and empty states. The heavy rule slides to the chosen method and its panel grows to its measured height (Motion; a fade under reduced motion).",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "radio-group",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "payment-selector.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/payment-selector.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "checkout"
+      ]
+    }
+  ]
+}

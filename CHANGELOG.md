@@ -7,6 +7,27 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `payment-selector` — how the shopper pays: one ruled list of methods
+  (card, wallet, pay in instalments, bank) where the chosen one opens onto
+  your payment provider's fields. It renders no card-number, expiry or CVC
+  field: each panel is a `renderPanel` slot for Stripe's Payment Element,
+  Adyen's Drop-in, PayPal or a redirect notice, and stays mounted once
+  opened (`keepMounted`), so a provider's iframe keeps a half-typed card
+  while the shopper looks at another method. The panels sit outside the
+  radio group — laid under their own method with a CSS subgrid — so the
+  arrow keys move between methods and never reach into a provider's fields
+  (Base UI's radio group takes arrow keys from anything inside it).
+  Instalment lines from `total` ("3 payments of $259.20"), unavailable
+  methods with their reason in words, a provider `error` in the open panel,
+  loading and empty states. The heavy rule slides to the chosen method and
+  its panel grows to its measured height. Compound, through
+  `usePaymentSelector()`. Adds `motion`, `lucide-react`.
+- `delivery-options` — delivery methods as one ruled list, each with its
+  arrival dates and a right-aligned price ("Free" in words). Arrival is a
+  date range from business days and a dispatch cut-off on the shopper's own
+  clock, worked out after hydration; the chosen method counts down to its
+  cut-off. Unavailable methods say why; loading and empty states. Exports
+  `deliveryWindow(option, now)` for the same dates elsewhere. Adds `motion`.
 - `address-form` — a shipping or billing address whose fields follow the
   country. A format table (`lib/address-format.ts`) drives each country's
   fields, order, labels ("ZIP code", "Postcode", "PIN code"), required

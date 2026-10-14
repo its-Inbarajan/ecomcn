@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "delivery-options",
+      "type": "registry:block",
+      "title": "Delivery Options",
+      "description": "How it gets there: one ruled list of delivery methods, each with its arrival dates and price. Arrival is a date range from business days and a dispatch cut-off on the shopper's own clock, worked out after hydration so the server never guesses their time zone, with a countdown to the cut-off on the chosen method. Prices are right-aligned tabular figures and a free method says Free. Unavailable methods give their reason in words; loading and empty states included. The heavy rule slides to the chosen method (Motion; a fade under reduced motion).",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "radio-group",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "delivery-options.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/delivery-options.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "checkout"
+      ]
+    }
+  ]
+}

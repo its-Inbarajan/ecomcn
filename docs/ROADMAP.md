@@ -30,8 +30,8 @@ _Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (21 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · M2 (Product) and M3 (Cart) **done** · **M4 (Launch) next** |
+| Shipped (24 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Theme: `theme-editorial` |
+| Milestones | M0, M1 and M1.5 done · M2 (Product), M3 (Cart) and M5 (Checkout, built early) **done** · **M4 (Launch) next** |
 | v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — **all 18 shipped**; `review-summary` and `related-products` shipped ahead of plan |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
@@ -181,7 +181,11 @@ September 2026, long before v1.0.
 
 ---
 
-## Milestone 5 — Checkout, v1.1 (7 evenings · ~4 weeks)
+## Milestone 5 — Checkout, v1.1 (7 evenings · ~4 weeks) — **done**
+
+The demo store runs bag → details → delivery → payment → order placed on
+nothing but ecomcn blocks, with a stand-in provider that takes no card
+details.
 
 `address-form` and `payment-selector` were kept out of v1.0 on purpose (see
 *Deferred on purpose*): most stores hand payment to Stripe Elements, Shopify
@@ -193,8 +197,9 @@ provider owns every field that touches a card.
 | Block | Evenings | Notes |
 | --- | --- | --- |
 | `address-form` | 3 | **Done** — country format table, searchable country and region, autofill tokens, `validateAddress` for the server |
-| `payment-selector` | 3 | Radio cards with a provider slot; never renders a card-number field |
-| Demo store checkout | 1 | The stepper's Details, Delivery and Payment steps, on these two blocks and a mock provider |
+| `payment-selector` | 3 | **Done** — provider slot kept mounted; panels outside the radio group, laid under their method by subgrid |
+| `delivery-options` | +1 | **Done** — added: the Delivery step needed a block. Arrival dates on the shopper's clock |
+| Demo store checkout | 1 | **Done** — Details, Delivery and Payment steps, and an order-placed state |
 
 **Split points:** `address-form` is evening 1 the country format table and
 `validateAddress`, evening 2 the fields, autocomplete tokens and the
@@ -212,9 +217,9 @@ label/description/error markup. *Checked:* `field` is identical on both, and
 so is `combobox` — built on Base UI in every shadcn style, Radix included —
 so country and region are searchable comboboxes rather than native selects.
 
-**Started early.** `address-form` was built before the v1.0 launch. The demo
-store's Details step runs on it; Delivery and Payment wait for
-`payment-selector`.
+**Started early.** M5 was built before the v1.0 launch, so the checkout blocks
+are live on the site ahead of the v1.0 tag; whether they count toward v1.0 or
+tag as v1.1 is a release decision, not a build one.
 
 ---
 
@@ -228,7 +233,7 @@ store's Details step runs on it; Delivery and Payment wait for
 | M2 — Product | 10 | done, early October |
 | M3 — Cart | 5 | done, October |
 | M4 — Launch v1.0 | 4 (social card and directory done early) | next |
-| M5 — Checkout, v1.1 | 7 | started early — `address-form` done |
+| M5 — Checkout, v1.1 | 8 | done, October — before the launch |
 
 **From here:** 4 evenings to v1.0 — about two weeks at two evenings a week —
 then 7 for v1.1's checkout, about four more. M2 and M3 ran well ahead of the
@@ -243,8 +248,8 @@ Deliberately out of v1.0. Most stores put Stripe Elements, Shopify checkout or
 a PSP's hosted page here and throw a custom payment UI away, so building them
 before the launch is the worst trade in the catalogue. They are planned as
 **Milestone 5 (v1.1)**: presentation shells with a provider slot, specified in
-`BLOCK-CATALOG.md`. `address-form` is done; until `payment-selector` lands,
-the demo store's checkout stops after Details, and says why.
+`BLOCK-CATALOG.md`. All three — with `delivery-options` — are done, and the
+demo store checks out end to end.
 
 **Discovery stage — `hero-editorial`, `category-rail`, `collection-grid`,
 `announcement-bar`, `lookbook-strip`.** Beautiful, and the least differentiated

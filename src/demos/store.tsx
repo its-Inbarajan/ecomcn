@@ -9,7 +9,9 @@ import { AddressForm, type Address, type AddressErrors } from "@/components/ecom
 import { CartLineItem, type CartLine } from "@/components/ecomcn/cart-line-item";
 import { CartSheet } from "@/components/ecomcn/cart-sheet";
 import { CheckoutStepper, type CheckoutStep } from "@/components/ecomcn/checkout-stepper";
+import { DeliveryOptions } from "@/components/ecomcn/delivery-options";
 import { OrderSummary } from "@/components/ecomcn/order-summary";
+import { PaymentSelector } from "@/components/ecomcn/payment-selector";
 import {
   ProductBuyBox,
   ProductBuyBoxActions,
@@ -31,6 +33,7 @@ import type { ProductCardProduct } from "@/components/ecomcn/product-card";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { ListingPageDemo } from "@/demos/browse";
+import { DemoProviderPanel, demoDeliveryOptions, useDemoPaymentMethods } from "@/demos/checkout";
 import { COLORWAYS, PRODUCTS, type DemoProduct, type StoreColorway } from "@/demos/listing-data";
 import {
   BOOT,
@@ -40,6 +43,7 @@ import {
   FOOTWEAR_COLUMNS,
   REVIEWS,
 } from "@/demos/product";
+import { useOrderTotals } from "@/hooks/use-order-totals";
 import { emptyAddress, formatAddressLines, validateAddress } from "@/lib/address-format";
 
 /**
@@ -119,6 +123,7 @@ export function useBag() {
             : readBag().map((l) => (l.id === id ? { ...l, quantity } : l)),
         ),
       remove: (id: string) => writeBag(readBag().filter((l) => l.id !== id)),
+      clear: () => writeBag([]),
     }),
     [bag],
   );
@@ -590,22 +595,45 @@ const CHECKOUT_STEPS: CheckoutStep[] = [
 const SHIPS_TO = ["US", "CA", "GB", "IE", "FR", "DE", "IN", "JP", "AU"];
 
 /**
- * The bag and checkout: cart-line-item lines, order-summary beside them,
- * the checkout stepper across the top, and address-form for Details.
- * Delivery and payment are payment-selector, still to come, so the demo
- * says so there.
+ * The bag and checkout, on nothing but ecomcn blocks: cart-line-item lines
+ * and order-summary for the bag, address-form for Details,
+ * delivery-options for Delivery and payment-selector for Payment, with the
+ * checkout stepper across the top. The payment provider is a stand-in that
+ * takes no card details.
  */
 export function StoreBag() {
-  const { lines: bag, setQuantity, remove } = useBag();
+  const { lines: bag, setQuantity, remove, clear } = useBag();
   const [code, setCode] = React.useState<string | null>(null);
   const [address, setAddress] = React.useState<Address>(() => emptyAddress("US"));
   const [errors, setErrors] = React.useState<AddressErrors | null>(null);
   const [saveDefault, setSaveDefault] = React.useState(false);
+  const [deliveryId, setDeliveryId] = React.useState<string | null>("standard");
+  const [paymentId, setPaymentId] = React.useState<string | null>(null);
+  const [paying, setPaying] = React.useState(false);
+  const [paymentError, setPaymentError] = React.useState<string | null>(null);
+  const [placed, setPlaced] = React.useState<{ number: string; total: number; shipTo: string[] } | null>(null);
+  const methods = useDemoPaymentMethods();
   const form = React.useRef<HTMLFormElement>(null);
   // The step lives in the URL, so the mini cart's Checkout can land on it.
   const router = useRouter();
   const step = useSearchParams().get("step") ?? "bag";
   const goTo = (id: string) => router.replace(id === "bag" ? "/demo/bag" : `/demo/bag?step=${id}`, { scroll: false });
+
+  const lines = bag.map((l) => ({ id: l.id, unitPrice: l.unitPrice, quantity: l.quantity }));
+  const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
+  const deliveryOptions = demoDeliveryOptions(subtotal);
+  const delivery = deliveryOptions.find((o) => o.id === deliveryId) ?? deliveryOptions[0];
+  // Until a delivery method is chosen the summary estimates; from then on it charges the method.
+  const chosenDelivery = step === "delivery" || step === "payment";
+  const pricing = {
+    lines,
+    discountRate: code ? 0.2 : 0,
+    freeShippingThreshold: chosenDelivery ? undefined : 300,
+    flatShipping: chosenDelivery ? delivery.price : 18,
+    taxRate: 0.08,
+  };
+  const totals = useOrderTotals(pricing);
+  const money = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 
   const continueToDelivery = (event: React.FormEvent) => {
     event.preventDefault();
@@ -615,13 +643,39 @@ export function StoreBag() {
   };
   const shipTo = Object.keys(validateAddress(address)).length === 0 ? formatAddressLines(address) : null;
 
+  const pay = async () => {
+    if (!paymentId) {
+      setPaymentError(null);
+      return;
+    }
+    setPaying(true);
+    setPaymentError(null);
+    await wait(900);
+    setPaying(false);
+    // A demo order number: from the total, so it's the same for the same bag.
+    setPlaced({ number: `ATL-${String(Math.round(totals.total * 100)).padStart(5, "0").slice(-5)}`, total: totals.total, shipTo: shipTo ?? [] });
+    clear();
+  };
+
+  const cta =
+    step === "details"
+      ? { label: "Continue to delivery", run: () => form.current?.requestSubmit() }
+      : step === "delivery"
+        ? { label: "Continue to payment", run: () => goTo("payment") }
+        : step === "payment"
+          ? paymentId
+            ? { label: paying ? "Paying…" : `Pay ${money(totals.total)}`, run: pay }
+            : {
+                label: "Choose how to pay",
+                // Nothing to pay with yet: take the shopper to the methods.
+                run: () => document.querySelector<HTMLElement>("[data-slot=payment-selector] [role=radio]:not([data-disabled])")?.focus(),
+              }
+          : { label: "Checkout", run: () => goTo("details") };
+
   const summary = (
     <div className="lg:sticky lg:top-24 lg:self-start">
       <OrderSummary
-        lines={bag.map((l) => ({ id: l.id, unitPrice: l.unitPrice, quantity: l.quantity }))}
-        freeShippingThreshold={300}
-        flatShipping={18}
-        taxRate={0.08}
+        {...pricing}
         appliedCode={code}
         discountRate={0.2}
         onApplyCode={(entered) => {
@@ -629,87 +683,182 @@ export function StoreBag() {
           setCode("ARCHIVE20");
         }}
         onRemoveCode={() => setCode(null)}
-        ctaLabel={step === "details" ? "Continue to delivery" : "Checkout"}
-        onCheckout={() => (step === "details" ? form.current?.requestSubmit() : goTo("details"))}
+        ctaLabel={cta.label}
+        onCheckout={cta.run}
       />
     </div>
   );
 
+  const recap = (
+    <dl className="ec-rule mb-8 grid gap-4 border-b pb-6 text-[14.5px] leading-relaxed sm:grid-cols-2">
+      <div>
+        <dt className="ec-eyebrow mb-1.5 flex items-center gap-3 text-muted-foreground">
+          Ship to
+          <button type="button" onClick={() => goTo("details")} className="normal-case underline underline-offset-4 hover:text-foreground">
+            Change
+          </button>
+        </dt>
+        {(shipTo ?? []).map((line) => (
+          <dd key={line}>{line}</dd>
+        ))}
+      </div>
+      {step === "payment" ? (
+        <div>
+          <dt className="ec-eyebrow mb-1.5 flex items-center gap-3 text-muted-foreground">
+            Delivery
+            <button type="button" onClick={() => goTo("delivery")} className="normal-case underline underline-offset-4 hover:text-foreground">
+              Change
+            </button>
+          </dt>
+          <dd>
+            {delivery.label} · {delivery.price === 0 ? "Free" : money(delivery.price)}
+          </dd>
+        </div>
+      ) : null}
+    </dl>
+  );
+
+  const bigButton = "mt-8 h-12 w-full text-[13px] tracking-[0.14em] uppercase";
+  const twoColumns = "grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14";
+
+  let body: React.ReactNode;
+  if (placed) {
+    body = (
+      <div className="max-w-xl py-12" role="status">
+        <p className="ec-eyebrow text-muted-foreground">Order {placed.number}</p>
+        <p className="mt-2 text-2xl">Thank you — your order is placed.</p>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
+          {money(placed.total)} to {placed.shipTo[0] ?? "you"}. It&rsquo;s a demo:
+          nothing was charged and nothing will arrive. The order confirmation
+          page is a block for a later release.
+        </p>
+        <Link href="/demo" className="mt-6 inline-flex items-center gap-2 text-sm underline underline-offset-4">
+          Back to the shop <ArrowUpRight className="size-3.5" aria-hidden />
+        </Link>
+      </div>
+    );
+  } else if (bag.length === 0) {
+    body = (
+      <div className="py-16">
+        <p className="text-2xl">Nothing in it yet.</p>
+        <Link href="/demo" className="mt-4 inline-flex items-center gap-2 text-sm underline underline-offset-4">
+          Back to the shop <ArrowUpRight className="size-3.5" aria-hidden />
+        </Link>
+      </div>
+    );
+  } else if (step === "details") {
+    body = (
+      <div className={twoColumns}>
+        <form ref={form} noValidate onSubmit={continueToDelivery} className="max-w-2xl">
+          <AddressForm
+            value={address}
+            onValueChange={setAddress}
+            errors={errors}
+            countries={SHIPS_TO}
+            saveAsDefault={saveDefault}
+            onSaveAsDefaultChange={setSaveDefault}
+          />
+          <Button type="submit" size="lg" className={bigButton}>
+            Continue to delivery
+          </Button>
+        </form>
+        {summary}
+      </div>
+    );
+  } else if ((step === "delivery" || step === "payment") && !shipTo) {
+    // A reload forgets the address (it lives in memory): ask for it again.
+    body = (
+      <div className="max-w-xl py-12">
+        <p className="text-2xl">Where&rsquo;s it going?</p>
+        <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
+          Delivery dates and prices need an address first.
+        </p>
+        <Button size="lg" className={bigButton} onClick={() => goTo("details")}>
+          Add your address
+        </Button>
+      </div>
+    );
+  } else if (step === "delivery") {
+    body = (
+      <div className={twoColumns}>
+        <div className="max-w-2xl">
+          {recap}
+          <DeliveryOptions options={deliveryOptions} value={deliveryId} onValueChange={setDeliveryId} />
+          <Button size="lg" className={bigButton} onClick={() => goTo("payment")}>
+            Continue to payment
+          </Button>
+        </div>
+        {summary}
+      </div>
+    );
+  } else if (step === "payment") {
+    body = (
+      <div className={twoColumns}>
+        <div className="max-w-2xl">
+          {recap}
+          <PaymentSelector
+            methods={methods}
+            value={paymentId}
+            onValueChange={(id) => {
+              setPaymentId(id);
+              setPaymentError(null);
+            }}
+            renderPanel={(method) => <DemoProviderPanel method={method} />}
+            total={totals.total}
+            error={paymentError}
+            disabled={paying}
+          />
+          <Button size="lg" className={bigButton} onClick={pay} disabled={paying || !paymentId}>
+            {paying ? "Paying…" : paymentId ? `Pay ${money(totals.total)}` : "Choose how to pay"}
+          </Button>
+        </div>
+        {summary}
+      </div>
+    );
+  } else {
+    body = (
+      <div className={twoColumns}>
+        <ul className="ec-rule border-t">
+          {bag.map((line) => (
+            <CartLineItem
+              key={line.id}
+              line={toCartLine(line)}
+              onQuantityChange={async (quantity) => {
+                await wait(300);
+                setQuantity(line.id, quantity);
+              }}
+              onRemove={async () => {
+                await wait(300);
+                remove(line.id);
+              }}
+            />
+          ))}
+        </ul>
+        {summary}
+      </div>
+    );
+  }
+
+  const builtWith: Record<string, string[]> = {
+    bag: ["checkout-stepper", "cart-line-item", "order-summary"],
+    details: ["checkout-stepper", "address-form", "order-summary"],
+    delivery: ["checkout-stepper", "delivery-options", "order-summary"],
+    payment: ["checkout-stepper", "payment-selector", "order-summary"],
+  };
+
   return (
     <div>
       <header className="ec-rule-strong border-b pb-5">
-        <h1 className="ec-display text-5xl">{step === "bag" ? "Your bag" : "Checkout"}</h1>
+        <h1 className="ec-display text-5xl">{placed ? "Thank you" : step === "bag" ? "Your bag" : "Checkout"}</h1>
       </header>
 
-      <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
-
-      {bag.length === 0 ? (
-        <div className="py-16">
-          <p className="text-2xl">Nothing in it yet.</p>
-          <Link href="/demo" className="mt-4 inline-flex items-center gap-2 text-sm underline underline-offset-4">
-            Back to the shop <ArrowUpRight className="size-3.5" aria-hidden />
-          </Link>
-        </div>
-      ) : step === "details" ? (
-        <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
-          <form ref={form} noValidate onSubmit={continueToDelivery} className="max-w-2xl">
-            <AddressForm
-              value={address}
-              onValueChange={setAddress}
-              errors={errors}
-              countries={SHIPS_TO}
-              saveAsDefault={saveDefault}
-              onSaveAsDefaultChange={setSaveDefault}
-            />
-            <Button type="submit" size="lg" className="mt-8 h-12 w-full text-[13px] tracking-[0.14em] uppercase">
-              Continue to delivery
-            </Button>
-          </form>
-          {summary}
-        </div>
-      ) : step !== "bag" ? (
-        <div className="max-w-xl py-12">
-          {shipTo ? (
-            <div className="ec-rule mb-8 border-b pb-6 text-[14.5px] leading-relaxed">
-              <p className="ec-eyebrow mb-2 text-muted-foreground">Ship to</p>
-              {shipTo.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-          ) : null}
-          <p className="text-2xl">This is where the demo stops — for now.</p>
-          <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
-            Delivery and payment are the payment selector, the next ecomcn
-            block (v1.1). Press <span className="text-foreground">Details</span> in
-            the stepper to change the address, or <span className="text-foreground">Bag</span> to
-            go back to the bag.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-14">
-          <ul className="ec-rule border-t">
-            {bag.map((line) => (
-              <CartLineItem
-                key={line.id}
-                line={toCartLine(line)}
-                onQuantityChange={async (quantity) => {
-                  await wait(300);
-                  setQuantity(line.id, quantity);
-                }}
-                onRemove={async () => {
-                  await wait(300);
-                  remove(line.id);
-                }}
-              />
-            ))}
-          </ul>
-          {summary}
-        </div>
+      {placed ? null : (
+        <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
       )}
 
-      <BuiltWith
-        blocks={step === "bag" ? ["checkout-stepper", "cart-line-item", "order-summary"] : ["checkout-stepper", "address-form", "order-summary"]}
-      />
+      {body}
+
+      <BuiltWith blocks={builtWith[step] ?? builtWith.bag} />
     </div>
   );
 }

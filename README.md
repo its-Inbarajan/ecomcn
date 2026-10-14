@@ -72,7 +72,7 @@ the hard parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 | **Discover**        | `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip`                                                                       |
 | **Browse**          | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results` · `load-more` · `product-quick-view`                            |
 | **Product**         | `product-gallery` · `price-tag` · `variant-swatches` · `size-guide-dialog` · `product-buy-box` · `product-details-accordion` · `review-summary` · `related-products` |
-| **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `payment-selector` · `address-form`                                                         |
+| **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `address-form` · `delivery-options` · `payment-selector`                                    |
 | **Post-purchase**   | `order-confirmation` · `order-tracking`                                                                                                                              |
 
 Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
@@ -81,8 +81,8 @@ Shipped so far: the whole **Browse** stage — `product-card`, `product-grid`,
 `price-tag`, `variant-swatches`, `size-guide-dialog`, `product-buy-box`,
 `product-details-accordion`, `review-summary` and `related-products` — and
 the cart: `cart-line-item`, `cart-sheet`, `order-summary` and
-`checkout-stepper`, plus `theme-editorial` — and, first of v1.1's checkout,
-`address-form`. See them composed into a
+`checkout-stepper`, plus `theme-editorial` — and v1.1's checkout:
+`address-form`, `delivery-options` and `payment-selector`. See them composed into a
 [listing page](https://ecomcn.vercel.app/examples/listing-page) and a
 [product page](https://ecomcn.vercel.app/examples/product-page) — or shop
 through the [demo store](https://ecomcn.vercel.app/demo), built from nothing

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { CartLineItemDemo, CartSheetDemo, CheckoutStepperDemo } from "@/demos/cart";
-import { AddressFormDemo } from "@/demos/checkout";
+import { AddressFormDemo, DeliveryOptionsDemo, PaymentSelectorDemo } from "@/demos/checkout";
 import {
   OrderSummaryDemo,
   PriceTagDemo,
@@ -91,6 +91,10 @@ export default async function PreviewPage({
       return <CheckoutStepperDemo />;
     case "address-form":
       return <AddressFormDemo />;
+    case "delivery-options":
+      return <DeliveryOptionsDemo />;
+    case "payment-selector":
+      return <PaymentSelectorDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":
