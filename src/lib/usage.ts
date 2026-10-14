@@ -474,6 +474,69 @@ function GiftNote() {
 }`,
     },
   ],
+  "delivery-options": [
+    {
+      label: "Rates for the address",
+      code: `import { DeliveryOptions, type DeliveryOption } from "@/components/ecomcn/delivery-options"
+
+const options: DeliveryOption[] = [
+  // Business days from dispatch; dispatch is today before the cut-off (shopper's clock).
+  { id: "standard", label: "Standard", price: 0, minDays: 3, maxDays: 5, cutoffHour: 15 },
+  { id: "express", label: "Express", price: 25, minDays: 1, maxDays: 1, cutoffHour: 14 },
+  { id: "courier", label: "Same-day courier", price: 35, minDays: 0, maxDays: 0,
+    available: false, unavailableReason: "Not available for this postcode" },
+]
+
+<DeliveryOptions
+  options={options}
+  value={method}
+  onValueChange={setMethod}
+  loading={ratesLoading}              // skeleton rows while you fetch rates for the address
+/>`,
+    },
+  ],
+  "payment-selector": [
+    {
+      label: "With Stripe’s Payment Element in the card panel",
+      code: `import { PaymentSelector, type PaymentMethod } from "@/components/ecomcn/payment-selector"
+import { PaymentElement } from "@stripe/react-stripe-js"
+
+const methods: PaymentMethod[] = [
+  { id: "card", label: "Card", kind: "card", description: "Visa, Mastercard, Amex" },
+  { id: "apple-pay", label: "Apple Pay", kind: "wallet",
+    available: canUseApplePay, unavailableReason: "Needs Safari on an Apple device" },
+  { id: "pay-in-3", label: "Pay in 3", kind: "bnpl", instalments: 3 },
+]
+
+<PaymentSelector
+  methods={methods}
+  value={method}
+  onValueChange={setMethod}
+  total={order.total}                 // "3 payments of $259.20"
+  error={paymentError}                // shown in the open panel
+  // The provider slot. Panels stay mounted once opened, so the iframe
+  // keeps a half-typed card while the shopper looks at another method.
+  renderPanel={(m) => (m.id === "card" ? <PaymentElement /> : null)}
+/>`,
+    },
+    {
+      label: "Composed — your own row content",
+      code: `import { PaymentSelector, PaymentSelectorMethod, usePaymentSelector } from "@/components/ecomcn/payment-selector"
+
+<PaymentSelector methods={methods} value={method} onValueChange={setMethod} renderPanel={renderPanel}>
+  {methods.map((m) => (
+    <PaymentSelectorMethod key={m.id} method={m}>
+      {m.kind === "bnpl" ? <InstalmentBadge /> : null}
+    </PaymentSelectorMethod>
+  ))}
+</PaymentSelector>
+
+function InstalmentBadge() {
+  const { formatMoney } = usePaymentSelector()
+  return <span className="text-xs">from {formatMoney(30)}/mo</span>
+}`,
+    },
+  ],
   "address-form": [
     {
       label: "In your checkout",

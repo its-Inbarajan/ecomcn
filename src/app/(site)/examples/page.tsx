@@ -23,6 +23,8 @@ const STORE_BLOCKS = new Set([
   "cart-line-item",
   "checkout-stepper",
   "address-form",
+  "delivery-options",
+  "payment-selector",
 ]);
 
 export default function ExamplesIndex() {

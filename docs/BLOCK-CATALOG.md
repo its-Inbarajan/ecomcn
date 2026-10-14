@@ -285,12 +285,31 @@ Four-step progress rail with done / active / pending states.
   not be. Use `aria-current="step"`.
 - Composes: nothing
 
-### `payment-selector` · block · effort 3 · **v1.1**
+### `delivery-options` · block · effort 1 · **v1.1** · **shipped** · `motion`
+Delivery methods with their arrival dates and prices. Not in the original
+plan: the demo store's Delivery step needed a block, and the date logic
+already existed in the buy box.
+- **Design:** one ruled list, not floating cards. Arrival is each row's
+  headline — "Arrives Thu 16 – Mon 20 Oct" — and prices form a right-aligned
+  tabular column; a free method says "Free" in words. A heavy rule slides to
+  the chosen method.
+- **Hard part:** dates the server can't know. Business days from dispatch,
+  and dispatch is today only before the cut-off — on the shopper's clock and
+  time zone, so worked out after hydration with a same-height placeholder
+  until then. The chosen method counts down to its cut-off.
+- **API:** `options: { id, label, price, minDays, maxDays, cutoffHour?,
+  businessDaysOnly?, description?, available?, unavailableReason? }[]`,
+  controlled `value` / `onValueChange`, `currency` / `locale`, `loading`.
+  `deliveryWindow(option, now)` is exported for the same dates elsewhere.
+- **Composes:** `radio-group`, `skeleton`.
+
+### `payment-selector` · block · effort 3 · **v1.1** · **shipped** · `motion`
 Radio cards for card / wallet / pay-in-3 / bank, each expanding to the
 provider's own fields.
-- **Design:** the selected option's border darkens and its panel joins it with
-  a shared border — one object, not two. The panel grows to its measured
-  height (Motion; a fade under reduced motion).
+- **Design:** one ruled list. The chosen method and its panel share a
+  background and a heavy rule that slides between methods — one object, not
+  two — and the panel grows to its measured height (Motion; a fade under
+  reduced motion).
 - **Hard part:** **never take raw PAN.** The block renders no card-number,
   expiry or CVC input. Each method's panel is a **provider slot** —
   `renderPanel(method)` — where you mount Stripe's Payment Element, Adyen's
@@ -306,11 +325,14 @@ provider's own fields.
 - **States:** loading (methods not known yet); a method unavailable on this
   device — Apple Pay in Firefox, say — shown with its reason in words, not
   greyed out alone; a provider error; nothing selected yet.
-- **Accessibility:** one radio group with roving focus; each card's panel is
-  tied to its radio with `aria-controls`; focus stays on the radio when a
-  panel opens, so arrowing through methods never jumps into an iframe.
-- **Composes:** `radio-group`, `label`. No `input` — the provider brings the
-  fields.
+- **Accessibility:** one radio group with roving focus; each method's panel
+  is tied to its radio with `aria-controls`; focus stays on the radio when a
+  panel opens. The panels are **outside** the radio group in the DOM — Base
+  UI's group takes arrow keys from anything inside it, so a provider's
+  `<select>` would change the method — and a CSS subgrid lays each one
+  under its own method. Tab order runs group → open panel.
+- **Composes:** `radio-group`, `skeleton`. No `input` — the provider brings
+  the fields.
 
 ### `address-form` · block · effort 3 · **v1.1** · **shipped** · `motion`
 Country-aware shipping or billing address, with an address-lookup slot and
@@ -382,7 +404,7 @@ Vertical shipment timeline with a live-node ring and carrier status chip.
 
 | Release | Blocks |
 | --- | --- |
-| **v1.1 — Checkout** | `address-form` · `payment-selector` — Milestone 5 in `ROADMAP.md` |
+| **v1.1 — Checkout** | `address-form` · `delivery-options` · `payment-selector` — Milestone 5 in `ROADMAP.md`, done |
 | **v1.2 — Merchandising** | `bundle-builder` · `recently-viewed` · `trust-badges-row` · `newsletter-capture` · `back-in-stock-form` · `gift-card-block` |
 | **v1.3 — Account** | `order-history-list` · `wishlist-grid` · `returns-request-flow` · `subscription-manager` · `saved-addresses` · `loyalty-tier-card` |
 | **v1.4 — Ops surfaces** | `admin-orders-table` · `inventory-editor` · `product-form` · `discount-builder` · `sales-stat-row` · `fulfilment-queue` |

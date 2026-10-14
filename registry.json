@@ -23,7 +23,9 @@
     "src/registry/ecomcn/cart-sheet/registry.json",
     "src/registry/ecomcn/order-summary/registry.json",
     "src/registry/ecomcn/checkout-stepper/registry.json",
+    "src/registry/ecomcn/delivery-options/registry.json",
     "src/registry/ecomcn/address-form/registry.json",
+    "src/registry/ecomcn/payment-selector/registry.json",
     "src/registry/ecomcn/theme-editorial/registry.json"
   ],
   "items": []
