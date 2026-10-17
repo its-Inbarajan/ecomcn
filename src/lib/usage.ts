@@ -413,6 +413,49 @@ function HowToMeasure() {
 }`,
     },
   ],
+  "price-tag": [
+    {
+      label: "Anywhere a price appears",
+      code: `import { PriceTag } from "@/components/ecomcn/price-tag"
+
+<PriceTag price={195} />
+<PriceTag price={195} compareAt={240} />                  // struck-through was-price
+<PriceTag price={1240.5} currency="EUR" locale="de-DE" />  // 1.240,50 €
+<PriceTag price={128} size="sm" />                         // inline, in a card or a line`,
+    },
+  ],
+  "order-summary": [
+    {
+      label: "Beside the bag",
+      code: `import { OrderSummary } from "@/components/ecomcn/order-summary"
+
+<OrderSummary
+  lines={cart.lines}                  // { id, unitPrice, quantity }[]
+  freeShippingThreshold={300}         // shows the meter until it's reached
+  flatShipping={18}
+  taxRate={0.08}
+  appliedCode={cart.code}
+  discountRate={0.2}
+  // Throw to show the message inline under the field.
+  onApplyCode={async (code) => { await cart.applyCode(code) }}
+  onRemoveCode={() => cart.removeCode()}
+  onCheckout={() => router.push("/checkout")}
+/>`,
+    },
+    {
+      label: "The same totals, without the panel",
+      code: `import { useOrderTotals } from "@/hooks/use-order-totals"
+
+// The panel's arithmetic as a hook — test it, or show a total elsewhere.
+const { subtotal, discount, shipping, tax, total, toFreeShipping } = useOrderTotals({
+  lines: cart.lines,
+  discountRate: 0.2,
+  freeShippingThreshold: 300,
+  flatShipping: 18,
+  taxRate: 0.08,
+})`,
+    },
+  ],
   "cart-line-item": [
     {
       label: "In your bag page",

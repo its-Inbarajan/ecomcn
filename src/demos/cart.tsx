@@ -39,6 +39,7 @@ function lineFrom(index: number): Omit<CartLine, "quantity"> {
 function useDemoBag() {
   const [lines, setLines] = React.useState(START);
   const [fail, setFail] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [log, setLog] = React.useState<string[]>([]);
   const note = (entry: string) => setLog((l) => [entry, ...l].slice(0, 4));
 
@@ -55,6 +56,8 @@ function useDemoBag() {
     lines,
     fail,
     setFail,
+    loading,
+    setLoading,
     log,
     reset: () => {
       setLines(START);
@@ -84,6 +87,10 @@ function Controls({ bag }: { bag: ReturnType<typeof useDemoBag> }) {
       </Toggle>
       <Toggle on={bag.fail} onClick={() => bag.setFail(true)}>
         Fails
+      </Toggle>
+      <ControlLabel className="ml-3">Cart</ControlLabel>
+      <Toggle on={bag.loading} onClick={() => bag.setLoading(!bag.loading)}>
+        Loading
       </Toggle>
       <button
         type="button"
@@ -115,6 +122,7 @@ export function CartLineItemDemo() {
               onQuantityChange={(q) => bag.onQuantityChange(line.id, q)}
               onRemove={() => bag.onRemove(line.id)}
               onSaveForLater={() => bag.onSaveForLater(line.id)}
+              loading={bag.loading}
             />
           ))}
         </ul>
@@ -146,6 +154,7 @@ export function CartSheetDemo() {
             onRemove={bag.onRemove}
             onSaveForLater={bag.onSaveForLater}
             freeShippingThreshold={1000}
+            loading={bag.loading}
             viewBagHref="#"
             empty={
               <a href="#" className="text-sm underline underline-offset-4">

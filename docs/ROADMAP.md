@@ -31,8 +31,8 @@ _Updated early October 2026._
 | | |
 | --- | --- |
 | Shipped (24 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Theme: `theme-editorial` |
-| Milestones | M0, M1 and M1.5 done · M2 (Product), M3 (Cart) and M5 (Checkout, built early) **done** · **M4 (Launch) next** |
-| v1.0 | 18 blocks (16 planned + `load-more` and `product-quick-view` from M1.5) — **all 18 shipped**; `review-summary` and `related-products` shipped ahead of plan |
+| Milestones | M0–M3 and M5 (Checkout, built early) **done** · **M4 (Launch) in progress** — v1.0.0 cut 2026-10-17 |
+| v1.0 | **23 blocks** + `theme-editorial`: the planned 18, and the checkout — `address-form`, `delivery-options`, `payment-selector` — built before the launch, so the tag includes them |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
 | Installable by a stranger | **Yes** — listed in the shadcn Registry Directory ([shadcn-ui/ui#12025](https://github.com/shadcn-ui/ui/pull/12025)), so `npx shadcn@latest add @ecomcn/<block>` needs no setup |
@@ -163,21 +163,22 @@ with nothing but ecomcn blocks. That is the screenshot that gets shared.
 
 ---
 
-## Milestone 4 — Launch v1.0 (5 evenings · ~3 weeks)
+## Milestone 4 — Launch v1.0 (5 evenings · ~3 weeks) — **in progress**
 
 | Evening | Work |
 | --- | --- |
 | 1 | `opengraph-image.tsx` — a link preview showing four real blocks |
-| 2 | README screenshot grid; rewrite the pitch now that 16 blocks exist |
-| 3 | Full pass: every docs page has a demo that exercises its states |
-| 4 | Tag `v1.0.0`; submit to `registry.directory` and `awesome-shadcn-ui` |
+| 2 | **Done** — README screenshot grid (light and dark) and a pitch for 23 blocks |
+| 3 | **Done** — every block has a usage snippet; the cart and checkout demos gained their loading and empty states |
+| 4 | Tag `v1.0.0` (CHANGELOG cut, `package.json` 1.0.0); submit to `registry.directory` and `awesome-shadcn-ui` |
 | 5 | Post one build-in-public thread showing **three** blocks, not eighteen |
 
 Done early: the social card (a static `opengraph-image.png` rather than
 evening 1's generated one) and the `directory.json` PR — merged in
 September 2026, long before v1.0.
 
-**v1.0 = 18 blocks**, funnel-complete from listing to cart.
+**v1.0 = 23 blocks**, funnel-complete from listing to payment — the checkout
+was built early (Milestone 5), and a tag of `develop` includes it.
 
 ---
 

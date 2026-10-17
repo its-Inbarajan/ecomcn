@@ -6,6 +6,18 @@ describe changes in terms of what to edit, not just what changed.
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-10-17
+
+The funnel, end to end: with the cart and checkout here, ecomcn takes a
+shopper from the listing to payment — 23 blocks and `theme-editorial`, and a
+demo store built from nothing else. Six blocks are new: the cart
+(`cart-line-item`, `cart-sheet`, `checkout-stepper`) and the checkout
+(`address-form`, `delivery-options`, `payment-selector`).
+
+**If you installed blocks from 0.1.0 or 0.2.0, read Fixed:** nine blocks that
+format prices could throw a hydration error when the server's locale differed
+from the visitor's, and each entry says what to change in your copy.
+
 ### Added
 - `payment-selector` — how the shopper pays: one ruled list of methods
   (card, wallet, pay in instalments, bank) where the chosen one opens onto
