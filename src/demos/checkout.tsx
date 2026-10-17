@@ -215,6 +215,7 @@ export function demoDeliveryOptions(subtotal: number): DeliveryOption[] {
 export function DeliveryOptionsDemo() {
   const [value, setValue] = React.useState<string | null>("standard");
   const [loading, setLoading] = React.useState(false);
+  const [none, setNone] = React.useState(false);
   const [subtotal, setSubtotal] = React.useState(720);
   return (
     <div>
@@ -230,9 +231,17 @@ export function DeliveryOptionsDemo() {
         <Toggle on={loading} onClick={() => setLoading((l) => !l)}>
           Loading
         </Toggle>
+        <Toggle on={none} onClick={() => setNone((n) => !n)}>
+          None
+        </Toggle>
       </ControlBar>
       <div className="mx-auto max-w-xl">
-        <DeliveryOptions options={demoDeliveryOptions(subtotal)} value={value} onValueChange={setValue} loading={loading} />
+        <DeliveryOptions
+          options={none ? [] : demoDeliveryOptions(subtotal)}
+          value={value}
+          onValueChange={setValue}
+          loading={loading}
+        />
         <p className="mt-6 text-[12.5px] leading-relaxed text-muted-foreground">
           The dates are worked out on your clock: business days from dispatch,
           and dispatch is today only before the cut-off — the chosen method
@@ -356,6 +365,7 @@ export function PaymentSelectorDemo() {
   const [value, setValue] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [declines, setDeclines] = React.useState(false);
+  const [none, setNone] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [paying, setPaying] = React.useState(false);
   const [log, setLog] = React.useState("choose a method, then Pay");
@@ -392,13 +402,16 @@ export function PaymentSelectorDemo() {
         <Toggle on={loading} onClick={() => setLoading((l) => !l)}>
           Loading
         </Toggle>
+        <Toggle on={none} onClick={() => setNone((n) => !n)}>
+          None
+        </Toggle>
         <span className="ml-auto max-w-full truncate font-mono text-[11.5px] text-muted-foreground sm:max-w-[40%]" aria-live="polite">
           {log}
         </span>
       </ControlBar>
       <div className="mx-auto max-w-xl">
         <PaymentSelector
-          methods={methods}
+          methods={none ? [] : methods}
           value={value}
           onValueChange={(id) => {
             setValue(id);

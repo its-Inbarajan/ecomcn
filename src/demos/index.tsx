@@ -178,6 +178,11 @@ export function OrderSummaryDemo() {
         }}
         onRemoveCode={() => setCode(null)}
       />
+      <p className="mt-6 text-[12.5px] leading-relaxed text-muted-foreground">
+        Try a wrong code, then ARCHIVE20: the error is inline, the discount
+        line appears, and the totals follow. The meter says how far the bag
+        is from free shipping, and moves with the discount.
+      </p>
     </div>
   );
 }

@@ -95,7 +95,7 @@ function Hero() {
 function Stats() {
   const facts = [
     { k: String(shipped.length), v: "blocks shipped", accent: true },
-    { k: String(BLOCKS.length), v: "specified for v1" },
+    { k: String(BLOCKS.length), v: "in the catalogue" },
     { k: "5", v: "funnel stages" },
     { k: "1", v: "command to install any of them" },
   ];
