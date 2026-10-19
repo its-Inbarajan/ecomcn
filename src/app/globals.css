@@ -11,6 +11,8 @@
 --------------------------------------------------------------------------- */
 
 :root {
+  /* Native controls, scrollbars and form autofill follow the theme. */
+  color-scheme: light;
   --background: hsl(40 30% 97%);
   --foreground: hsl(30 9% 9%);
 
@@ -60,6 +62,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: hsl(30 8% 7%);
   --foreground: hsl(40 22% 94%);
 
