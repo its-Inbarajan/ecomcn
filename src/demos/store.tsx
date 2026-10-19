@@ -9,8 +9,10 @@ import { AddressForm, type Address, type AddressErrors } from "@/components/ecom
 import { CartLineItem, type CartLine } from "@/components/ecomcn/cart-line-item";
 import { CartSheet } from "@/components/ecomcn/cart-sheet";
 import { CheckoutStepper, type CheckoutStep } from "@/components/ecomcn/checkout-stepper";
-import { DeliveryOptions } from "@/components/ecomcn/delivery-options";
+import { DeliveryOptions, deliveryWindow } from "@/components/ecomcn/delivery-options";
+import { OrderConfirmation, type OrderConfirmationData } from "@/components/ecomcn/order-confirmation";
 import { OrderSummary } from "@/components/ecomcn/order-summary";
+import { OrderTracking } from "@/components/ecomcn/order-tracking";
 import { PaymentSelector } from "@/components/ecomcn/payment-selector";
 import {
   ProductBuyBox,
@@ -31,7 +33,7 @@ import { ReviewSummary, type Review, type ReviewDistribution } from "@/component
 import { SizeGuideDialog } from "@/components/ecomcn/size-guide-dialog";
 import type { ProductCardProduct } from "@/components/ecomcn/product-card";
 import { ThemeToggle } from "@/components/site/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ListingPageDemo } from "@/demos/browse";
 import { DemoProviderPanel, demoDeliveryOptions, useDemoPaymentMethods } from "@/demos/checkout";
 import { COLORWAYS, PRODUCTS, type DemoProduct, type StoreColorway } from "@/demos/listing-data";
@@ -130,6 +132,12 @@ export function useBag() {
 }
 
 const wait = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms));
+
+/** Now, for stamping a placed order. */
+const now = () => new Date();
+/** A local calendar date as "2026-10-21". */
+const isoDay = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
 /** A bag line as cart-line-item and cart-sheet take it. */
 function toCartLine(line: BagLine): CartLine {
@@ -611,7 +619,7 @@ export function StoreBag() {
   const [paymentId, setPaymentId] = React.useState<string | null>(null);
   const [paying, setPaying] = React.useState(false);
   const [paymentError, setPaymentError] = React.useState<string | null>(null);
-  const [placed, setPlaced] = React.useState<{ number: string; total: number; shipTo: string[] } | null>(null);
+  const [placed, setPlaced] = React.useState<OrderConfirmationData | null>(null);
   const methods = useDemoPaymentMethods();
   const form = React.useRef<HTMLFormElement>(null);
   // The step lives in the URL, so the mini cart's Checkout can land on it.
@@ -653,7 +661,25 @@ export function StoreBag() {
     await wait(900);
     setPaying(false);
     // A demo order number: from the total, so it's the same for the same bag.
-    setPlaced({ number: `ATL-${String(Math.round(totals.total * 100)).padStart(5, "0").slice(-5)}`, total: totals.total, shipTo: shipTo ?? [] });
+    const at = now();
+    const arrives = deliveryWindow(delivery, at);
+    const country = new Intl.DisplayNames(undefined, { type: "region" }).of(address.country) ?? address.country;
+    setPlaced({
+      number: `ATL-${String(Math.round(totals.total * 100)).padStart(5, "0").slice(-5)}`,
+      placedAt: at.toISOString(),
+      lines: bag.map((line) => ({
+        id: line.id,
+        name: line.name,
+        variant: line.detail,
+        quantity: line.quantity,
+        unitPrice: line.unitPrice,
+        image: toCartLine(line).image,
+      })),
+      totals: { subtotal: totals.subtotal, discount: totals.discount || undefined, shipping: totals.shipping, tax: totals.tax, total: totals.total },
+      shipTo: [...(shipTo ?? []), country],
+      delivery: { label: delivery.label, from: isoDay(arrives.first), to: isoDay(arrives.last) },
+      payment: methods.find((m) => m.id === paymentId)?.label,
+    });
     clear();
   };
 
@@ -724,17 +750,28 @@ export function StoreBag() {
   let body: React.ReactNode;
   if (placed) {
     body = (
-      <div className="max-w-xl py-12" role="status">
-        <p className="ec-eyebrow text-muted-foreground">Order {placed.number}</p>
-        <p className="mt-2 text-2xl">Thank you — your order is placed.</p>
-        <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
-          {money(placed.total)} to {placed.shipTo[0] ?? "you"}. It&rsquo;s a demo:
-          nothing was charged and nothing will arrive. The order confirmation
-          page is a block for a later release.
+      <div className="flex flex-col gap-14 pt-2">
+        <OrderConfirmation
+          order={placed}
+          title={address.givenName ? `Thank you, ${address.givenName}.` : undefined}
+          permalink={`https://ecomcn.vercel.app/demo/orders/${placed.number}`}
+          actions={
+            <Link href="/demo" className={buttonVariants()}>
+              Continue shopping
+            </Link>
+          }
+        />
+        <section className="max-w-xl">
+          <h2 className="ec-eyebrow mb-5 text-muted-foreground">Track your order</h2>
+          <OrderTracking
+            events={[{ id: "placed", status: "ordered", at: placed.placedAt, description: "Order placed" }]}
+            estimate={placed.delivery?.from ? { from: placed.delivery.from, to: placed.delivery.to } : undefined}
+          />
+        </section>
+        <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+          A demo: nothing was charged, nothing will arrive, and the order link
+          doesn&rsquo;t lead anywhere.
         </p>
-        <Link href="/demo" className="mt-6 inline-flex items-center gap-2 text-sm underline underline-offset-4">
-          Back to the shop <ArrowUpRight className="size-3.5" aria-hidden />
-        </Link>
       </div>
     );
   } else if (bag.length === 0) {
@@ -848,17 +885,19 @@ export function StoreBag() {
 
   return (
     <div>
-      <header className="ec-rule-strong border-b pb-5">
-        <h1 className="ec-display text-5xl">{placed ? "Thank you" : step === "bag" ? "Your bag" : "Checkout"}</h1>
-      </header>
-
+      {/* Once placed, the confirmation's own heading is the page's. */}
       {placed ? null : (
-        <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
+        <>
+          <header className="ec-rule-strong border-b pb-5">
+            <h1 className="ec-display text-5xl">{step === "bag" ? "Your bag" : "Checkout"}</h1>
+          </header>
+          <CheckoutStepper className="mt-6" steps={CHECKOUT_STEPS} value={step} onValueChange={goTo} />
+        </>
       )}
 
       {body}
 
-      <BuiltWith blocks={builtWith[step] ?? builtWith.bag} />
+      <BuiltWith blocks={placed ? ["order-confirmation", "order-tracking"] : (builtWith[step] ?? builtWith.bag)} />
     </div>
   );
 }

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "order-tracking",
+      "type": "registry:block",
+      "title": "Order Tracking",
+      "description": "Where the parcel is: a status chip, the arrival window, a vertical timeline of milestones and the carrier's updates. Carrier webhooks arrive out of order and twice, so events are de-duplicated by id and sorted by when they happened — sortTrackingEvents and trackingProgress live in lib/tracking-events.ts, with no \"use client\", so a webhook handler runs the same code. The current node is ringed with a live pulse, passed ones solid ink, those to come hollow grey; a carrier problem turns the chip to Needs attention and says why. Rules fill as the parcel moves and the update log grows to its measured height (Motion; a fade under reduced motion). Loading and empty states included.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "order-tracking.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/order-tracking.tsx"
+        },
+        {
+          "path": "tracking-events.ts",
+          "type": "registry:lib",
+          "target": "lib/tracking-events.ts"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "post-purchase"
+      ]
+    }
+  ]
+}

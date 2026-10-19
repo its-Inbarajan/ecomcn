@@ -381,22 +381,31 @@ save-as-default.
 The part almost every component kit skips — and the part that drives repeat
 orders.
 
-### `order-confirmation` · block · effort 2
+### `order-confirmation` · block · effort 2 · **shipped** · `motion`
 Success banner, order number, delivery address, arrival date, amount paid, next
 actions.
-- **Design:** the thank-you is 48px display serif on a grained band — the one
-  moment in the funnel that earns a flourish.
-- **Hard part:** this page is the receipt users screenshot. Make it printable and
-  give it a stable permalink.
-- Composes: `button`
+- **Design:** the thank-you is 48px in your serif (`font-serif`) on a grained
+  band — an inline SVG noise, no image request — the one moment in the funnel
+  that earns a flourish, with a check that draws itself. The four facts
+  people look for sit in one ruled row above the fold.
+- **Hard part:** this page is the receipt users screenshot. It prints as a plain
+  black-on-white receipt (no band, no buttons, the permalink written out);
+  the permalink is the adopter's — a token link that shows the order from any
+  device, never session state — and "Copy order link" falls back to selecting
+  the link when the clipboard is refused.
+- Composes: `button`, `skeleton`
 
-### `order-tracking` · block · effort 2
+### `order-tracking` · block · effort 2 · **shipped** · `motion`
 Vertical shipment timeline with a live-node ring and carrier status chip.
-- **Design:** current node gets a brand ring; completed nodes are solid ink;
-  pending are border-grey.
+- **Design:** the current node gets a ring in `primary` (not a brand token an
+  adopter may not have) and a live pulse; completed nodes are solid ink with
+  a check; pending are border-grey. The rule fills as the parcel moves.
 - **Hard part:** carrier webhooks arrive out of order — sort by event time, not
-  arrival time.
-- Composes: `badge`
+  arrival time — and twice: de-duplicate by id, the last copy winning. The
+  logic is in `lib/tracking-events.ts`, with no `"use client"`, so the webhook
+  handler runs the same code. A problem after the last milestone shows until
+  the next one.
+- Composes: `badge`, `skeleton`
 
 ---
 
@@ -404,7 +413,8 @@ Vertical shipment timeline with a live-node ring and carrier status chip.
 
 | Release | Blocks |
 | --- | --- |
-| **v1.1 — Checkout** | `address-form` · `delivery-options` · `payment-selector` — Milestone 5 in `ROADMAP.md`, done |
+| **v1.0 — Checkout** | `address-form` · `delivery-options` · `payment-selector` — Milestone 5, built early, shipped in 1.0.0 |
+| **v1.1 — Post-purchase** | `order-confirmation` · `order-tracking` — Milestone 6 in `ROADMAP.md`, done |
 | **v1.2 — Merchandising** | `bundle-builder` · `recently-viewed` · `trust-badges-row` · `newsletter-capture` · `back-in-stock-form` · `gift-card-block` |
 | **v1.3 — Account** | `order-history-list` · `wishlist-grid` · `returns-request-flow` · `subscription-manager` · `saved-addresses` · `loyalty-tier-card` |
 | **v1.4 — Ops surfaces** | `admin-orders-table` · `inventory-editor` · `product-form` · `discount-builder` · `sales-stat-row` · `fulfilment-queue` |

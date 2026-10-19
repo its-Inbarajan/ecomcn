@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "order-confirmation",
+      "type": "registry:block",
+      "title": "Order Confirmation",
+      "description": "The page after Pay: the receipt people screenshot, print and come back to. A thank-you set large in your serif on a grained band, with a check that draws itself; the order number, placed date, arrival window and amount paid in one ruled row above the fold; the items as a ledger with totals; ship-to, delivery and payment. Prints as a plain black-on-white receipt with the permalink written out; Copy order link for a permalink you give it. Calendar dates in UTC so they never slip a day; the placed time in the visitor's zone once hydrated. Loading skeleton included. Compound, through useOrderConfirmation().",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "order-confirmation.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/order-confirmation.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "post-purchase"
+      ]
+    }
+  ]
+}
