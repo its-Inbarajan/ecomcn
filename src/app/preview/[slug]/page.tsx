@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { CartLineItemDemo, CartSheetDemo, CheckoutStepperDemo } from "@/demos/cart";
 import { AddressFormDemo, DeliveryOptionsDemo, PaymentSelectorDemo } from "@/demos/checkout";
+import { OrderConfirmationDemo, OrderTrackingDemo } from "@/demos/post-purchase";
 import {
   OrderSummaryDemo,
   PriceTagDemo,
@@ -95,6 +96,10 @@ export default async function PreviewPage({
       return <DeliveryOptionsDemo />;
     case "payment-selector":
       return <PaymentSelectorDemo />;
+    case "order-confirmation":
+      return <OrderConfirmationDemo />;
+    case "order-tracking":
+      return <OrderTrackingDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":

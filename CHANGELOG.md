@@ -6,6 +6,29 @@ describe changes in terms of what to edit, not just what changed.
 
 ## [Unreleased]
 
+### Added
+- `order-confirmation` — the page after Pay: the receipt people screenshot,
+  print and come back to. A thank-you set large in your serif on a grained
+  band, with a check that draws itself; the order number, placed date,
+  arrival window and amount paid in one ruled row above the fold; the items
+  as a ledger with totals; ship-to, delivery and payment. It prints as a
+  plain black-on-white receipt — no band, no buttons, the permalink written
+  out — and **Copy order link** copies the `permalink` you give it, or, where
+  the browser refuses the clipboard, selects the link on the page. Arrival
+  dates are calendar dates shown in UTC so they never slip a day; the placed
+  time is the visitor's own once hydrated. Compound, through
+  `useOrderConfirmation()`. Adds `motion`, `lucide-react`.
+- `order-tracking` — a status chip, the arrival window, a vertical timeline
+  of milestones and the carrier's update log. Carrier webhooks arrive out of
+  order and twice: events are de-duplicated by id and sorted by when they
+  happened, so a late, older scan slots into place instead of moving the
+  parcel back. `sortTrackingEvents` and `trackingProgress` live in
+  `lib/tracking-events.ts`, with no `"use client"`, so your webhook handler
+  runs the same code. The current node is ringed with a live pulse (none
+  under reduced motion), passed ones solid ink, those to come hollow grey; a
+  carrier problem turns the chip to "Needs attention" and says why until
+  the next milestone. Adds `motion`, `lucide-react`.
+
 ## [1.0.0] — 2026-10-17
 
 The funnel, end to end: with the cart and checkout here, ecomcn takes a

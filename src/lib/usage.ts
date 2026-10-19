@@ -580,6 +580,47 @@ function InstalmentBadge() {
 }`,
     },
   ],
+  "order-confirmation": [
+    {
+      label: "On your order page",
+      code: `import { OrderConfirmation } from "@/components/ecomcn/order-confirmation"
+
+// Load the order by number + token from the URL — never from the session —
+// so the permalink works from any device, and after the cart is gone.
+<OrderConfirmation
+  order={order}                       // number, placedAt, lines, totals, shipTo?, delivery?, payment?
+  title={\`Thank you, \${order.firstName}.\`}
+  permalink={\`https://shop.example/orders/\${order.number}?t=\${order.token}\`}
+  actions={<a href="/" className={buttonVariants()}>Continue shopping</a>}
+/>`,
+    },
+  ],
+  "order-tracking": [
+    {
+      label: "Under the order",
+      code: `import { OrderTracking } from "@/components/ecomcn/order-tracking"
+
+<OrderTracking
+  events={shipment.events}            // { id, status, at, description?, location? }[], any order
+  carrier={{ name: "UPS", trackingNumber: shipment.number, url: shipment.trackingUrl }}
+  estimate={{ from: "2026-10-22", to: "2026-10-26" }}
+/>`,
+    },
+    {
+      label: "The same order, where the webhooks land",
+      code: `// lib/tracking-events.ts has no "use client": import it in a route handler.
+import { sortTrackingEvents, trackingProgress } from "@/lib/tracking-events"
+
+export async function POST(request: Request) {
+  const event = toTrackingEvent(await request.json())   // map the carrier's payload
+  const events = sortTrackingEvents([...(await db.events(event.shipmentId)), event])
+  const { delivered, issue } = trackingProgress(events)
+  if (issue) await notifyCustomer(issue)
+  await db.saveEvents(event.shipmentId, events)
+  return new Response(null, { status: 204 })
+}`,
+    },
+  ],
   "address-form": [
     {
       label: "In your checkout",

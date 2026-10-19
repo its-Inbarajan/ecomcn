@@ -20,13 +20,13 @@ way you install a button.
 
 shadcn/ui gives you ~40 primitives and a handful of dashboard blocks. It has
 never shipped a buy box, a faceted filter panel, or an order summary — the
-things every store rebuilds from scratch. ecomcn is those things: **23 blocks
-that take a shopper from the listing to payment**, each one a file you own,
-installed with the same command as a button.
+things every store rebuilds from scratch. ecomcn is those things: **25 blocks
+that take a shopper from the listing to the parcel at the door**, each one a
+file you own, installed with the same command as a button.
 
 The [demo store](https://ecomcn.vercel.app/demo) is built from nothing else —
-filter a listing, open a product, add to the bag, and check out through
-address, delivery and payment.
+filter a listing, open a product, add to the bag, check out through address,
+delivery and payment, and land on the order confirmation with tracking.
 
 <table>
 <tr>
@@ -128,8 +128,8 @@ npx shadcn@latest registry add @ecomcn=https://ecomcn.vercel.app/r/{name}.json
 
 ## The catalogue
 
-23 blocks shipped, across the three stages where a store is won or lost; two
-more stages are planned. Full spec, with per-block design notes and the hard
+25 blocks shipped, across the four stages from the listing to the parcel at
+the door; the Discover stage is planned. Full spec, with per-block design notes and the hard
 parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 
 | Stage               | Blocks                                                                                                                                                               | Status  |
@@ -137,8 +137,8 @@ parts: [`docs/BLOCK-CATALOG.md`](docs/BLOCK-CATALOG.md).
 | **Browse**          | `product-card` · `product-grid` · `filter-panel` · `filter-sheet` · `sort-toolbar` · `empty-results` · `load-more` · `product-quick-view`                            | shipped |
 | **Product**         | `product-gallery` · `price-tag` · `variant-swatches` · `size-guide-dialog` · `product-buy-box` · `product-details-accordion` · `review-summary` · `related-products` | shipped |
 | **Cart & checkout** | `cart-line-item` · `cart-sheet` · `order-summary` · `checkout-stepper` · `address-form` · `delivery-options` · `payment-selector`                                    | shipped |
+| **Post-purchase**   | `order-confirmation` · `order-tracking`                                                                                                                              | shipped |
 | **Discover**        | `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip`                                                                       | planned |
-| **Post-purchase**   | `order-confirmation` · `order-tracking`                                                                                                                              | planned |
 
 Plus `theme-editorial`, the house theme from the screenshots. See the blocks
 composed into a [listing page](https://ecomcn.vercel.app/examples/listing-page)

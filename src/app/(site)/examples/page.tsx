@@ -25,6 +25,8 @@ const STORE_BLOCKS = new Set([
   "address-form",
   "delivery-options",
   "payment-selector",
+  "order-confirmation",
+  "order-tracking",
 ]);
 
 export default function ExamplesIndex() {

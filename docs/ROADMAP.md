@@ -30,8 +30,8 @@ _Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (24 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Theme: `theme-editorial` |
-| Milestones | M0–M3 and M5 (Checkout, built early) **done** · **M4 (Launch) in progress** — v1.0.0 cut 2026-10-17 |
+| Shipped (26 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Post-purchase: `order-confirmation`, `order-tracking` · Theme: `theme-editorial` |
+| Milestones | M0–M3, M5 (Checkout) and M6 (Post-purchase) **done** · **M4 (Launch)**: v1.0.0 tagged 2026-10-17, outreach left |
 | v1.0 | **23 blocks** + `theme-editorial`: the planned 18, and the checkout — `address-form`, `delivery-options`, `payment-selector` — built before the launch, so the tag includes them |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
@@ -224,6 +224,18 @@ tag as v1.1 is a release decision, not a build one.
 
 ---
 
+## Milestone 6 — Post-purchase, v1.1 (4 evenings) — **done**
+
+The part almost every component kit skips. The demo store now ends where a
+real one does: on an order confirmation, with tracking under it.
+
+| Block | Evenings | Notes |
+| --- | --- | --- |
+| `order-confirmation` | 2 | **Done** — prints as a receipt; permalink with a copy that falls back to selecting |
+| `order-tracking` | 2 | **Done** — events de-duplicated and sorted by event time, in a lib the webhook handler shares |
+
+---
+
 ## Timeline
 
 | Milestone | Evenings | Elapsed |
@@ -233,12 +245,13 @@ tag as v1.1 is a release decision, not a build one.
 | M1.5 — Composition & motion | 4 | done |
 | M2 — Product | 10 | done, early October |
 | M3 — Cart | 5 | done, October |
-| M4 — Launch v1.0 | 4 (social card and directory done early) | next |
-| M5 — Checkout, v1.1 | 8 | done, October — before the launch |
+| M4 — Launch v1.0 | 4 (social card and directory done early) | 1.0.0 tagged 2026-10-17 |
+| M5 — Checkout | 8 | done, October — before the launch, so in 1.0.0 |
+| M6 — Post-purchase, v1.1 | 4 | done, October |
 
-**From here:** 4 evenings to v1.0 — about two weeks at two evenings a week —
-then 7 for v1.1's checkout, about four more. M2 and M3 ran well ahead of the
-original plan, which had v1.0 in December.
+**Where it stands:** v1.0.0 shipped the funnel from listing to payment, and
+v1.1 adds the post-purchase stage, so every stage but Discover is done. What
+remains of M4 is outreach — awesome-shadcn-ui and the announcement.
 
 ---
 

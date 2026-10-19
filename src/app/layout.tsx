@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
-import { SITE_URL as url } from "@/lib/site";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
+import { InlineScript } from "@/components/site/inline-script";
+import { ThemeSync } from "@/components/site/theme-sync";
+import { SITE_URL as url } from "@/lib/site";
+import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -66,15 +71,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full`}
     >
       <head>
-        {/* Resolve the theme before first paint so a dark-mode visitor never
-            sees a flash of the paper palette. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem("ecomcn-theme");var d=s?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}})();`,
-          }}
-        />
+        {/* The theme, before first paint: no flash of the paper palette. */}
+        <InlineScript html={THEME_SCRIPT} />
       </head>
       <body className="flex min-h-full flex-col">
+        {/* …and kept right after: the dev remount, the OS, other tabs. */}
+        <ThemeSync />
         {children}
         <Analytics />
         <SpeedInsights />
