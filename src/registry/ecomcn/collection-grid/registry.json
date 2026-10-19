@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "collection-grid",
+      "type": "registry:block",
+      "title": "Collection Grid",
+      "description": "Three collections as a magazine spread: one dominant tile spanning both rows on a 7/5 split, two supporting it, the type scaling with the tile. On a phone the lead stays full width and tall and the other two pair up beneath it, smaller — never three identical cards. Ruled 1px apart; a scrim keeps the words legible on any photo. Renders on the server.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "collection-grid.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/collection-grid.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "marketing"
+      ]
+    }
+  ]
+}

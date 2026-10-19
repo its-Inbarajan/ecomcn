@@ -4,6 +4,13 @@ import { CartLineItemDemo, CartSheetDemo, CheckoutStepperDemo } from "@/demos/ca
 import { AddressFormDemo, DeliveryOptionsDemo, PaymentSelectorDemo } from "@/demos/checkout";
 import { OrderConfirmationDemo, OrderTrackingDemo } from "@/demos/post-purchase";
 import {
+  AnnouncementBarDemo,
+  CategoryRailDemo,
+  CollectionGridDemo,
+  HeroEditorialDemo,
+  LookbookStripDemo,
+} from "@/demos/discover";
+import {
   OrderSummaryDemo,
   PriceTagDemo,
   ProductCardDemo,
@@ -100,6 +107,16 @@ export default async function PreviewPage({
       return <OrderConfirmationDemo />;
     case "order-tracking":
       return <OrderTrackingDemo />;
+    case "announcement-bar":
+      return <AnnouncementBarDemo />;
+    case "hero-editorial":
+      return <HeroEditorialDemo />;
+    case "category-rail":
+      return <CategoryRailDemo />;
+    case "collection-grid":
+      return <CollectionGridDemo />;
+    case "lookbook-strip":
+      return <LookbookStripDemo />;
     case "order-summary":
       return <OrderSummaryDemo />;
     case "listing-page":

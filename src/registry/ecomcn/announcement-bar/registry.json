@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "announcement-bar",
+      "type": "registry:component",
+      "title": "Announcement Bar",
+      "description": "The thin inverted ink bar above everything — free-shipping thresholds, sale windows, drops — with a brand dot between messages. Static, or a marquee at 26s a loop that holds still under the pointer or focus and has a pause button; under reduced motion the marquee doesn't run. Dismissing folds it away and is remembered per version, so it stays gone across routes and visits until the announcement changes; pass `dismissed` from a cookie to skip it on the server.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "announcement-bar.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/announcement-bar.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "marketing"
+      ]
+    }
+  ]
+}

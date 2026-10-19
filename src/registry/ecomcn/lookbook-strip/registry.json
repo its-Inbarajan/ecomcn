@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "lookbook-strip",
+      "type": "registry:block",
+      "title": "Lookbook Strip",
+      "description": "A campaign photo you can shop: numbered hairline-ring hotspots, placed by percentage with their own positions for a mobile crop, each opening its product on your shadcn Popover — on hover with a pointer, on tap or Enter otherwise. The card grows out of the hotspot and folds back into it, held open until the fold has played (Motion; a fade under reduced motion). The same products are listed under the image, and hovering one marks its hotspot.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "popover"
+      ],
+      "files": [
+        {
+          "path": "lookbook-strip.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/lookbook-strip.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "marketing"
+      ]
+    }
+  ]
+}

@@ -7,6 +7,34 @@ describe changes in terms of what to edit, not just what changed.
 ## [Unreleased]
 
 ### Added
+- `announcement-bar` — the thin inverted ink bar above everything, with a
+  dot in your brand colour (`--brand`, ink when you have none) between
+  messages. Static, or a marquee at 26s a loop that holds still under the
+  pointer or focus and has a pause button; under reduced motion the marquee
+  doesn't run. Dismissing folds it away and is remembered per `version`, so
+  it stays gone across routes and visits until the announcement changes.
+  The server can't read localStorage, so a dismissed bar renders and folds
+  away on load — pass `dismissed` from a cookie to skip it. Adds `motion`,
+  `lucide-react`.
+- `hero-editorial` — an oversized serif headline beside a campaign image
+  with a product caption sitting on it, on a 1.05fr / 0.95fr split. The
+  image loads eagerly with `fetchpriority="high"` in a real aspect-ratio box,
+  and the block has no `"use client"`, so it renders on the server, image
+  and all. `renderImage` hands the props to next/image.
+- `category-rail` — numbered category tiles with a photo and a count on your
+  shadcn `carousel`, 1px apart over a track in your border colour. The
+  Carousel's previous / next buttons fade out and leave the tab order when
+  everything fits; a tile reached by Tab scrolls into view. Adds `motion`.
+- `collection-grid` — three collections as a magazine spread on a 7 / 5
+  split; the lead tile's type is bigger. On a phone the lead stays full
+  width and the other two pair up beneath it — never three identical cards.
+  Renders on the server.
+- `lookbook-strip` — a shoppable campaign photo: numbered hairline-ring
+  hotspots placed by percentage, with their own positions for a mobile crop,
+  each opening its product on your shadcn `popover` (hover with a mouse, tap
+  or Enter otherwise). The card grows out of its ring and is held open until
+  it has folded back. The products are listed under the photo, and hovering
+  one marks its ring. Adds `motion`, `lucide-react`.
 - `order-confirmation` — the page after Pay: the receipt people screenshot,
   print and come back to. A thank-you set large in your serif on a grained
   band, with a check that draws itself; the order number, placed date,

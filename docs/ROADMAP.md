@@ -30,8 +30,8 @@ _Updated early October 2026._
 
 | | |
 | --- | --- |
-| Shipped (26 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Post-purchase: `order-confirmation`, `order-tracking` · Theme: `theme-editorial` |
-| Milestones | M0–M3, M5 (Checkout) and M6 (Post-purchase) **done** · **M4 (Launch)**: v1.0.0 tagged 2026-10-17, outreach left |
+| Shipped (31 items) | Browse: `product-card`, `product-grid`, `sort-toolbar`, `filter-panel`, `filter-sheet`, `load-more`, `product-quick-view`, `empty-results` · Product: `product-gallery`, `price-tag`, `product-details-accordion`, `size-guide-dialog`, `variant-swatches`, `product-buy-box`, `review-summary`, `related-products` · Cart: `cart-line-item`, `cart-sheet`, `order-summary`, `checkout-stepper` · Checkout: `address-form`, `delivery-options`, `payment-selector` · Post-purchase: `order-confirmation`, `order-tracking` · Discover: `announcement-bar`, `hero-editorial`, `category-rail`, `collection-grid`, `lookbook-strip` · Theme: `theme-editorial` |
+| Milestones | M0–M3 and M5–M7 **done** — the whole catalogue · **M4 (Launch)**: v1.0.0 tagged 2026-10-17, outreach left |
 | v1.0 | **23 blocks** + `theme-editorial`: the planned 18, and the checkout — `address-form`, `delivery-options`, `payment-selector` — built before the launch, so the tag includes them |
 | Site | landing page with live demo, `/blocks` catalogue, `/blocks/[slug]` docs, `/examples` (listing page, product page), the `/demo` store, `/preview/[slug]`; Unsplash photos, favicon set, social card |
 | CI | validate → lint → typecheck → build → install-test (Base UI + Radix); `develop` protected by a ruleset |
@@ -236,6 +236,21 @@ real one does: on an order confirmation, with tracking under it.
 
 ---
 
+## Milestone 7 — Discover, v1.1 (8 evenings) — **done**
+
+The landing surfaces, last: the funnel blocks were what nobody else had.
+With them the catalogue is complete — 30 blocks across all five stages.
+
+| Block | Evenings | Notes |
+| --- | --- | --- |
+| `announcement-bar` | 1 | **Done** — marquee with a pause button; dismissal per version |
+| `hero-editorial` | 2 | **Done** — server-rendered; the LCP image eager and high priority in a fixed box |
+| `category-rail` | 1 | **Done** — on the Carousel; arrows gone when it fits |
+| `collection-grid` | 1 | **Done** — 7 / 5, and a phone layout that keeps the hierarchy |
+| `lookbook-strip` | 3 | **Done** — percentage hotspots re-anchored for the mobile crop; one Popover for hover, tap and keys |
+
+---
+
 ## Timeline
 
 | Milestone | Evenings | Elapsed |
@@ -248,10 +263,12 @@ real one does: on an order confirmation, with tracking under it.
 | M4 — Launch v1.0 | 4 (social card and directory done early) | 1.0.0 tagged 2026-10-17 |
 | M5 — Checkout | 8 | done, October — before the launch, so in 1.0.0 |
 | M6 — Post-purchase, v1.1 | 4 | done, October |
+| M7 — Discover, v1.1 | 8 | done, October |
 
 **Where it stands:** v1.0.0 shipped the funnel from listing to payment, and
-v1.1 adds the post-purchase stage, so every stage but Discover is done. What
-remains of M4 is outreach — awesome-shadcn-ui and the announcement.
+v1.1 adds the post-purchase and Discover stages: the whole catalogue, 30
+blocks. What remains of M4 is outreach — awesome-shadcn-ui and the
+announcement.
 
 ---
 
@@ -268,11 +285,12 @@ demo store checks out end to end.
 **Discovery stage — `hero-editorial`, `category-rail`, `collection-grid`,
 `announcement-bar`, `lookbook-strip`.** Beautiful, and the least differentiated
 thing here — every UI kit ships a hero. The funnel blocks are what nobody else
-has.
+has. *Shipped last, after v1.0, as Milestone 7.*
 
 **`order-tracking`, `order-confirmation`.**
 Real value, not on the critical path to "a store works." (`review-summary` and
 `related-products` were deferred here too, and shipped early in October.)
+*Shipped after v1.0 as Milestone 6.*
 
 **Additional themes — `theme-utility`, `theme-boutique`.** Worth a lot for the
 docs site's theme switcher, worth nothing until there are blocks to skin.

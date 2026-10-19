@@ -16,49 +16,62 @@ Effort is 1–3, roughly half a day to two days each.
 
 Landing surfaces. Their only job is to make one thing look worth clicking.
 
-### `announcement-bar` · component · effort 1
+### `announcement-bar` · component · effort 1 · **shipped** · `motion`
 Dismissible top-of-page ticker for shipping thresholds, sale windows and drops.
 Marquee or static.
 - **Design:** inverted ink bar, no rounding, brand dot as separator. Marquee runs
   at 26s — slow enough to read, fast enough to notice.
 - **Hard part:** respect `prefers-reduced-motion` (freeze the marquee) and
-  persist dismissal so it doesn't reappear on every route change.
+  persist dismissal so it doesn't reappear on every route change. Shipped
+  with a pause button too — moving content over five seconds needs one —
+  and dismissal remembered per `version`, so a new announcement returns.
+  The marquee runs on Motion, so the block needs no keyframes in your CSS.
 - Composes: `button`
 
-### `hero-editorial` · block · effort 2
+### `hero-editorial` · block · effort 2 · **shipped**
 Asymmetric split hero: oversized display headline left, full-bleed campaign
 image right with an overlaid product caption.
 - **Design:** 1.05fr / 0.95fr split rather than 50/50 — the small imbalance is
   what stops it looking like a template. Caption sits *on* the image, not under.
 - **Hard part:** LCP. The hero image is almost always the largest contentful
   paint; ship `fetchpriority="high"` and a real aspect-ratio box so it never
-  shifts.
-- Composes: `button`
+  shifts. No state and no `"use client"`, so it renders on the server;
+  `renderImage` for next/image.
+- Composes: nothing — your buttons go in `actions`
 
-### `category-rail` · block · effort 2
+### `category-rail` · block · effort 2 · **shipped** · `motion`
 Horizontally scrolling, snap-aligned category tiles with numbered index and item
 counts.
 - **Design:** tiles separated by 1px gaps over a border-coloured track, so the
   rail reads as one ruled object instead of floating cards.
 - **Hard part:** scroll snapping plus keyboard access; arrow buttons must hide
-  when the rail isn't overflowing.
-- Composes: `button`, `scroll-area`
+  when the rail isn't overflowing. Shipped on the Carousel, like
+  `related-products`: drag, swipe and arrow keys for free, and its buttons
+  fade out and leave the tab order when it fits.
+- Composes: `carousel`, `skeleton` (not `scroll-area`, whose scrollbar the
+  house rules leave out)
 
-### `collection-grid` · block · effort 2
+### `collection-grid` · block · effort 2 · **shipped**
 Magazine-style editorial grid — one dominant tile plus two supporting tiles.
 - **Design:** 12-column grid with a 7/5 split. Type scale changes with tile size;
   the big tile gets the bigger heading.
 - **Hard part:** degrading to one column without the hierarchy collapsing into
-  "three identical cards".
-- Composes: `aspect-ratio`
+  "three identical cards". On a phone the lead stays full width and tall and
+  the other two pair up beneath it, smaller.
+- Composes: nothing — CSS `aspect-ratio` does what `aspect-ratio` would, on
+  both bases, and it renders on the server
 
-### `lookbook-strip` · block · effort 3
+### `lookbook-strip` · block · effort 3 · **shipped** · `motion`
 Full-bleed campaign image with positioned hotspots opening a product hover card.
 - **Design:** hotspots are hairline rings, not filled dots — they read as
   annotation.
 - **Hard part:** hotspot coordinates must be percentage-based and re-anchored on
-  mobile, where the crop changes.
-- Composes: `hover-card`, `popover`
+  mobile, where the crop changes — each hotspot takes a `mobile` position for
+  `mobileImage`.
+- Composes: `popover` only. A hover card can't be opened by touch or Enter,
+  so the Popover opens on hover with a mouse (pointer events, with a grace
+  period to cross to the card) and on tap or Enter otherwise; one primitive,
+  the same on both bases.
 
 ---
 
@@ -414,7 +427,7 @@ Vertical shipment timeline with a live-node ring and carrier status chip.
 | Release | Blocks |
 | --- | --- |
 | **v1.0 — Checkout** | `address-form` · `delivery-options` · `payment-selector` — Milestone 5, built early, shipped in 1.0.0 |
-| **v1.1 — Post-purchase** | `order-confirmation` · `order-tracking` — Milestone 6 in `ROADMAP.md`, done |
+| **v1.1 — Post-purchase & Discover** | `order-confirmation` · `order-tracking` · `announcement-bar` · `hero-editorial` · `category-rail` · `collection-grid` · `lookbook-strip` — Milestones 6 and 7 in `ROADMAP.md`, done: the whole catalogue |
 | **v1.2 — Merchandising** | `bundle-builder` · `recently-viewed` · `trust-badges-row` · `newsletter-capture` · `back-in-stock-form` · `gift-card-block` |
 | **v1.3 — Account** | `order-history-list` · `wishlist-grid` · `returns-request-flow` · `subscription-manager` · `saved-addresses` · `loyalty-tier-card` |
 | **v1.4 — Ops surfaces** | `admin-orders-table` · `inventory-editor` · `product-form` · `discount-builder` · `sales-stat-row` · `fulfilment-queue` |

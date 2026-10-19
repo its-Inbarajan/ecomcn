@@ -3,6 +3,11 @@
   "name": "ecomcn",
   "homepage": "https://ecomcn.vercel.app",
   "include": [
+    "src/registry/ecomcn/announcement-bar/registry.json",
+    "src/registry/ecomcn/hero-editorial/registry.json",
+    "src/registry/ecomcn/category-rail/registry.json",
+    "src/registry/ecomcn/collection-grid/registry.json",
+    "src/registry/ecomcn/lookbook-strip/registry.json",
     "src/registry/ecomcn/price-tag/registry.json",
     "src/registry/ecomcn/product-card/registry.json",
     "src/registry/ecomcn/product-grid/registry.json",

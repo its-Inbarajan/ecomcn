@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "hero-editorial",
+      "type": "registry:block",
+      "title": "Editorial Hero",
+      "description": "An asymmetric split hero: an oversized serif headline on the left, a campaign image on the right with a product caption sitting on it. 1.05fr / 0.95fr, not 50/50. The image is the page's largest contentful paint, so it loads eagerly with fetchpriority=high inside a real aspect-ratio box and never shifts; renderImage hands the props to next/image. No state and no \"use client\": it renders on the server.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "hero-editorial.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/hero-editorial.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "marketing"
+      ]
+    }
+  ]
+}
