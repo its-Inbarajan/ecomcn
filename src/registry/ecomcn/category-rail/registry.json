@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "category-rail",
+      "type": "registry:block",
+      "title": "Category Rail",
+      "description": "Numbered category tiles with a photo and an item count, snapping along your shadcn Carousel. Tiles sit 1px apart over a track in your border colour, so the rail reads as one ruled object. The Carousel's previous and next buttons fade out and leave the tab order when everything fits; a tile reached by Tab scrolls into view. Loading skeleton included.",
+      "author": "ecomcn <hello@ecomcn.dev>",
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "carousel",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "category-rail.tsx",
+          "type": "registry:component",
+          "target": "components/ecomcn/category-rail.tsx"
+        }
+      ],
+      "categories": [
+        "ecommerce",
+        "marketing"
+      ]
+    }
+  ]
+}

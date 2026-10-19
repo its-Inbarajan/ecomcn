@@ -580,6 +580,91 @@ function InstalmentBadge() {
 }`,
     },
   ],
+  "announcement-bar": [
+    {
+      label: "At the top of your layout",
+      code: `import { AnnouncementBar } from "@/components/ecomcn/announcement-bar"
+
+<AnnouncementBar
+  variant="marquee"                  // or "static"
+  items={[
+    { id: "ship", content: "Free delivery on orders over $300" },
+    { id: "drop", content: "The autumn edit is in", href: "/new" },
+  ]}
+  version="autumn-26"                // change it and a dismissed bar comes back
+/>`,
+    },
+  ],
+  "hero-editorial": [
+    {
+      label: "On the home page — a Server Component",
+      code: `import { HeroEditorial } from "@/components/ecomcn/hero-editorial"
+import Image from "next/image"
+
+<HeroEditorial
+  eyebrow="Autumn / Winter"
+  title="Made to be resoled."
+  actions={<a href="/shop" className={buttonVariants({ size: "lg" })}>Shop the collection</a>}
+  image={{ src: "/campaign.jpg", alt: "The Vester boot on a stone step", width: 1600, height: 2000 }}
+  // Optional: next/image, with the priority the block already asks for.
+  renderImage={({ src, alt, sizes, className }) => (
+    <Image src={src} alt={alt} fill sizes={sizes} className={className} priority />
+  )}
+  caption={{ title: "Vester Chelsea Boot", price: 420, href: "/p/vester" }}
+/>`,
+    },
+  ],
+  "category-rail": [
+    {
+      label: "Under the hero",
+      code: `import { CategoryRail } from "@/components/ecomcn/category-rail"
+
+<CategoryRail
+  items={categories.map((c) => ({
+    id: c.slug,
+    label: c.name,
+    href: \`/c/\${c.slug}\`,
+    count: c.productCount,
+    image: <img src={c.image} alt="" loading="lazy" />,
+  }))}
+/>`,
+    },
+  ],
+  "collection-grid": [
+    {
+      label: "Three collections, the first leading",
+      code: `import { CollectionGrid } from "@/components/ecomcn/collection-grid"
+
+<CollectionGrid
+  title="The edit"
+  tiles={[
+    { id: "rooms", eyebrow: "Autumn edit", title: "Rooms that slow you down",
+      description: "Oak, wool and low light.", href: "/c/furniture", image: <img src={a} alt="…" /> },
+    { id: "light", title: "After dark", href: "/c/lighting", image: <img src={b} alt="…" /> },
+    { id: "table", title: "Set the table", href: "/c/tableware", image: <img src={c} alt="…" /> },
+  ]}
+/>`,
+    },
+  ],
+  "lookbook-strip": [
+    {
+      label: "A shoppable campaign photo",
+      code: `import { LookbookStrip } from "@/components/ecomcn/lookbook-strip"
+
+<LookbookStrip
+  title="Packed for the weekend"
+  image={<img src="/look-wide.jpg" alt="…" />}
+  mobileImage={<img src="/look-4x3.jpg" alt="…" loading="lazy" />}
+  aspectRatio="2 / 1"
+  mobileAspectRatio="4 / 3"
+  hotspots={[
+    // Percent of the image; \`mobile\` for the phone crop.
+    { id: "duffel", x: 33, y: 71, mobile: { x: 31, y: 66 },
+      product: { name: "Weekender Duffel", href: "/p/duffel", price: 245 } },
+  ]}
+/>`,
+    },
+  ],
   "order-confirmation": [
     {
       label: "On your order page",
